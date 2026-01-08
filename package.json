@@ -1,13 +1,13 @@
 {
-  "name": "news-grabber",
-  "version": "1.0.0",
-  "description": "Holt News und fasst sie mit KI zusammen",
+  "name": "news-grabber-gemini",
+  "version": "2.0.0",
+  "description": "News mit Google Gemini",
   "main": "grabber.js",
   "scripts": {
     "start": "node grabber.js"
   },
   "dependencies": {
-    "axios": "^1.6.0",
+    "@google/generative-ai": "^0.1.0",
     "rss-parser": "^3.13.0"
   }
 }
