@@ -5,7 +5,8 @@
     "text": "Schulausfall, verspätete Züge und Flugzeuge, mehr Unfälle: In Teilen des Landes schneit und regnet es heftig - es wird vor Glatteis gewarnt. Und es dürfte noch schlimmer werden.",
     "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
     "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
-    "date": "Thu, 8 Jan 2026 23:30:00 +0100"
+    "date": "Thu, 8 Jan 2026 23:30:00 +0100",
+    "lastUpdated": "2026-01-08T22:55:38.017Z"
   },
   {
     "source": "ZDF",
@@ -13,15 +14,41 @@
     "text": "Das Unwetter sorgt für schwierige Bedingungen im Norden und Süden Deutschlands: Mehrere Flüge werden gestrichen, ICE-Verbindungen müssen verlangsamt werden.",
     "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
     "img": "https://www.zdfheute.de/assets/winterwetter-hamburg-100~384x216?cb=1767867725756",
-    "date": "Thu, 8 Jan 2026 22:50:00 +0100"
+    "date": "Thu, 8 Jan 2026 22:50:00 +0100",
+    "lastUpdated": "2026-01-08T22:55:38.017Z"
   },
   {
-    "source": "ZDF",
-    "title": "Was Trumps Plan einer \"Traum-Armee\" bedeutet",
-    "text": "US-Präsident Donald Trump will die Militärausgaben der Vereinigten Staaten drastisch erhöhen. Während die Börse jubelt, warnen deutsche Ökonomen vor Lieferengpässen für Europa.",
-    "link": "https://www.zdfheute.de/politik/ausland/trump-armee-usa-militaerausgaben-aufruestung-100.html",
-    "img": "https://www.zdfheute.de/assets/trump-us-militaer-100~384x216?cb=1767887180739",
-    "date": "Thu, 8 Jan 2026 19:19:00 +0100"
+    "id": "27cikn1ij",
+    "source": "Tagesschau",
+    "title": "Venezuela will viele Gefangene freilassen",
+    "link": "https://www.tagesschau.de/ausland/amerika/venezuela-gefangene-freilassung-100.html",
+    "img": null,
+    "date": "2026-01-08T20:44:20.000Z",
+    "text": "Die venezolanische Regierung will eine große Zahl Gefangener freilassen. Um wen es sich genau handel...",
+    "context": "",
+    "tags": []
+  },
+  {
+    "id": "seg2233g9",
+    "source": "Tagesschau",
+    "title": "Wegen anhaltender Proteste: Iran verhängt Internetsperre",
+    "link": "https://www.tagesschau.de/ausland/asien/iran-proteste-internet-100.html",
+    "img": null,
+    "date": "2026-01-08T19:29:19.000Z",
+    "text": "Die iranischen Behörden haben Berichten zufolge den Internetzugang für die Bevölkerung massiv einges...",
+    "context": "",
+    "tags": []
+  },
+  {
+    "id": "z4wzevzvr",
+    "source": "Tagesschau",
+    "title": "Russische Angriffe legen Stromversorgung in Südukraine lahm",
+    "link": "https://www.tagesschau.de/ausland/europa/ukraine-luftangriffe-infrastruktur-100.html",
+    "img": null,
+    "date": "2026-01-08T19:26:25.000Z",
+    "text": "Russische Raketenangriffe haben die Energieinfrastruktur in der Ukraine hart getroffen. Mehrere Regi...",
+    "context": "",
+    "tags": []
   },
   {
     "source": "ZDF",
@@ -29,6 +56,60 @@
     "text": "Der Strom ist wieder da in Berlin. Doch für den Regierenden Bürgermeister ist die Krise nicht vorbei. Als Teile der Stadt bibberten, spielte er Tennis und verschwieg das zunächst.",
     "link": "https://www.zdfheute.de/politik/deutschland/wegner-buergermeister-berlin-kritik-umgang-stromausfall-100.html",
     "img": "https://www.zdfheute.de/assets/kai-wegner-128~384x216?cb=1767892081704",
-    "date": "Thu, 8 Jan 2026 20:19:00 +0100"
+    "date": "Thu, 8 Jan 2026 20:19:00 +0100",
+    "lastUpdated": "2026-01-08T22:55:38.017Z"
+  },
+  {
+    "source": "ZDF",
+    "title": "Was Trumps Plan einer \"Traum-Armee\" bedeutet",
+    "text": "US-Präsident Donald Trump will die Militärausgaben der Vereinigten Staaten drastisch erhöhen. Während die Börse jubelt, warnen deutsche Ökonomen vor Lieferengpässen für Europa.",
+    "link": "https://www.zdfheute.de/politik/ausland/trump-armee-usa-militaerausgaben-aufruestung-100.html",
+    "img": "https://www.zdfheute.de/assets/trump-us-militaer-100~384x216?cb=1767887180739",
+    "date": "Thu, 8 Jan 2026 19:19:00 +0100",
+    "lastUpdated": "2026-01-08T22:55:38.017Z"
+  },
+  {
+    "id": "g5t6au2ae",
+    "source": "Tagesschau",
+    "title": "Abschluss von Klausurtagung: Was die CSU jetzt durchsetzen will",
+    "link": "https://www.tagesschau.de/inland/innenpolitik/csu-klausur-kloster-seeon-102.html",
+    "img": null,
+    "date": "2026-01-08T18:12:51.000Z",
+    "text": "Bei ihrer Klausurtagung im Kloster Seeon präsentierte die CSU ihre Pläne für das neue Jahr. Viele Fo...",
+    "context": "",
+    "tags": []
+  },
+  {
+    "id": "84a8j1x9u",
+    "source": "BBC World",
+    "title": "Trump withdraws US from key climate treaty and dozens of other groups",
+    "link": "https://www.bbc.com/news/articles/cp80ln97py5o?at_medium=RSS&at_campaign=rss",
+    "img": null,
+    "date": "2026-01-08T16:03:11.000Z",
+    "text": "The White House says the decision was taken because those entities \"no longer serve American interes...",
+    "context": "",
+    "tags": []
+  },
+  {
+    "id": "88rsqlwz5",
+    "source": "BBC World",
+    "title": "Vance criticises Denmark and Europe's handling of 'critical' Greenland ",
+    "link": "https://www.bbc.com/news/articles/c2lgjd51v95o?at_medium=RSS&at_campaign=rss",
+    "img": null,
+    "date": "2026-01-08T15:18:14.000Z",
+    "text": "European allies of Denmark have rejected Trump's ideas to annex the semi-autonomous territory....",
+    "context": "",
+    "tags": []
+  },
+  {
+    "id": "70p50kpjg",
+    "source": "BBC World",
+    "title": "Influential China church reports arrests as crackdown on Christians intensifies",
+    "link": "https://www.bbc.com/news/articles/ckgl8jgdxypo?at_medium=RSS&at_campaign=rss",
+    "img": null,
+    "date": "2026-01-08T11:01:19.000Z",
+    "text": "Leaders of Early Rain Covenant Church have been arrested and Yayang Church is being torn down, group...",
+    "context": "",
+    "tags": []
   }
 ]
