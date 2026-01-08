@@ -3,286 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Global News Brief</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>News Brief</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f0f11;
-            --card-bg: #1c1c1e;
-            --text-main: #ffffff;
-            --text-muted: #a1a1a6;
+            --bg: #000000;
+            --card: #1c1c1e;
+            --text: #ffffff;
+            --subtext: #8e8e93;
             --accent: #0a84ff;
-            --danger: #ff453a;
-            --tag-bg: #2c2c2e;
         }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden; /* Verhindert seitliches Scrollen */
-        }
-
-        /* --- READER MODAL (Das neue Feature) --- */
-        #reader-modal {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            font-family: 'Inter', sans-serif;
             background: var(--bg);
-            z-index: 2000;
-            display: none; /* Standardmäßig versteckt */
-            flex-direction: column;
-            animation: slideUp 0.3s ease-out;
+            color: var(--text);
+            margin: 0;
+            padding-bottom: 50px;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        #reader-modal.active { display: flex; }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .reader-header {
-            height: 60px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-            background: rgba(15, 15, 17, 0.95);
-        }
-
-        .reader-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 60%;
-        }
-
-        .reader-actions { display: flex; gap: 10px; }
-
-        .icon-btn {
-            background: #333;
-            border: none;
-            color: white;
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem;
-        }
-        .icon-btn:hover { background: #444; }
-        .close-btn { background: var(--bg); color: var(--text-muted); }
-
-        iframe {
-            flex: 1;
-            width: 100%;
-            border: none;
-            background: #fff; /* Viele News-Seiten haben weißen Hintergrund */
-        }
-
-        /* --- Header & Layout --- */
+        /* Header */
         header {
+            background: rgba(28, 28, 30, 0.9);
+            backdrop-filter: blur(20px);
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(15, 15, 17, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid #333;
             padding: 15px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            border-bottom: 1px solid #333;
         }
-
-        .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%; }
-        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
         
-        .filters {
-            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px;
-            max-width: 1000px; margin: 0 auto; width: 100%; scrollbar-width: none;
+        .header-content { max-width: 600px; margin: 0 auto; }
+        h1 { margin: 0 0 10px 0; font-size: 1.4rem; letter-spacing: -0.5px; }
+        
+        /* Filter Chips */
+        .filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .chip {
+            background: #2c2c2e; border: none; color: #fff; padding: 6px 14px;
+            border-radius: 18px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; transition: 0.2s;
         }
-        .filter-btn {
-            background: var(--tag-bg); border: 1px solid transparent; color: var(--text-muted);
-            padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer;
-        }
-        .filter-btn.active { background: var(--text-main); color: var(--bg); font-weight: 600; }
+        .chip.active { background: var(--text); color: #000; font-weight: 600; }
 
+        /* Grid */
         .container {
-            max-width: 1000px; margin: 20px auto; padding: 0 15px;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
+            max-width: 600px; margin: 20px auto; padding: 0 15px;
+            display: flex; flex-direction: column; gap: 20px;
         }
 
+        /* Card Design */
         .card {
-            background: var(--card-bg); border-radius: 16px; overflow: hidden;
-            display: flex; flex-direction: column; border: 1px solid #2c2c2e;
-            transition: transform 0.2s; position: relative; cursor: pointer; /* Zeigt Klickbarkeit */
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.1s;
         }
-        .card:hover { transform: translateY(-4px); border-color: #444; }
+        .card:active { transform: scale(0.98); }
 
-        .card-img { width: 100%; height: 160px; object-fit: cover; background: #252525; }
-        .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+        .card-img {
+            width: 100%; height: 200px; object-fit: cover;
+            background: #252525;
+        }
 
-        .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; }
-        .title { color: var(--text-main); font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; }
-        .summary { font-size: 0.9rem; color: #d1d1d6; line-height: 1.5; margin-bottom: 12px; }
-        .context { background: rgba(10, 132, 255, 0.1); border-left: 3px solid var(--accent); padding: 8px 10px; font-size: 0.8rem; color: #bfdcff; margin-bottom: 15px; border-radius: 0 6px 6px 0; }
-        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
-        .tag { background: rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; }
+        .card-body { padding: 16px; }
+
+        .meta {
+            color: var(--subtext); font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center;
+        }
+
+        .title { font-size: 1.15rem; font-weight: 700; line-height: 1.35; margin-bottom: 10px; }
+        .summary { color: #d1d1d6; font-size: 0.95rem; line-height: 1.5; margin-bottom: 0; }
+
+        /* --- SMART READER OVERLAY --- */
+        #reader {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: #000; z-index: 2000;
+            display: none; flex-direction: column;
+            overflow-y: auto;
+            animation: slideUp 0.25s ease-out;
+        }
+        #reader.active { display: flex; }
         
-        .fav-btn {
-            position: absolute; top: 10px; right: 10px; z-index: 10;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-            border: none; color: white; width: 32px; height: 32px;
-            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-        .fav-btn.active { color: var(--danger); background: rgba(255, 69, 58, 0.2); }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
+        .reader-nav {
+            position: sticky; top: 0; display: flex; justify-content: flex-end;
+            padding: 15px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+        }
+        .close-btn {
+            background: rgba(60,60,60,0.8); backdrop-filter: blur(10px); color: white;
+            border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;
+        }
+
+        .reader-content { padding: 0 20px 40px 20px; max-width: 600px; margin: 0 auto; }
+        
+        .reader-img { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; }
+        
+        .reader-title { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 15px; }
+        
+        .reader-text { font-size: 1.1rem; line-height: 1.6; color: #ddd; margin-bottom: 30px; }
+        
+        .context-box {
+            background: #1c1c1e; border-left: 4px solid var(--accent);
+            padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 30px;
+        }
+        .context-label { color: var(--accent); font-weight: bold; font-size: 0.8rem; display: block; margin-bottom: 5px; }
+
+        .action-btn {
+            display: block; width: 100%; background: var(--text); color: #000;
+            text-align: center; padding: 16px; border-radius: 14px; font-weight: 700;
+            text-decoration: none; font-size: 1rem; margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- READER MODAL OVERLAY -->
-    <div id="reader-modal">
-        <div class="reader-header">
-            <button class="icon-btn close-btn" onclick="closeReader()">✕</button>
-            <span class="reader-title" id="reader-title">Lade...</span>
-            <div class="reader-actions">
-                <button class="icon-btn" onclick="openExternal()" title="Im Browser öffnen">🔗</button>
-            </div>
+    <!-- READER OVERLAY -->
+    <div id="reader">
+        <div class="reader-nav">
+            <button class="close-btn" onclick="closeReader()">✕</button>
         </div>
-        <iframe id="reader-frame" src="" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+        <div class="reader-content" id="reader-content">
+            <!-- Content kommt hier per JS rein -->
+        </div>
     </div>
 
     <header>
-        <div class="header-top">
+        <div class="header-content">
             <h1>Daily Briefing</h1>
-            <input type="text" id="search" placeholder="Filter..." style="background:#333; border:none; padding:8px 12px; border-radius:8px; color:#fff;">
-        </div>
-        <div class="filters" id="filter-container">
-            <button class="filter-btn active" onclick="filterNews('all')">Alle</button>
-            <button class="filter-btn" onclick="filterNews('saved')">❤️ Gespeichert</button>
+            <div class="filters" id="filter-container">
+                <button class="chip active" onclick="filter('all')">Alle</button>
+            </div>
         </div>
     </header>
 
-    <div class="container" id="news-grid">
-        <p style="color:#666; grid-column: 1/-1; text-align:center; margin-top:50px;">Lade Feed...</p>
+    <div class="container" id="feed">
+        <p style="text-align:center; color:#666; margin-top:50px">Lade News...</p>
     </div>
 
     <script>
         let allNews = [];
-        let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-        let currentFilter = 'all';
-        let currentUrl = '';
-
+        
+        // Daten holen
         fetch('news.json?t=' + Date.now())
-            .then(r => r.json())
+            .then(res => res.json())
             .then(data => {
                 allNews = data;
-                setupFilters();
-                render();
-            });
+                initFilters();
+                render('all');
+            })
+            .catch(e => document.getElementById('feed').innerHTML = '<p style="text-align:center">Fehler beim Laden :(</p>');
 
-        /* --- READER LOGIC --- */
-        function openReader(url, title) {
-            currentUrl = url;
-            document.getElementById('reader-title').innerText = title;
-            const frame = document.getElementById('reader-frame');
-            
-            // Kleiner Hack um die Seite neu zu laden
-            frame.src = 'about:blank';
-            setTimeout(() => { frame.src = url; }, 50);
-
-            document.getElementById('reader-modal').classList.add('active');
-            document.body.style.overflow = 'hidden'; // Scrollen im Hintergrund verhindern
-        }
-
-        function closeReader() {
-            document.getElementById('reader-modal').classList.remove('active');
-            document.getElementById('reader-frame').src = 'about:blank'; // Stoppt Videos etc.
-            document.body.style.overflow = '';
-        }
-
-        function openExternal() {
-            if(currentUrl) window.open(currentUrl, '_blank');
-        }
-
-        /* --- UI LOGIC --- */
-        function setupFilters() {
+        function initFilters() {
             const sources = [...new Set(allNews.map(n => n.source))];
             const container = document.getElementById('filter-container');
             sources.forEach(src => {
                 const btn = document.createElement('button');
-                btn.className = 'filter-btn';
+                btn.className = 'chip';
                 btn.innerText = src;
                 btn.onclick = (e) => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
                     e.target.classList.add('active');
-                    filterNews(src);
+                    render(src);
                 };
                 container.appendChild(btn);
             });
         }
 
-        function filterNews(criteria) {
-            currentFilter = criteria;
-            render();
-        }
+        function render(filter) {
+            const container = document.getElementById('feed');
+            container.innerHTML = '';
+            
+            const filtered = filter === 'all' ? allNews : allNews.filter(n => n.source === filter);
 
-        function toggleFav(id, event) {
-            event.stopPropagation(); // Verhindert dass sich der Reader öffnet beim Liken
-            if (bookmarks.includes(id)) bookmarks = bookmarks.filter(b => b !== id);
-            else bookmarks.push(id);
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-            render();
-        }
+            filtered.forEach(news => {
+                // Fallback Bild Logik
+                const img = news.img || 'https://via.placeholder.com/400x200/333/666?text=News';
+                
+                // Wir speichern das News-Objekt direkt im DOM Element als String
+                const newsData = encodeURIComponent(JSON.stringify(news));
 
-        document.getElementById('search').addEventListener('input', render);
-
-        function render() {
-            const grid = document.getElementById('news-grid');
-            const term = document.getElementById('search').value.toLowerCase();
-            grid.innerHTML = '';
-
-            const filtered = allNews.filter(n => {
-                const matchesSearch = n.title.toLowerCase().includes(term) || n.text.toLowerCase().includes(term);
-                if (!matchesSearch) return false;
-                if (currentFilter === 'all') return true;
-                if (currentFilter === 'saved') return bookmarks.includes(n.id);
-                return n.source === currentFilter;
-            });
-
-            filtered.forEach(n => {
-                const isFav = bookmarks.includes(n.id);
-                const tagsHtml = n.tags.map(t => `<span class="tag">#${t}</span>`).join('');
-                const imgDisplay = n.img ? `<img src="${n.img}" class="card-img" onerror="this.style.display='none'">` : '<div class="card-img" style="background: linear-gradient(45deg, #333, #444)"></div>';
-
-                // ACHTUNG: Hier rufen wir jetzt openReader() auf statt <a href>
-                grid.innerHTML += `
-                    <div class="card" onclick="openReader('${n.link}', '${n.title.replace(/'/g, "\\'")}')">
-                        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav('${n.id}', event)">
-                            ${isFav ? '♥' : '♡'}
-                        </button>
-                        ${imgDisplay}
+                container.innerHTML += `
+                    <div class="card" onclick="openReader('${newsData}')">
+                        <img src="${img}" class="card-img" onerror="this.src='https://via.placeholder.com/400x200/333/666?text=No+Image'">
                         <div class="card-body">
                             <div class="meta">
-                                <span><span style="font-size:1.1em; margin-right:4px;">${n.sourceCountry || ''}</span> ${n.source}</span>
-                                <span>${new Date(n.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                                <span style="margin-right:5px; font-size:1.1em">${news.sourceCountry || ''}</span> 
+                                ${news.source} • ${new Date(news.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
                             </div>
-                            <div class="title">${n.title}</div>
-                            <p class="summary">${n.text}</p>
-                            ${n.context ? `<div class="context">💡 ${n.context}</div>` : ''}
-                            <div class="tags">${tagsHtml}</div>
+                            <div class="title">${news.title}</div>
+                            <p class="summary">${news.text}</p>
                         </div>
                     </div>
                 `;
             });
+        }
+
+        function openReader(data) {
+            const news = JSON.parse(decodeURIComponent(data));
+            const content = document.getElementById('reader-content');
+            
+            const img = news.img || 'https://via.placeholder.com/400x200/333/666?text=News';
+
+            content.innerHTML = `
+                <img src="${img}" class="reader-img" onerror="this.style.display='none'">
+                <div class="meta">${news.source}</div>
+                <div class="reader-title">${news.title}</div>
+                
+                <div class="reader-text">
+                    ${news.text}
+                </div>
+
+                ${news.context ? `
+                <div class="context-box">
+                    <span class="context-label">HINTERGRUND</span>
+                    ${news.context}
+                </div>` : ''}
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px;">
+                    ${news.tags.map(t => `<span style="background:#333; padding:5px 10px; border-radius:10px; font-size:0.8rem;">#${t}</span>`).join('')}
+                </div>
+
+                <a href="${news.link}" target="_blank" class="action-btn">
+                    Originalartikel lesen ↗
+                </a>
+            `;
+            
+            document.getElementById('reader').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeReader() {
+            document.getElementById('reader').classList.remove('active');
+            document.body.style.overflow = '';
         }
     </script>
 </body>
