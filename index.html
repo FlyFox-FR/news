@@ -3,190 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI News Flash 2.0</title>
+    <title>Global News Brief</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #4da3ff; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        
-        .container { max-width: 800px; margin: 0 auto; }
-        
-        /* Header & Controls */
-        header { margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; }
-        h1 { margin: 0; font-weight: 300; letter-spacing: 1px; text-align: center; }
-        
-        .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-        input[type="text"] { background: #333; border: none; padding: 10px 15px; border-radius: 20px; color: white; flex-grow: 1; max-width: 300px; }
-        
-        .btn { background: #333; border: none; color: #aaa; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; }
-        .btn.active { background: var(--accent); color: white; }
-        .btn:hover { background: #444; }
+        :root {
+            --bg: #0f0f11;
+            --card-bg: #1c1c1e;
+            --text-main: #ffffff;
+            --text-muted: #a1a1a6;
+            --accent: #0a84ff;
+            --danger: #ff453a;
+            --tag-bg: #2c2c2e;
+        }
 
-        /* News Cards */
-        .card { background: var(--card); margin-bottom: 20px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-2px); }
-        
-        @media (min-width: 600px) { .card { flex-direction: row; } .card-img { width: 220px; height: auto; } }
-        
-        .card-img { width: 100%; height: 180px; object-fit: cover; background: #2a2a2a; }
-        
-        .content { padding: 15px; flex: 1; display: flex; flex-direction: column; }
-        
-        .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
-        .source-tag { padding: 2px 6px; border-radius: 4px; background: #333; color: #fff; }
-        
-        /* Breaking News Indikator */
-        .breaking { color: #ff4d4d; animation: pulse 2s infinite; display: none; margin-right: 5px; }
-        .is-breaking .breaking { display: inline-block; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        a.title { color: #fff; text-decoration: none; font-size: 1.15em; font-weight: bold; margin-bottom: 8px; display: block; line-height: 1.3; }
-        a.title:hover { color: var(--accent); }
+        /* Sticky Glass Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 15, 17, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #333;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%; }
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
         
-        .summary { color: #ccc; margin: 0 0 10px 0; line-height: 1.5; }
+        /* Filter Scrollbar */
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            scrollbar-width: none;
+        }
+        .filter-btn {
+            background: var(--tag-bg);
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn.active { background: var(--text-main); color: var(--bg); font-weight: 600; }
+        .filter-btn:hover { background: #3a3a3c; }
+
+        /* Grid Layout */
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #2c2c2e;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
         
-        .context-box { background: #252525; padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--accent); font-size: 0.9em; color: #b0b0b0; margin-bottom: 10px; }
-        .context-label { font-weight: bold; color: #888; font-size: 0.8em; display: block; margin-bottom: 2px; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); border-color: #444; }
 
-        .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
-        .tag { background: #333; color: #888; padding: 3px 8px; border-radius: 10px; font-size: 0.75em; }
+        .card-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #252525;
+        }
 
-        /* Bookmark Heart */
-        .bookmark-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: none; color: #666; font-size: 1.2em; cursor: pointer; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .bookmark-btn:hover { background: rgba(0,0,0,0.9); }
-        .bookmark-btn.saved { color: #ff4d4d; }
+        .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
 
-        .loader { text-align: center; padding: 40px; color: #666; }
+        /* Meta Info */
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .flag-icon { font-size: 1.1em; vertical-align: middle; margin-right: 4px; }
+
+        /* Typography */
+        .title {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .title:hover { color: var(--accent); }
+
+        .summary { font-size: 0.9rem; color: #d1d1d6; line-height: 1.5; margin-bottom: 12px; }
+
+        /* Context Box */
+        .context {
+            background: rgba(10, 132, 255, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 8px 10px;
+            font-size: 0.8rem;
+            color: #bfdcff;
+            margin-bottom: 15px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* Tags */
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+        .tag {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        /* Bookmark */
+        .fav-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            border: none; color: white; width: 32px; height: 32px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .fav-btn.active { color: var(--danger); background: rgba(255, 69, 58, 0.2); }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>🌍 Daily Briefing</h1>
-            <div class="controls">
-                <input type="text" id="search" placeholder="Suche (z.B. Trump, Klima)...">
-                <button class="btn active" onclick="setFilter('all')">Alle</button>
-                <button class="btn" onclick="setFilter('saved')">♥ Gespeichert</button>
-                <!-- Dynamische Buttons kommen hier hin -->
-                <span id="source-buttons"></span>
-            </div>
-        </header>
-        
-        <div id="news-container">
-            <div class="loader">Lade Nachrichten...</div>
+    <header>
+        <div class="header-top">
+            <h1>Daily Briefing</h1>
+            <input type="text" id="search" placeholder="Filter..." style="background:#333; border:none; padding:8px 12px; border-radius:8px; color:#fff;">
         </div>
+        <div class="filters" id="filter-container">
+            <button class="filter-btn active" onclick="filterNews('all')">Alle</button>
+            <button class="filter-btn" onclick="filterNews('saved')">❤️ Gespeichert</button>
+        </div>
+    </header>
+
+    <div class="container" id="news-grid">
+        <p style="color:#666; grid-column: 1/-1; text-align:center; margin-top:50px;">Lade Feed...</p>
     </div>
 
     <script>
         let allNews = [];
-        let bookmarks = JSON.parse(localStorage.getItem('news_bookmarks') || '[]');
+        let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
         let currentFilter = 'all';
 
-        // Lade Daten
         fetch('news.json?t=' + Date.now())
-            .then(res => res.json())
+            .then(r => r.json())
             .then(data => {
                 allNews = data;
-                initApp();
-            })
-            .catch(e => document.getElementById('news-container').innerHTML = '<p style="text-align:center">Fehler beim Laden.</p>');
-
-        function initApp() {
-            // Generiere Buttons für Quellen automatisch aus den Daten
-            const sources = [...new Set(allNews.map(n => n.source))];
-            const btnContainer = document.getElementById('source-buttons');
-            sources.forEach(source => {
-                const btn = document.createElement('button');
-                btn.className = 'btn';
-                btn.innerText = source;
-                btn.onclick = () => setFilter(source);
-                btnContainer.appendChild(btn);
+                setupFilters();
+                render();
             });
 
+        function setupFilters() {
+            const sources = [...new Set(allNews.map(n => n.source))];
+            const container = document.getElementById('filter-container');
+            sources.forEach(src => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.innerText = src; // Source name (z.B. BBC)
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    filterNews(src);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function filterNews(criteria) {
+            currentFilter = criteria;
             render();
         }
 
-        function setFilter(filter) {
-            currentFilter = filter;
-            // Update UI Active States
-            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        function toggleFav(id) {
+            if (bookmarks.includes(id)) bookmarks = bookmarks.filter(b => b !== id);
+            else bookmarks.push(id);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
             render();
         }
 
-        // Suche Event Listener
         document.getElementById('search').addEventListener('input', render);
 
-        function toggleBookmark(id) {
-            if (bookmarks.includes(id)) {
-                bookmarks = bookmarks.filter(b => b !== id);
-            } else {
-                bookmarks.push(id);
-            }
-            localStorage.setItem('news_bookmarks', JSON.stringify(bookmarks));
-            render(); // Neu rendern um Herzen zu updaten
-        }
-
         function render() {
-            const container = document.getElementById('news-container');
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            container.innerHTML = '';
+            const grid = document.getElementById('news-grid');
+            const term = document.getElementById('search').value.toLowerCase();
+            grid.innerHTML = '';
 
-            const filtered = allNews.filter(item => {
-                // 1. Suche
-                const matchesSearch = item.title.toLowerCase().includes(searchTerm) || 
-                                      item.text.toLowerCase().includes(searchTerm) ||
-                                      (item.tags && item.tags.some(t => t.toLowerCase().includes(searchTerm)));
+            const filtered = allNews.filter(n => {
+                const matchesSearch = n.title.toLowerCase().includes(term) || n.text.toLowerCase().includes(term);
                 if (!matchesSearch) return false;
-
-                // 2. Filter (Buttons)
                 if (currentFilter === 'all') return true;
-                if (currentFilter === 'saved') return bookmarks.includes(item.id);
-                return item.source === currentFilter;
+                if (currentFilter === 'saved') return bookmarks.includes(n.id);
+                return n.source === currentFilter;
             });
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#666">Keine Nachrichten gefunden.</p>';
-                return;
-            }
+            filtered.forEach(n => {
+                const isFav = bookmarks.includes(n.id);
+                const tagsHtml = n.tags.map(t => `<span class="tag">#${t}</span>`).join('');
+                
+                // Fallback für Bild, falls keins da ist
+                const imgDisplay = n.img ? `<img src="${n.img}" class="card-img" onerror="this.style.display='none'">` : '<div class="card-img" style="background: linear-gradient(45deg, #333, #444)"></div>';
 
-            filtered.forEach(news => {
-                // Breaking News Check (< 2 Stunden alt)
-                const isFresh = (new Date() - new Date(news.date)) < (1000 * 60 * 60 * 2);
-                const isSaved = bookmarks.includes(news.id);
-
-                const html = `
-                    <div class="card ${isFresh ? 'is-breaking' : ''}">
-                        <button class="bookmark-btn ${isSaved ? 'saved' : ''}" onclick="toggleBookmark('${news.id}')">
-                            ${isSaved ? '♥' : '♡'}
+                grid.innerHTML += `
+                    <div class="card">
+                        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav('${n.id}')">
+                            ${isFav ? '♥' : '♡'}
                         </button>
-                        ${news.img ? `<img src="${news.img}" class="card-img" onerror="this.style.display='none'">` : ''}
-                        <div class="content">
-                            <div class="meta-row">
-                                <span class="source-tag">${news.source}</span>
-                                <span>
-                                    <span class="breaking">● LIVE</span>
-                                    ${new Date(news.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                </span>
+                        ${imgDisplay}
+                        <div class="card-body">
+                            <div class="meta">
+                                <span><span class="flag-icon">${n.sourceCountry || ''}</span> ${n.source}</span>
+                                <span>${new Date(n.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
                             </div>
-                            
-                            <a href="${news.link}" target="_blank" class="title">${news.title}</a>
-                            <p class="summary">${news.text}</p>
-                            
-                            ${news.context ? `
-                                <div class="context-box">
-                                    <span class="context-label">WARUM DAS WICHTIG IST:</span>
-                                    ${news.context}
-                                </div>
-                            ` : ''}
-
-                            <div class="tags">
-                                ${news.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
-                            </div>
+                            <a href="${n.link}" target="_blank" class="title">${n.title}</a>
+                            <p class="summary">${n.text}</p>
+                            ${n.context ? `<div class="context">💡 ${n.context}</div>` : ''}
+                            <div class="tags">${tagsHtml}</div>
                         </div>
                     </div>
                 `;
-                container.innerHTML += html;
             });
         }
     </script>
