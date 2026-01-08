@@ -18,17 +18,21 @@ function loadExistingNews() {
 }
 
 async function analyzeWithAI(title, content) {
-    // Fallback: Wenn kein Token da ist, gib einfach den Originaltitel zurück
-    if (!HF_TOKEN) return { summary: content, context: "", tags: [] };
+    if (!HF_TOKEN) return { summary: title, context: "", tags: [] };
 
-    // Prompt: Wir bitten die KI um klare Struktur
-    const prompt = `<s>[INST] Du bist ein News-Bot. Fasse zusammen.
-    Input: "${title} - ${content}"
+    console.log(`🤖 Frage KI zu: ${title.substring(0, 20)}...`);
+
+    // Neuer Prompt: Wir nutzen ### als Trenner. Das ist für die KI einfacher.
+    const prompt = `<s>[INST] Du bist ein Nachrichten-Redakteur.
+    Analysiere diesen Text: "${title} - ${content}"
     
-    Antworte EXAKT in diesem Format (keine Einleitung!):
-    ZUSAMMENFASSUNG: [Deutscher Satz]
-    KONTEXT: [Warum wichtig?]
-    TAGS: [Tag1, Tag2, Tag3]
+    Antworte auf DEUTSCH und nutze GENAU dieses Format mit ### Trennern:
+    
+    ZUSAMMENFASSUNG (1 Satz)
+    ###
+    WARUM ES WICHTIG IST (1 kurzer Satz)
+    ###
+    TAG1, TAG2, TAG3
     [/INST]`;
 
     try {
@@ -37,54 +41,45 @@ async function analyzeWithAI(title, content) {
             { 
                 inputs: prompt,
                 parameters: { 
-                    max_new_tokens: 250, 
+                    max_new_tokens: 200, 
                     return_full_text: false,
-                    temperature: 0.3 // Weniger kreativ, mehr strikt
+                    temperature: 0.1 // 0.1 macht die KI sehr "gehorsam" und weniger kreativ
                 } 
             },
-            { headers: { Authorization: `Bearer ${HF_TOKEN}` }, timeout: 20000 }
+            { headers: { Authorization: `Bearer ${HF_TOKEN}` }, timeout: 30000 }
         );
 
         let text = response.data[0]?.generated_text || "";
-        
-        // --- DER FIX: Robusteres Parsing ---
-        // Wir suchen alles zwischen den Keywords, auch über mehrere Zeilen (\s\S)
-        
-        const summaryMatch = text.match(/ZUSAMMENFASSUNG:\s*([\s\S]*?)(?=KONTEXT:|TAGS:|$)/i);
-        const contextMatch = text.match(/KONTEXT:\s*([\s\S]*?)(?=TAGS:|$)/i);
-        const tagsMatch = text.match(/TAGS:\s*([\s\S]*?)$/i);
+        // console.log("DEBUG RAW KI ANTWORT:", text); // Zum Debuggen in GitHub Logs
 
-        let summary = summaryMatch ? summaryMatch[1].trim() : "";
-        let context = contextMatch ? contextMatch[1].trim() : "";
-        let tags = tagsMatch ? tagsMatch[1].split(',').map(t => t.trim()) : [];
+        // Simples Splitten am Trenner ###
+        const parts = text.split('###');
 
-        // Notfall-Plan: Wenn die KI das Format ignoriert hat, nimm den ganzen Text als Zusammenfassung
-        if (!summary && text.length > 5) {
-            summary = text.replace(/ZUSAMMENFASSUNG:|KONTEXT:|TAGS:/gi, "").trim();
-        }
-        // Wenn immer noch leer, nimm den Original-Titel
-        if (!summary) summary = title;
+        // Wir säubern die Teile von Zeilenumbrüchen und Leerzeichen
+        let summary = parts[0] ? parts[0].replace(/ZUSAMMENFASSUNG/i, "").trim() : title;
+        let context = parts[1] ? parts[1].replace(/WARUM ES WICHTIG IST/i, "").trim() : "";
+        let tagsRaw = parts[2] ? parts[2].trim() : "";
+        
+        // Tags säubern
+        let tags = tagsRaw.split(',').map(t => t.replace(/TAGS|TAG/i, "").trim()).filter(t => t.length > 2);
+
+        // Fallback, falls Format komplett kaputt
+        if (summary.length < 5) summary = title;
 
         return { summary, context, tags };
 
     } catch (error) {
         console.log(`⚠️ KI-Fehler:`, error.message);
-        // Fallback bei Fehler: Originaltext nehmen
         return { summary: title, context: "", tags: [] };
     }
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Fix Version)...");
+    console.log("🚀 Starte News-Abruf 3.0 (Robust)...");
     
-    // Quellen laden oder Default nutzen falls Datei fehlt
     let sources = [];
-    try {
-        sources = JSON.parse(fs.readFileSync('sources.json', 'utf8'));
-    } catch(e) {
-        console.log("⚠️ Keine sources.json gefunden, nutze Defaults.");
-        sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }];
-    }
+    try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
+    catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
 
     const existingNews = loadExistingNews();
     let newNewsFeed = [];
@@ -93,25 +88,21 @@ async function run() {
         try {
             console.log(`📡 Lade ${source.name}...`);
             const feed = await parser.parseURL(source.url);
-            // Begrenzen auf Anzahl aus Config
-            const items = feed.items.slice(0, source.count || 3);
+            const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Cache Check: Kennen wir den Link schon?
+                // Cache Check
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Wir nutzen den Cache NUR, wenn dort auch wirklich ein Text drin steht (Bugfix für leere News)
-                if (cached && cached.text && cached.text.length > 5 && cached.text !== cached.title) {
-                    // console.log(`♻️ Cache Treffer: ${item.title.substring(0,20)}...`);
+                // Wir nutzen den Cache nur, wenn die Zusammenfassung NICHT identisch mit dem Titel ist (das war der Fehler vorher)
+                if (cached && cached.text && cached.text !== cached.title && cached.context) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
-                    continue;
+                    continue; // Nächste News
                 }
 
-                // Wenn nicht im Cache oder Cache war fehlerhaft -> Neu generieren
-                const contentSnippet = item.contentSnippet || item.content || item.title;
-                console.log(`🤖 Generiere neu: ${item.title.substring(0, 30)}...`);
-                
-                const ai = await analyzeWithAI(item.title, contentSnippet);
+                // Generiere neu
+                const snippet = item.contentSnippet || item.content || "";
+                const ai = await analyzeWithAI(item.title, snippet);
                 
                 newNewsFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
@@ -121,19 +112,17 @@ async function run() {
                     link: item.link,
                     img: item.enclosure?.url || item.itunes?.image || null,
                     date: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
-                    text: ai.summary,   // Das Feld für die Zusammenfassung
+                    text: ai.summary,
                     context: ai.context,
                     tags: ai.tags
                 });
                 
-                await sleep(2500); // Etwas längere Pause für die KI
+                await sleep(3000); // 3 Sekunden Pause
             }
         } catch (e) { console.error(`❌ Fehler ${source.name}:`, e.message); }
     }
 
-    // Sortieren: Neueste oben
     newNewsFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
     fs.writeFileSync('news.json', JSON.stringify(newNewsFeed, null, 2));
     console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten.`);
 }
