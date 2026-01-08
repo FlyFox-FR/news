@@ -12,19 +12,5 @@
     "count": 4,
     "lang": "de",
     "country": "🇩🇪"
-  },
-  {
-    "name": "BBC World",
-    "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
-    "count": 3,
-    "lang": "en",
-    "country": "🇬🇧"
-  },
-  {
-    "name": "AP News",
-    "url": "https://fed.brid.gy/feed/apnews.com/top-news",
-    "count": 3,
-    "lang": "en",
-    "country": "🇺🇸"
   }
 ]
