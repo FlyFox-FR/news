@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Global News Brief</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -24,9 +24,69 @@
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; /* Verhindert seitliches Scrollen */
         }
 
-        /* Sticky Glass Header */
+        /* --- READER MODAL (Das neue Feature) --- */
+        #reader-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg);
+            z-index: 2000;
+            display: none; /* Standardmäßig versteckt */
+            flex-direction: column;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        #reader-modal.active { display: flex; }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .reader-header {
+            height: 60px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            background: rgba(15, 15, 17, 0.95);
+        }
+
+        .reader-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+        }
+
+        .reader-actions { display: flex; gap: 10px; }
+
+        .icon-btn {
+            background: #333;
+            border: none;
+            color: white;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .icon-btn:hover { background: #444; }
+        .close-btn { background: var(--bg); color: var(--text-muted); }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #fff; /* Viele News-Seiten haben weißen Hintergrund */
+        }
+
+        /* --- Header & Layout --- */
         header {
             position: sticky;
             top: 0;
@@ -44,115 +104,40 @@
         .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%; }
         h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
         
-        /* Filter Scrollbar */
         .filters {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-            scrollbar-width: none;
+            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px;
+            max-width: 1000px; margin: 0 auto; width: 100%; scrollbar-width: none;
         }
         .filter-btn {
-            background: var(--tag-bg);
-            border: 1px solid transparent;
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: var(--tag-bg); border: 1px solid transparent; color: var(--text-muted);
+            padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer;
         }
         .filter-btn.active { background: var(--text-main); color: var(--bg); font-weight: 600; }
-        .filter-btn:hover { background: #3a3a3c; }
 
-        /* Grid Layout */
         .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 0 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            max-width: 1000px; margin: 20px auto; padding: 0 15px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
         }
 
         .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #2c2c2e;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
+            background: var(--card-bg); border-radius: 16px; overflow: hidden;
+            display: flex; flex-direction: column; border: 1px solid #2c2c2e;
+            transition: transform 0.2s; position: relative; cursor: pointer; /* Zeigt Klickbarkeit */
         }
-        
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); border-color: #444; }
+        .card:hover { transform: translateY(-4px); border-color: #444; }
 
-        .card-img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            background: #252525;
-        }
-
+        .card-img { width: 100%; height: 160px; object-fit: cover; background: #252525; }
         .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
 
-        /* Meta Info */
-        .meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .flag-icon { font-size: 1.1em; vertical-align: middle; margin-right: 4px; }
-
-        /* Typography */
-        .title {
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .title:hover { color: var(--accent); }
-
+        .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; }
+        .title { color: var(--text-main); font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; }
         .summary { font-size: 0.9rem; color: #d1d1d6; line-height: 1.5; margin-bottom: 12px; }
-
-        /* Context Box */
-        .context {
-            background: rgba(10, 132, 255, 0.1);
-            border-left: 3px solid var(--accent);
-            padding: 8px 10px;
-            font-size: 0.8rem;
-            color: #bfdcff;
-            margin-bottom: 15px;
-            border-radius: 0 6px 6px 0;
-        }
-
-        /* Tags */
+        .context { background: rgba(10, 132, 255, 0.1); border-left: 3px solid var(--accent); padding: 8px 10px; font-size: 0.8rem; color: #bfdcff; margin-bottom: 15px; border-radius: 0 6px 6px 0; }
         .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
-        .tag {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: 500;
-        }
+        .tag { background: rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; }
         
-        /* Bookmark */
         .fav-btn {
-            position: absolute; top: 10px; right: 10px;
+            position: absolute; top: 10px; right: 10px; z-index: 10;
             background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
             border: none; color: white; width: 32px; height: 32px;
             border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
@@ -162,6 +147,18 @@
     </style>
 </head>
 <body>
+
+    <!-- READER MODAL OVERLAY -->
+    <div id="reader-modal">
+        <div class="reader-header">
+            <button class="icon-btn close-btn" onclick="closeReader()">✕</button>
+            <span class="reader-title" id="reader-title">Lade...</span>
+            <div class="reader-actions">
+                <button class="icon-btn" onclick="openExternal()" title="Im Browser öffnen">🔗</button>
+            </div>
+        </div>
+        <iframe id="reader-frame" src="" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+    </div>
 
     <header>
         <div class="header-top">
@@ -182,6 +179,7 @@
         let allNews = [];
         let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
         let currentFilter = 'all';
+        let currentUrl = '';
 
         fetch('news.json?t=' + Date.now())
             .then(r => r.json())
@@ -191,13 +189,38 @@
                 render();
             });
 
+        /* --- READER LOGIC --- */
+        function openReader(url, title) {
+            currentUrl = url;
+            document.getElementById('reader-title').innerText = title;
+            const frame = document.getElementById('reader-frame');
+            
+            // Kleiner Hack um die Seite neu zu laden
+            frame.src = 'about:blank';
+            setTimeout(() => { frame.src = url; }, 50);
+
+            document.getElementById('reader-modal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Scrollen im Hintergrund verhindern
+        }
+
+        function closeReader() {
+            document.getElementById('reader-modal').classList.remove('active');
+            document.getElementById('reader-frame').src = 'about:blank'; // Stoppt Videos etc.
+            document.body.style.overflow = '';
+        }
+
+        function openExternal() {
+            if(currentUrl) window.open(currentUrl, '_blank');
+        }
+
+        /* --- UI LOGIC --- */
         function setupFilters() {
             const sources = [...new Set(allNews.map(n => n.source))];
             const container = document.getElementById('filter-container');
             sources.forEach(src => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-btn';
-                btn.innerText = src; // Source name (z.B. BBC)
+                btn.innerText = src;
                 btn.onclick = (e) => {
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
@@ -212,7 +235,8 @@
             render();
         }
 
-        function toggleFav(id) {
+        function toggleFav(id, event) {
+            event.stopPropagation(); // Verhindert dass sich der Reader öffnet beim Liken
             if (bookmarks.includes(id)) bookmarks = bookmarks.filter(b => b !== id);
             else bookmarks.push(id);
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
@@ -237,22 +261,21 @@
             filtered.forEach(n => {
                 const isFav = bookmarks.includes(n.id);
                 const tagsHtml = n.tags.map(t => `<span class="tag">#${t}</span>`).join('');
-                
-                // Fallback für Bild, falls keins da ist
                 const imgDisplay = n.img ? `<img src="${n.img}" class="card-img" onerror="this.style.display='none'">` : '<div class="card-img" style="background: linear-gradient(45deg, #333, #444)"></div>';
 
+                // ACHTUNG: Hier rufen wir jetzt openReader() auf statt <a href>
                 grid.innerHTML += `
-                    <div class="card">
-                        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav('${n.id}')">
+                    <div class="card" onclick="openReader('${n.link}', '${n.title.replace(/'/g, "\\'")}')">
+                        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav('${n.id}', event)">
                             ${isFav ? '♥' : '♡'}
                         </button>
                         ${imgDisplay}
                         <div class="card-body">
                             <div class="meta">
-                                <span><span class="flag-icon">${n.sourceCountry || ''}</span> ${n.source}</span>
+                                <span><span style="font-size:1.1em; margin-right:4px;">${n.sourceCountry || ''}</span> ${n.source}</span>
                                 <span>${new Date(n.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
                             </div>
-                            <a href="${n.link}" target="_blank" class="title">${n.title}</a>
+                            <div class="title">${n.title}</div>
                             <p class="summary">${n.text}</p>
                             ${n.context ? `<div class="context">💡 ${n.context}</div>` : ''}
                             <div class="tags">${tagsHtml}</div>
