@@ -17,76 +17,116 @@ function loadExistingNews() {
     return [];
 }
 
+// Die neue, ultra-robuste KI-Funktion mit Retry-Logik
 async function analyzeWithAI(title, content) {
-    if (!HF_TOKEN) return { summary: title, context: "", tags: [] };
-
-    console.log(`🤖 Frage KI zu: ${title.substring(0, 20)}...`);
-
-    // Neuer Prompt: Wir nutzen ### als Trenner. Das ist für die KI einfacher.
-    const prompt = `<s>[INST] Du bist ein Nachrichten-Redakteur.
-    Analysiere diesen Text: "${title} - ${content}"
-    
-    Antworte auf DEUTSCH und nutze GENAU dieses Format mit ### Trennern:
-    
-    ZUSAMMENFASSUNG (1 Satz)
-    ###
-    WARUM ES WICHTIG IST (1 kurzer Satz)
-    ###
-    TAG1, TAG2, TAG3
-    [/INST]`;
-
-    try {
-        const response = await axios.post(
-            `https://api-inference.huggingface.co/models/${AI_MODEL}`,
-            { 
-                inputs: prompt,
-                parameters: { 
-                    max_new_tokens: 200, 
-                    return_full_text: false,
-                    temperature: 0.1 // 0.1 macht die KI sehr "gehorsam" und weniger kreativ
-                } 
-            },
-            { headers: { Authorization: `Bearer ${HF_TOKEN}` }, timeout: 30000 }
-        );
-
-        let text = response.data[0]?.generated_text || "";
-        // console.log("DEBUG RAW KI ANTWORT:", text); // Zum Debuggen in GitHub Logs
-
-        // Simples Splitten am Trenner ###
-        const parts = text.split('###');
-
-        // Wir säubern die Teile von Zeilenumbrüchen und Leerzeichen
-        let summary = parts[0] ? parts[0].replace(/ZUSAMMENFASSUNG/i, "").trim() : title;
-        let context = parts[1] ? parts[1].replace(/WARUM ES WICHTIG IST/i, "").trim() : "";
-        let tagsRaw = parts[2] ? parts[2].trim() : "";
-        
-        // Tags säubern
-        let tags = tagsRaw.split(',').map(t => t.replace(/TAGS|TAG/i, "").trim()).filter(t => t.length > 2);
-
-        // Fallback, falls Format komplett kaputt
-        if (summary.length < 5) summary = title;
-
-        return { summary, context, tags };
-
-    } catch (error) {
-        console.log(`⚠️ KI-Fehler:`, error.message);
+    // 1. Check: Token da?
+    if (!HF_TOKEN) {
+        console.log("⚠️ Kein HF_TOKEN gefunden! Nutze Fallback.");
         return { summary: title, context: "", tags: [] };
     }
+
+    const prompt = `<s>[INST] Du bist ein News-Redakteur. Analysiere diesen Text: "${title} - ${content}"
+    
+    Antworte auf DEUTSCH. Nutze EXAKT dieses Format mit ### als Trenner:
+    
+    ZUSAMMENFASSUNG (Max 1 Satz, neutral)
+    ###
+    WARUM ES WICHTIG IST (Max 1 kurzer Satz)
+    ###
+    TAG1, TAG2, TAG3 (Keine Rauten, nur Kommas)
+    [/INST]`;
+
+    // 2. Die Hartnäckigkeits-Schleife (Max 5 Versuche)
+    let retries = 5;
+    
+    while (retries > 0) {
+        try {
+            const response = await axios.post(
+                `https://api-inference.huggingface.co/models/${AI_MODEL}`,
+                { 
+                    inputs: prompt,
+                    parameters: { 
+                        max_new_tokens: 250, 
+                        return_full_text: false,
+                        temperature: 0.1 
+                    } 
+                },
+                { 
+                    headers: { Authorization: `Bearer ${HF_TOKEN}` },
+                    timeout: 90000 // 90 Sekunden Timeout (Wichtig für Kaltstarts!)
+                }
+            );
+
+            // Wenn wir hier sind, hat die API geantwortet! 🎉
+            const text = response.data[0]?.generated_text || "";
+            // console.log(`🔍 Raw KI-Antwort für "${title.substring(0,10)}...":`, text); 
+
+            // Parsen
+            const parts = text.split('###');
+            let summary = parts[0] ? parts[0].replace(/ZUSAMMENFASSUNG/i, "").trim() : title;
+            let context = parts[1] ? parts[1].replace(/WARUM ES WICHTIG IST/i, "").trim() : "";
+            let tagsRaw = parts[2] ? parts[2].trim() : "";
+            let tags = tagsRaw.split(',').map(t => t.replace(/TAGS|TAG/i, "").trim()).filter(t => t.length > 2);
+
+            // Sicherheits-Check: Hat die KI nur Müll zurückgegeben?
+            if (summary.length < 5) summary = title;
+
+            return { summary, context, tags };
+
+        } catch (error) {
+            // FEHLER-ANALYSE
+            const errData = error.response?.data;
+            const status = error.response?.status;
+
+            // Fall 1: Modell schläft noch (503 Error)
+            if (errData && JSON.stringify(errData).includes("loading")) {
+                const waitTime = errData.estimated_time || 20;
+                console.log(`⏳ Modell lädt noch... Warte ${waitTime.toFixed(1)}s (Versuch ${6 - retries}/5)`);
+                await sleep(waitTime * 1000);
+                retries--;
+                continue; // Nächster Schleifen-Durchlauf
+            }
+
+            // Fall 2: Rate Limit (Zu viele Anfragen)
+            if (status === 429) {
+                console.log(`🛑 Rate Limit! Warte 60s...`);
+                await sleep(60000);
+                retries--;
+                continue;
+            }
+
+            // Fall 3: Echter Fehler (z.B. falscher Token)
+            console.error(`💥 Fataler API-Fehler bei "${title.substring(0, 15)}...":`);
+            console.error(`   Status: ${status}`);
+            console.error(`   Details:`, JSON.stringify(errData));
+            console.error(`   Message:`, error.message);
+            
+            // Bei fatalen Fehlern brechen wir diesen Artikel ab
+            break; 
+        }
+    }
+
+    // Wenn alle Retries aufgebraucht sind:
+    console.log(`⚠️ Gebe auf für: "${title.substring(0, 20)}..." -> Nutze Originaltext.`);
+    return { summary: title, context: "", tags: [] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf 3.0 (Robust)...");
+    console.log("🚀 Starte News-Abruf (Debug Mode)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
-    catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
+    catch(e) { 
+        console.log("⚠️ Keine sources.json gefunden, nutze Defaults.");
+        sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; 
+    }
 
     const existingNews = loadExistingNews();
     let newNewsFeed = [];
 
     for (const source of sources) {
         try {
-            console.log(`📡 Lade ${source.name}...`);
+            console.log(`\n📡 Quelle: ${source.name}`);
             const feed = await parser.parseURL(source.url);
             const items = feed.items.slice(0, source.count);
 
@@ -94,15 +134,17 @@ async function run() {
                 // Cache Check
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Wir nutzen den Cache nur, wenn die Zusammenfassung NICHT identisch mit dem Titel ist (das war der Fehler vorher)
+                // Strenger Cache Check: Nur nutzen, wenn Kontext da ist UND Text != Titel
                 if (cached && cached.text && cached.text !== cached.title && cached.context) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
-                    continue; // Nächste News
+                    continue;
                 }
 
-                // Generiere neu
-                const snippet = item.contentSnippet || item.content || "";
-                const ai = await analyzeWithAI(item.title, snippet);
+                // Generierung
+                console.log(`🤖 Bearbeite: ${item.title.substring(0, 40)}...`);
+                const contentSnippet = item.contentSnippet || item.content || "";
+                
+                const ai = await analyzeWithAI(item.title, contentSnippet);
                 
                 newNewsFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
@@ -117,14 +159,15 @@ async function run() {
                     tags: ai.tags
                 });
                 
-                await sleep(3000); // 3 Sekunden Pause
+                // Wichtig: Kurze Pause zwischen Artikeln, um Rate-Limits zu schonen
+                await sleep(2000); 
             }
-        } catch (e) { console.error(`❌ Fehler ${source.name}:`, e.message); }
+        } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
     newNewsFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     fs.writeFileSync('news.json', JSON.stringify(newNewsFeed, null, 2));
-    console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten.`);
+    console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten gespeichert.`);
 }
 
 run();
