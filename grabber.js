@@ -1,13 +1,17 @@
 const Parser = require('rss-parser');
-const axios = require('axios');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require('fs');
 
 const parser = new Parser();
 
-// NEUES MODELL: Qwen 2.5 (7B Instruct). 
-// Aktuell "State of the Art" und auf Hugging Face sehr stabil verfügbar.
-const AI_MODEL = "Qwen/Qwen2.5-7B-Instruct"; 
-const HF_TOKEN = process.env.HF_TOKEN; 
+// KONFIGURATION
+// Wir nutzen Gemini 1.5 Flash - das ist das schnellste und kosteneffizienteste Modell
+const MODEL_NAME = "gemini-1.5-flash"; 
+const API_KEY = process.env.GEMINI_API_KEY;
+
+// Initialisiere Google AI
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -18,86 +22,51 @@ function loadExistingNews() {
     return [];
 }
 
-async function analyzeWithAI(title, content, sourceName) {
-    if (!HF_TOKEN) return { summary: title, context: "", tags: [] };
-
-    // Text kürzen (Sicherheit gegen Token-Limits)
-    const safeContent = (content || "").substring(0, 800).replace(/<[^>]*>/g, "");
-
-    // Qwen Prompt Format (ChatML Style)
-    const prompt = `<|im_start|>system
-Du bist ein professioneller Nachrichten-Redakteur. 
-Deine Aufgabe: Fasse den Text in einem einzigen, prägnanten deutschen Satz zusammen.
-Antworte NUR mit dem Satz. Keine Einleitung, keine Anführungszeichen.
-<|im_end|>
-<|im_start|>user
-Titel: ${title}
-Inhalt: ${safeContent}
-<|im_end|>
-<|im_start|>assistant
-`;
-
-    let retries = 3;
-    while (retries > 0) {
-        try {
-            const response = await axios.post(
-                `https://api-inference.huggingface.co/models/${AI_MODEL}`,
-                { 
-                    inputs: prompt,
-                    parameters: { 
-                        max_new_tokens: 150, 
-                        return_full_text: false,
-                        temperature: 0.2 // Niedrig = Faktisch
-                    } 
-                },
-                { 
-                    headers: { Authorization: `Bearer ${HF_TOKEN}` },
-                    timeout: 45000 
-                }
-            );
-
-            let summary = response.data[0]?.generated_text || "";
-            summary = summary.trim().replace(/^["']|["']$/g, ''); // Anführungszeichen weg
-
-            if (summary.length < 5) throw new Error("Leere Antwort");
-
-            return { 
-                summary: summary, 
-                context: "", // Qwen ist gut, aber wir halten es simpel für Stabilität
-                tags: [sourceName, "News"] 
-            };
-
-        } catch (error) {
-            const errData = error.response?.data;
-            const status = error.response?.status;
-
-            // 410/404 = Modell weg. 429 = Rate Limit.
-            if (status === 410 || status === 404) {
-                console.error(`🚨 Qwen Fehler (${status}): Modell nicht gefunden.`);
-                break;
-            }
-
-            // Loading state (Das ist normal bei der Free API)
-            if (errData && JSON.stringify(errData).includes("loading")) {
-                const wait = (errData.estimated_time || 20);
-                console.log(`⏳ Qwen lädt (${wait}s)...`);
-                await sleep((wait + 2) * 1000);
-                retries--;
-                continue;
-            }
-            
-            console.log(`⚠️ API Fehler: ${error.message}. Retry...`);
-            await sleep(3000);
-            retries--;
-        }
+async function analyzeWithGemini(title, content, sourceName) {
+    if (!API_KEY) {
+        console.error("❌ Kein GEMINI_API_KEY gefunden!");
+        return { summary: title, context: "", tags: [] };
     }
 
-    // Fallback auf Titel, wenn alles scheitert
-    return { summary: title, context: "", tags: [sourceName] };
+    // Input bereinigen
+    const safeContent = (content || "").substring(0, 2000).replace(/<[^>]*>/g, "");
+
+    // Der Prompt für Gemini
+    const prompt = `Du bist ein professioneller Nachrichten-Redakteur.
+    Aufgabe: Fasse den folgenden Artikel in einem einzigen, prägnanten deutschen Satz zusammen.
+    
+    Titel: ${title}
+    Inhalt: ${safeContent}
+    
+    Antworte NUR mit der Zusammenfassung. Keine Einleitung, keine Formatierung.`;
+
+    try {
+        // Gemini Anfrage (sehr simpel im Vergleich zu Hugging Face)
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        
+        let summary = response.text();
+        
+        // Aufräumen (Leerzeichen, Markdown entfernen)
+        summary = summary.trim().replace(/\*\*/g, '').replace(/^["']|["']$/g, '');
+
+        if (!summary || summary.length < 5) throw new Error("Leere Antwort");
+
+        return { 
+            summary: summary, 
+            context: "", 
+            tags: [sourceName, "News"] 
+        };
+
+    } catch (error) {
+        console.error(`⚠️ Gemini Fehler bei "${title.substring(0, 15)}...":`, error.message);
+        // Fallback auf Titel
+        return { summary: title, context: "", tags: [sourceName] };
+    }
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Qwen Edition)...");
+    console.log("🚀 Starte News-Abruf (Google Gemini Edition)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -115,16 +84,18 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Wir nutzen Cache nur, wenn Text da ist und NICHT identisch mit Titel
+                // Cache-Check: Nur nutzen, wenn Text existiert und ungleich Titel ist
                 if (cached && cached.text && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue;
                 }
 
-                console.log(`🤖 Generiere: ${item.title.substring(0, 30)}...`);
+                console.log(`🤖 Gemini analysiert: ${item.title.substring(0, 30)}...`);
                 
                 const rawContent = item.contentSnippet || item.content || "";
-                const ai = await analyzeWithAI(item.title, rawContent, source.name);
+                
+                // Aufruf der neuen Google Funktion
+                const ai = await analyzeWithGemini(item.title, rawContent, source.name);
                 
                 newNewsFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
@@ -139,7 +110,8 @@ async function run() {
                     tags: ai.tags
                 });
                 
-                await sleep(2000); 
+                // Gemini ist schnell, aber wir sind nett und warten kurz (Rate Limit Schutz)
+                await sleep(1500); 
             }
         } catch (e) { console.error(`❌ Fehler ${source.name}:`, e.message); }
     }
