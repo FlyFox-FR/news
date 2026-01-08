@@ -1,6 +1,11 @@
 {
   "name": "news-grabber",
   "version": "1.0.0",
+  "description": "Holt News und fasst sie mit KI zusammen",
+  "main": "grabber.js",
+  "scripts": {
+    "start": "node grabber.js"
+  },
   "dependencies": {
     "axios": "^1.6.0",
     "rss-parser": "^3.13.0"
