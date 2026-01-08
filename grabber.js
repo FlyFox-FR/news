@@ -4,8 +4,9 @@ const fs = require('fs');
 
 const parser = new Parser();
 
-// FIX: Wir wechseln auf Zephyr. Mistral v0.3 verursacht Error 410 (Gone).
-const AI_MODEL = "HuggingFaceH4/zephyr-7b-beta"; 
+// NEUES MODELL: Qwen 2.5 (7B Instruct). 
+// Aktuell "State of the Art" und auf Hugging Face sehr stabil verfügbar.
+const AI_MODEL = "Qwen/Qwen2.5-7B-Instruct"; 
 const HF_TOKEN = process.env.HF_TOKEN; 
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -20,18 +21,21 @@ function loadExistingNews() {
 async function analyzeWithAI(title, content, sourceName) {
     if (!HF_TOKEN) return { summary: title, context: "", tags: [] };
 
-    // Text kürzen, um API-Fehler zu vermeiden
+    // Text kürzen (Sicherheit gegen Token-Limits)
     const safeContent = (content || "").substring(0, 800).replace(/<[^>]*>/g, "");
 
-    // Simpler Prompt, da Zephyr sehr gut Anweisungen folgt
-    const prompt = `<|system|>
-Du bist ein Nachrichten-Redakteur. Fasse die Nachricht in einem einzigen deutschen Satz zusammen.
-</s>
-<|user|>
+    // Qwen Prompt Format (ChatML Style)
+    const prompt = `<|im_start|>system
+Du bist ein professioneller Nachrichten-Redakteur. 
+Deine Aufgabe: Fasse den Text in einem einzigen, prägnanten deutschen Satz zusammen.
+Antworte NUR mit dem Satz. Keine Einleitung, keine Anführungszeichen.
+<|im_end|>
+<|im_start|>user
 Titel: ${title}
 Inhalt: ${safeContent}
-</s>
-<|assistant|>`;
+<|im_end|>
+<|im_start|>assistant
+`;
 
     let retries = 3;
     while (retries > 0) {
@@ -42,23 +46,24 @@ Inhalt: ${safeContent}
                     inputs: prompt,
                     parameters: { 
                         max_new_tokens: 150, 
-                        return_full_text: false 
+                        return_full_text: false,
+                        temperature: 0.2 // Niedrig = Faktisch
                     } 
                 },
                 { 
                     headers: { Authorization: `Bearer ${HF_TOKEN}` },
-                    timeout: 40000 
+                    timeout: 45000 
                 }
             );
 
             let summary = response.data[0]?.generated_text || "";
-            summary = summary.trim().replace(/^["']|["']$/g, ''); // Anführungszeichen entfernen
+            summary = summary.trim().replace(/^["']|["']$/g, ''); // Anführungszeichen weg
 
             if (summary.length < 5) throw new Error("Leere Antwort");
 
             return { 
                 summary: summary, 
-                context: "", 
+                context: "", // Qwen ist gut, aber wir halten es simpel für Stabilität
                 tags: [sourceName, "News"] 
             };
 
@@ -66,33 +71,33 @@ Inhalt: ${safeContent}
             const errData = error.response?.data;
             const status = error.response?.status;
 
-            // 410 oder 404 bedeutet: Modell existiert nicht mehr. Abbruch.
+            // 410/404 = Modell weg. 429 = Rate Limit.
             if (status === 410 || status === 404) {
-                console.error("🚨 KRITISCH: Modell nicht gefunden (410). Bitte Modell in grabber.js ändern!");
+                console.error(`🚨 Qwen Fehler (${status}): Modell nicht gefunden.`);
                 break;
             }
 
-            // Loading Fehler -> Warten
+            // Loading state (Das ist normal bei der Free API)
             if (errData && JSON.stringify(errData).includes("loading")) {
                 const wait = (errData.estimated_time || 20);
-                console.log(`⏳ Modell lädt (${wait}s)...`);
+                console.log(`⏳ Qwen lädt (${wait}s)...`);
                 await sleep((wait + 2) * 1000);
                 retries--;
                 continue;
             }
             
-            console.log(`⚠️ API Fehler (${status}): ${error.message}. Retry...`);
+            console.log(`⚠️ API Fehler: ${error.message}. Retry...`);
             await sleep(3000);
             retries--;
         }
     }
 
-    // Fallback
+    // Fallback auf Titel, wenn alles scheitert
     return { summary: title, context: "", tags: [sourceName] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Zephyr Fix)...");
+    console.log("🚀 Starte News-Abruf (Qwen Edition)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -110,7 +115,7 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Cache nutzen, wenn Text existiert und kein Fallback-Titel ist
+                // Wir nutzen Cache nur, wenn Text da ist und NICHT identisch mit Titel
                 if (cached && cached.text && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue;
