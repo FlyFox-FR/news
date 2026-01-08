@@ -1,9 +1,15 @@
-name: Update News V2
+name: Update News with AI
 
 on:
   schedule:
-    - cron: '0 * * * *' # Stündlich
-  workflow_dispatch:
+    # CRON ERLÄUTERUNG (GitHub nutzt UTC-Zeit):
+    # 6 UTC = 07:00 Uhr in DE (Winterzeit) / 08:00 (Sommerzeit)
+    # 22 UTC = 23:00 Uhr in DE (Winterzeit) / 00:00 (Sommerzeit)
+    # /2 = Alle 2 Stunden
+    # Ergebnis: Der Bot läuft tagsüber alle 2h, nachts schläft er.
+    - cron: '0 6-22/2 * * *'
+    
+  workflow_dispatch: # Button zum manuellen Starten bleibt erhalten
 
 permissions:
   contents: write
@@ -11,6 +17,10 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # Sicherheitsnetz: Bricht ab, falls er länger als 45 Min hängt
+    timeout-minutes: 45
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
@@ -26,12 +36,14 @@ jobs:
     - name: Run Grabber
       env:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      run: node grabber.js
+      # Mehr Speicher für Node, falls viele Quellen geladen werden
+      run: node --max-old-space-size=4096 grabber.js
 
-    - name: Commit and Push
+    - name: Commit and Push changes
       run: |
         git config --global user.name 'NewsBot'
         git config --global user.email 'bot@noreply.github.com'
         git add news.json
+        # Commit nur wenn sich was geändert hat, um Fehler zu vermeiden
         git commit -m "Update News content" || echo "Keine Änderungen"
         git push
