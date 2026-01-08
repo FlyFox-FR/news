@@ -3,135 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mein AI News Flash</title>
+    <title>AI News Flash 2.0</title>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: #121212; 
-            color: #e0e0e0; 
-            max-width: 700px; 
-            margin: 0 auto; 
-            padding: 20px; 
-        }
-        h1 { text-align: center; margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; }
-        .refresh-hint { text-align: center; color: #666; font-size: 0.8em; margin-bottom: 20px; }
+        :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #4da3ff; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         
-        .card { 
-            background: #1e1e1e; 
-            margin-bottom: 20px; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column; /* Mobil zuerst: untereinander */
-        }
+        .container { max-width: 800px; margin: 0 auto; }
         
-        @media (min-width: 600px) {
-            .card { flex-direction: row; }
-            .card-img { width: 200px; height: auto; }
-        }
+        /* Header & Controls */
+        header { margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; }
+        h1 { margin: 0; font-weight: 300; letter-spacing: 1px; text-align: center; }
+        
+        .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        input[type="text"] { background: #333; border: none; padding: 10px 15px; border-radius: 20px; color: white; flex-grow: 1; max-width: 300px; }
+        
+        .btn { background: #333; border: none; color: #aaa; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .btn.active { background: var(--accent); color: white; }
+        .btn:hover { background: #444; }
 
-        .card-img { 
-            width: 100%; 
-            height: 180px; 
-            object-fit: cover; 
-            background: #333; /* Placeholder Farbe */
-        }
+        /* News Cards */
+        .card { background: var(--card); margin-bottom: 20px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        
+        @media (min-width: 600px) { .card { flex-direction: row; } .card-img { width: 220px; height: auto; } }
+        
+        .card-img { width: 100%; height: 180px; object-fit: cover; background: #2a2a2a; }
+        
+        .content { padding: 15px; flex: 1; display: flex; flex-direction: column; }
+        
+        .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .source-tag { padding: 2px 6px; border-radius: 4px; background: #333; color: #fff; }
+        
+        /* Breaking News Indikator */
+        .breaking { color: #ff4d4d; animation: pulse 2s infinite; display: none; margin-right: 5px; }
+        .is-breaking .breaking { display: inline-block; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        .content { padding: 15px; display: flex; flex-direction: column; justify-content: center; }
+        a.title { color: #fff; text-decoration: none; font-size: 1.15em; font-weight: bold; margin-bottom: 8px; display: block; line-height: 1.3; }
+        a.title:hover { color: var(--accent); }
         
-        .meta { 
-            font-size: 0.75em; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            font-weight: bold; 
-            margin-bottom: 5px;
-        }
-        .tagesschau { color: #2c85d8; }
-        .zdf { color: #fa7d09; }
+        .summary { color: #ccc; margin: 0 0 10px 0; line-height: 1.5; }
         
-        a.title { 
-            color: #fff; 
-            text-decoration: none; 
-            font-size: 1.1em; 
-            font-weight: bold; 
-            margin-bottom: 8px; 
-            display: block; 
-        }
-        a.title:hover { text-decoration: underline; color: #4da3ff; }
-        
-        .summary { 
-            font-size: 0.95em; 
-            color: #b0b0b0; 
-            line-height: 1.5; 
-            margin: 0; 
-        }
-        
-        /* Loading Animation */
-        .loader { border: 4px solid #333; border-top: 4px solid #fff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 50px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .context-box { background: #252525; padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--accent); font-size: 0.9em; color: #b0b0b0; margin-bottom: 10px; }
+        .context-label { font-weight: bold; color: #888; font-size: 0.8em; display: block; margin-bottom: 2px; }
+
+        .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+        .tag { background: #333; color: #888; padding: 3px 8px; border-radius: 10px; font-size: 0.75em; }
+
+        /* Bookmark Heart */
+        .bookmark-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: none; color: #666; font-size: 1.2em; cursor: pointer; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .bookmark-btn:hover { background: rgba(0,0,0,0.9); }
+        .bookmark-btn.saved { color: #ff4d4d; }
+
+        .loader { text-align: center; padding: 40px; color: #666; }
     </style>
 </head>
 <body>
 
-    <h1>Daily Briefing</h1>
-    <p class="refresh-hint">Aktualisiert sich stündlich via AI</p>
-    
-    <div id="news-container">
-        <div class="loader"></div>
+    <div class="container">
+        <header>
+            <h1>🌍 Daily Briefing</h1>
+            <div class="controls">
+                <input type="text" id="search" placeholder="Suche (z.B. Trump, Klima)...">
+                <button class="btn active" onclick="setFilter('all')">Alle</button>
+                <button class="btn" onclick="setFilter('saved')">♥ Gespeichert</button>
+                <!-- Dynamische Buttons kommen hier hin -->
+                <span id="source-buttons"></span>
+            </div>
+        </header>
+        
+        <div id="news-container">
+            <div class="loader">Lade Nachrichten...</div>
+        </div>
     </div>
 
     <script>
-        const container = document.getElementById('news-container');
+        let allNews = [];
+        let bookmarks = JSON.parse(localStorage.getItem('news_bookmarks') || '[]');
+        let currentFilter = 'all';
 
-        // Wir hängen ?t=Date.now() an, damit der Browser nicht alte Daten cached
+        // Lade Daten
         fetch('news.json?t=' + Date.now())
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP Fehler: ${response.status}`);
-                return response.text();
-            })
-            .then(text => {
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    throw new Error("JSON Parse Fehler. Die Datei ist wahrscheinlich leer oder korrupt.");
-                }
-            })
+            .then(res => res.json())
             .then(data => {
-                container.innerHTML = '';
-                
-                if (data.length === 0) {
-                    container.innerHTML = '<p style="text-align:center">Noch keine Nachrichten geladen.</p>';
-                    return;
-                }
+                allNews = data;
+                initApp();
+            })
+            .catch(e => document.getElementById('news-container').innerHTML = '<p style="text-align:center">Fehler beim Laden.</p>');
 
-                data.forEach(news => {
-                    // CSS Klasse basierend auf Quelle
-                    const sourceClass = news.source.toLowerCase().includes('tagesschau') ? 'tagesschau' : 'zdf';
-                    
-                    const html = `
-                        <div class="card">
-                            ${news.img ? `<img src="${news.img}" class="card-img" alt="News Bild" onerror="this.style.display='none'">` : ''}
-                            <div class="content">
-                                <span class="meta ${sourceClass}">${news.source} • ${new Date(news.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                                <a href="${news.link}" target="_blank" class="title">${news.title}</a>
-                                <p class="summary">✨ ${news.text}</p>
+        function initApp() {
+            // Generiere Buttons für Quellen automatisch aus den Daten
+            const sources = [...new Set(allNews.map(n => n.source))];
+            const btnContainer = document.getElementById('source-buttons');
+            sources.forEach(source => {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.innerText = source;
+                btn.onclick = () => setFilter(source);
+                btnContainer.appendChild(btn);
+            });
+
+            render();
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            // Update UI Active States
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            render();
+        }
+
+        // Suche Event Listener
+        document.getElementById('search').addEventListener('input', render);
+
+        function toggleBookmark(id) {
+            if (bookmarks.includes(id)) {
+                bookmarks = bookmarks.filter(b => b !== id);
+            } else {
+                bookmarks.push(id);
+            }
+            localStorage.setItem('news_bookmarks', JSON.stringify(bookmarks));
+            render(); // Neu rendern um Herzen zu updaten
+        }
+
+        function render() {
+            const container = document.getElementById('news-container');
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            container.innerHTML = '';
+
+            const filtered = allNews.filter(item => {
+                // 1. Suche
+                const matchesSearch = item.title.toLowerCase().includes(searchTerm) || 
+                                      item.text.toLowerCase().includes(searchTerm) ||
+                                      (item.tags && item.tags.some(t => t.toLowerCase().includes(searchTerm)));
+                if (!matchesSearch) return false;
+
+                // 2. Filter (Buttons)
+                if (currentFilter === 'all') return true;
+                if (currentFilter === 'saved') return bookmarks.includes(item.id);
+                return item.source === currentFilter;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666">Keine Nachrichten gefunden.</p>';
+                return;
+            }
+
+            filtered.forEach(news => {
+                // Breaking News Check (< 2 Stunden alt)
+                const isFresh = (new Date() - new Date(news.date)) < (1000 * 60 * 60 * 2);
+                const isSaved = bookmarks.includes(news.id);
+
+                const html = `
+                    <div class="card ${isFresh ? 'is-breaking' : ''}">
+                        <button class="bookmark-btn ${isSaved ? 'saved' : ''}" onclick="toggleBookmark('${news.id}')">
+                            ${isSaved ? '♥' : '♡'}
+                        </button>
+                        ${news.img ? `<img src="${news.img}" class="card-img" onerror="this.style.display='none'">` : ''}
+                        <div class="content">
+                            <div class="meta-row">
+                                <span class="source-tag">${news.source}</span>
+                                <span>
+                                    <span class="breaking">● LIVE</span>
+                                    ${new Date(news.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </span>
+                            </div>
+                            
+                            <a href="${news.link}" target="_blank" class="title">${news.title}</a>
+                            <p class="summary">${news.text}</p>
+                            
+                            ${news.context ? `
+                                <div class="context-box">
+                                    <span class="context-label">WARUM DAS WICHTIG IST:</span>
+                                    ${news.context}
+                                </div>
+                            ` : ''}
+
+                            <div class="tags">
+                                ${news.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
                             </div>
                         </div>
-                    `;
-                    container.innerHTML += html;
-                });
-            })
-            .catch(err => {
-                console.error(err);
-                container.innerHTML = `
-                    <div style="background: #330000; color: #ffcccc; padding: 20px; border-radius: 8px; text-align: center;">
-                        <h3>Uups!</h3>
-                        <p>${err.message}</p>
-                        <p style="font-size: 0.8em">Falls du das Repo gerade erst erstellt hast: Warte 2 Minuten und lade neu.</p>
                     </div>
                 `;
+                container.innerHTML += html;
             });
+        }
     </script>
 </body>
 </html>
