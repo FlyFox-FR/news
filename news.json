@@ -2,13 +2,15 @@
   {
     "source": "ZDF",
     "title": "Glätte, Schnee, Eis: Wo der Wetterdienst jetzt warnt",
+    "text": "Schulausfall, verspätete Züge und Flugzeuge, mehr Unfälle: In Teilen des Landes schneit und regnet es heftig - es wird vor Glatteis gewarnt. Und es dürfte noch schlimmer werden.",
     "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-    "img": "https://www.zdfheute.de/assets/wetter-feldberg-100~384x216?cb=1767874722294",
-    "date": "Thu, 8 Jan 2026 20:13:00 +0100"
+    "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
+    "date": "Thu, 8 Jan 2026 23:30:00 +0100"
   },
   {
     "source": "ZDF",
     "title": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+    "text": "Das Unwetter sorgt für schwierige Bedingungen im Norden und Süden Deutschlands: Mehrere Flüge werden gestrichen, ICE-Verbindungen müssen verlangsamt werden.",
     "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
     "img": "https://www.zdfheute.de/assets/winterwetter-hamburg-100~384x216?cb=1767867725756",
     "date": "Thu, 8 Jan 2026 22:50:00 +0100"
@@ -16,6 +18,7 @@
   {
     "source": "ZDF",
     "title": "Was Trumps Plan einer \"Traum-Armee\" bedeutet",
+    "text": "US-Präsident Donald Trump will die Militärausgaben der Vereinigten Staaten drastisch erhöhen. Während die Börse jubelt, warnen deutsche Ökonomen vor Lieferengpässen für Europa.",
     "link": "https://www.zdfheute.de/politik/ausland/trump-armee-usa-militaerausgaben-aufruestung-100.html",
     "img": "https://www.zdfheute.de/assets/trump-us-militaer-100~384x216?cb=1767887180739",
     "date": "Thu, 8 Jan 2026 19:19:00 +0100"
@@ -23,15 +26,9 @@
   {
     "source": "ZDF",
     "title": "Tennis im Blackout - Berlins Bürgermeister in der Kritik",
+    "text": "Der Strom ist wieder da in Berlin. Doch für den Regierenden Bürgermeister ist die Krise nicht vorbei. Als Teile der Stadt bibberten, spielte er Tennis und verschwieg das zunächst.",
     "link": "https://www.zdfheute.de/politik/deutschland/wegner-buergermeister-berlin-kritik-umgang-stromausfall-100.html",
     "img": "https://www.zdfheute.de/assets/kai-wegner-128~384x216?cb=1767892081704",
     "date": "Thu, 8 Jan 2026 20:19:00 +0100"
-  },
-  {
-    "source": "ZDF",
-    "title": "Schlagzeilen",
-    "link": "https://www.zdfheute.de/newsticker/schlagzeilen-100.html",
-    "img": "https://www.zdfheute.de/assets/zdfheute-keyvisual-100~384x216?cb=1695027601231",
-    "date": "Thu, 8 Jan 2026 22:32:00 +0100"
   }
 ]
