@@ -17,6 +17,12 @@ jobs:
       with:
         node-version: '18'
     - run: npm install
+       - name: Run Grabber with AI
+          env:
+            HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          run: node grabber.js
+       - name: Commit and Push changes
+    
     - name: Run Grabber with AI
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}  <-- Das ist neu!
