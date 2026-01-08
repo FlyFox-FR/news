@@ -3,42 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mein News Flash</title>
+    <title>Mein AI News Flash</title>
     <style>
-        body { font-family: sans-serif; background: #222; color: #fff; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .card { background: #333; margin-bottom: 20px; padding: 15px; border-radius: 8px; display: flex; gap: 15px; }
-        .card img { width: 120px; height: 80px; object-fit: cover; border-radius: 4px; }
-        .content { display: flex; flex-direction: column; justify-content: center; }
-        .source { color: #f39c12; font-size: 0.8em; text-transform: uppercase; font-weight: bold; }
-        a { color: white; text-decoration: none; font-size: 1.1em; }
-        a:hover { text-decoration: underline; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #121212; 
+            color: #e0e0e0; 
+            max-width: 700px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        h1 { text-align: center; margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; }
+        .refresh-hint { text-align: center; color: #666; font-size: 0.8em; margin-bottom: 20px; }
+        
+        .card { 
+            background: #1e1e1e; 
+            margin-bottom: 20px; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column; /* Mobil zuerst: untereinander */
+        }
+        
+        @media (min-width: 600px) {
+            .card { flex-direction: row; }
+            .card-img { width: 200px; height: auto; }
+        }
+
+        .card-img { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: cover; 
+            background: #333; /* Placeholder Farbe */
+        }
+
+        .content { padding: 15px; display: flex; flex-direction: column; justify-content: center; }
+        
+        .meta { 
+            font-size: 0.75em; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: bold; 
+            margin-bottom: 5px;
+        }
+        .tagesschau { color: #2c85d8; }
+        .zdf { color: #fa7d09; }
+        
+        a.title { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 1.1em; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            display: block; 
+        }
+        a.title:hover { text-decoration: underline; color: #4da3ff; }
+        
+        .summary { 
+            font-size: 0.95em; 
+            color: #b0b0b0; 
+            line-height: 1.5; 
+            margin: 0; 
+        }
+        
+        /* Loading Animation */
+        .loader { border: 4px solid #333; border-top: 4px solid #fff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 50px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <h1>Täglicher News Flash</h1>
-    <div id="news-container">Lade Nachrichten...</div>
+
+    <h1>Daily Briefing</h1>
+    <p class="refresh-hint">Aktualisiert sich stündlich via AI</p>
+    
+    <div id="news-container">
+        <div class="loader"></div>
+    </div>
 
     <script>
-        fetch('news.json')
-            .then(response => response.json())
+        const container = document.getElementById('news-container');
+
+        // Wir hängen ?t=Date.now() an, damit der Browser nicht alte Daten cached
+        fetch('news.json?t=' + Date.now())
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP Fehler: ${response.status}`);
+                return response.text();
+            })
+            .then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    throw new Error("JSON Parse Fehler. Die Datei ist wahrscheinlich leer oder korrupt.");
+                }
+            })
             .then(data => {
-                const container = document.getElementById('news-container');
                 container.innerHTML = '';
                 
+                if (data.length === 0) {
+                    container.innerHTML = '<p style="text-align:center">Noch keine Nachrichten geladen.</p>';
+                    return;
+                }
+
                 data.forEach(news => {
+                    // CSS Klasse basierend auf Quelle
+                    const sourceClass = news.source.toLowerCase().includes('tagesschau') ? 'tagesschau' : 'zdf';
+                    
                     const html = `
                         <div class="card">
-                            ${news.img ? `<img src="${news.img}" alt="Bild">` : ''}
+                            ${news.img ? `<img src="${news.img}" class="card-img" alt="News Bild" onerror="this.style.display='none'">` : ''}
                             <div class="content">
-                                <span class="source">${news.source}</span>
-                                <a href="${news.link}" target="_blank">${news.title}</a>
+                                <span class="meta ${sourceClass}">${news.source} • ${new Date(news.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                <a href="${news.link}" target="_blank" class="title">${news.title}</a>
+                                <p class="summary">✨ ${news.text}</p>
                             </div>
                         </div>
                     `;
                     container.innerHTML += html;
                 });
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(err);
+                container.innerHTML = `
+                    <div style="background: #330000; color: #ffcccc; padding: 20px; border-radius: 8px; text-align: center;">
+                        <h3>Uups!</h3>
+                        <p>${err.message}</p>
+                        <p style="font-size: 0.8em">Falls du das Repo gerade erst erstellt hast: Warte 2 Minuten und lade neu.</p>
+                    </div>
+                `;
+            });
     </script>
 </body>
 </html>
