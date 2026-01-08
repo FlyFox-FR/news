@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein News Flash</title>
+    <style>
+        body { font-family: sans-serif; background: #222; color: #fff; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .card { background: #333; margin-bottom: 20px; padding: 15px; border-radius: 8px; display: flex; gap: 15px; }
+        .card img { width: 120px; height: 80px; object-fit: cover; border-radius: 4px; }
+        .content { display: flex; flex-direction: column; justify-content: center; }
+        .source { color: #f39c12; font-size: 0.8em; text-transform: uppercase; font-weight: bold; }
+        a { color: white; text-decoration: none; font-size: 1.1em; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Täglicher News Flash</h1>
+    <div id="news-container">Lade Nachrichten...</div>
+
+    <script>
+        fetch('news.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('news-container');
+                container.innerHTML = '';
+                
+                data.forEach(news => {
+                    const html = `
+                        <div class="card">
+                            ${news.img ? `<img src="${news.img}" alt="Bild">` : ''}
+                            <div class="content">
+                                <span class="source">${news.source}</span>
+                                <a href="${news.link}" target="_blank">${news.title}</a>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            })
+            .catch(err => console.error(err));
+    </script>
+</body>
+</html>
