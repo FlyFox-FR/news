@@ -1,9 +1,9 @@
-name: Update News with AI
+name: Update News V2
 
 on:
   schedule:
-    - cron: '0 * * * *' # Läuft jede volle Stunde
-  workflow_dispatch: # Erlaubt manuellen Start
+    - cron: '0 * * * *' # Stündlich
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -23,17 +23,15 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    - name: Run Grabber (Generate News)
+    - name: Run Grabber
       env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }} # Hier wird der Token injiziert
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
       run: node grabber.js
 
-    - name: Commit and Push changes
+    - name: Commit and Push
       run: |
         git config --global user.name 'NewsBot'
         git config --global user.email 'bot@noreply.github.com'
-        # Wir fügen news.json hinzu, falls geändert
         git add news.json
-        # Commit nur wenn sich was geändert hat, sonst kein Fehler
-        git commit -m "Update News via AI" || echo "Keine Änderungen"
+        git commit -m "Update News content" || echo "Keine Änderungen"
         git push
