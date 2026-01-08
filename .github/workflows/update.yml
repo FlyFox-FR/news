@@ -1,9 +1,9 @@
-name: Update News
+name: Update News with AI
 
 on:
   schedule:
-    - cron: '0 * * * *' # Läuft jede Stunde
-  workflow_dispatch: # Erlaubt manuellen Start per Klick
+    - cron: '0 * * * *' # Läuft jede volle Stunde
+  workflow_dispatch: # Erlaubt manuellen Start
 
 permissions:
   contents: write
@@ -12,19 +12,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
         node-version: '18'
-    - run: npm install
-       - name: Run Grabber with AI
-          env:
-            HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          run: node grabber.js
-       - name: Commit and Push changes
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Grabber (Generate News)
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }} # Hier wird der Token injiziert
+      run: node grabber.js
+
+    - name: Commit and Push changes
       run: |
         git config --global user.name 'NewsBot'
         git config --global user.email 'bot@noreply.github.com'
+        # Wir fügen news.json hinzu, falls geändert
         git add news.json
-        git commit -m "Update News" || exit 0
+        # Commit nur wenn sich was geändert hat, sonst kein Fehler
+        git commit -m "Update News via AI" || echo "Keine Änderungen"
         git push
