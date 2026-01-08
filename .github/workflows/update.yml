@@ -1,0 +1,27 @@
+name: Update News
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Läuft jede Stunde
+  workflow_dispatch: # Erlaubt manuellen Start per Klick
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - run: npm install
+    - run: node grabber.js
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name 'NewsBot'
+        git config --global user.email 'bot@noreply.github.com'
+        git add news.json
+        git commit -m "Update News" || exit 0
+        git push
