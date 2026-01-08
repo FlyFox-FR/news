@@ -4,8 +4,8 @@ const fs = require('fs');
 
 const parser = new Parser();
 
-// Konfiguration
-const AI_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"; 
+// ÄNDERUNG: Anderes Modell. Zephyr ist zuverlässiger bei Formatierung als Mistral.
+const AI_MODEL = "HuggingFaceH4/zephyr-7b-beta"; 
 const HF_TOKEN = process.env.HF_TOKEN; 
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -17,28 +17,26 @@ function loadExistingNews() {
     return [];
 }
 
-// Die neue, ultra-robuste KI-Funktion mit Retry-Logik
 async function analyzeWithAI(title, content) {
-    // 1. Check: Token da?
-    if (!HF_TOKEN) {
-        console.log("⚠️ Kein HF_TOKEN gefunden! Nutze Fallback.");
-        return { summary: title, context: "", tags: [] };
-    }
+    if (!HF_TOKEN) return { summary: title, context: "", tags: [] };
 
-    const prompt = `<s>[INST] Du bist ein News-Redakteur. Analysiere diesen Text: "${title} - ${content}"
-    
-    Antworte auf DEUTSCH. Nutze EXAKT dieses Format mit ### als Trenner:
-    
-    ZUSAMMENFASSUNG (Max 1 Satz, neutral)
-    ###
-    WARUM ES WICHTIG IST (Max 1 kurzer Satz)
-    ###
-    TAG1, TAG2, TAG3 (Keine Rauten, nur Kommas)
-    [/INST]`;
+    // FIX 1: Input gnadenlos kürzen! 
+    // Wenn der RSS Feed 5000 Wörter liefert, stürzt die Free-API ab. Wir nehmen nur die ersten 1000 Zeichen.
+    const safeContent = (content || "").substring(0, 1000).replace(/<[^>]*>/g, ""); // HTML Tags entfernen
 
-    // 2. Die Hartnäckigkeits-Schleife (Max 5 Versuche)
-    let retries = 5;
-    
+    const prompt = `<|system|>
+Du bist ein Nachrichten-Redakteur. Antworte strikt auf DEUTSCH.
+Formatiere deine Antwort EXAKT so:
+ZUSAMMENFASSUNG: [Ein Satz]
+KONTEXT: [Ein Satz warum wichtig]
+TAGS: [Tag1, Tag2]
+</s>
+<|user|>
+Analysiere: "${title} - ${safeContent}"
+</s>
+<|assistant|>`;
+
+    let retries = 4;
     while (retries > 0) {
         try {
             const response = await axios.post(
@@ -46,105 +44,99 @@ async function analyzeWithAI(title, content) {
                 { 
                     inputs: prompt,
                     parameters: { 
-                        max_new_tokens: 250, 
-                        return_full_text: false,
+                        max_new_tokens: 200, 
+                        return_full_text: false, // WICHTIG: Damit der Prompt nicht wiederholt wird
                         temperature: 0.1 
                     } 
                 },
                 { 
                     headers: { Authorization: `Bearer ${HF_TOKEN}` },
-                    timeout: 90000 // 90 Sekunden Timeout (Wichtig für Kaltstarts!)
+                    timeout: 45000 
                 }
             );
 
-            // Wenn wir hier sind, hat die API geantwortet! 🎉
             const text = response.data[0]?.generated_text || "";
-            // console.log(`🔍 Raw KI-Antwort für "${title.substring(0,10)}...":`, text); 
+            // console.log(`🔍 Raw Output:`, text); // Debugging
 
-            // Parsen
-            const parts = text.split('###');
-            let summary = parts[0] ? parts[0].replace(/ZUSAMMENFASSUNG/i, "").trim() : title;
-            let context = parts[1] ? parts[1].replace(/WARUM ES WICHTIG IST/i, "").trim() : "";
-            let tagsRaw = parts[2] ? parts[2].trim() : "";
-            let tags = tagsRaw.split(',').map(t => t.replace(/TAGS|TAG/i, "").trim()).filter(t => t.length > 2);
+            // FIX 2: Robusteres Parsing mit Regex (Statt .split)
+            // Sucht nach "ZUSAMMENFASSUNG:" gefolgt von Text bis "KONTEXT:" kommt.
+            const summaryMatch = text.match(/ZUSAMMENFASSUNG:?\s*([\s\S]*?)(?=KONTEXT:|$)/i);
+            const contextMatch = text.match(/KONTEXT:?\s*([\s\S]*?)(?=TAGS:|$)/i);
+            const tagsMatch = text.match(/TAGS:?\s*([\s\S]*?)$/i);
 
-            // Sicherheits-Check: Hat die KI nur Müll zurückgegeben?
-            if (summary.length < 5) summary = title;
+            let summary = summaryMatch ? summaryMatch[1].trim() : "";
+            let context = contextMatch ? contextMatch[1].trim() : "";
+            let tags = tagsMatch ? tagsMatch[1].split(',').map(t => t.trim()) : [];
+
+            // Notfall-Reinigung, falls die KI Anführungszeichen nutzt
+            summary = summary.replace(/^["']|["']$/g, '');
+            context = context.replace(/^["']|["']$/g, '');
+
+            // Wenn immer noch leer, war die Antwort Schrott -> Retry oder Fallback
+            if (summary.length < 5) {
+                // Versuchen wir, den ganzen Text zu nehmen, falls er kurz ist
+                if (text.length > 5 && text.length < 200) summary = text; 
+                else summary = title;
+            }
 
             return { summary, context, tags };
 
         } catch (error) {
-            // FEHLER-ANALYSE
             const errData = error.response?.data;
-            const status = error.response?.status;
-
-            // Fall 1: Modell schläft noch (503 Error)
+            
+            // Model loading -> Warten
             if (errData && JSON.stringify(errData).includes("loading")) {
-                const waitTime = errData.estimated_time || 20;
-                console.log(`⏳ Modell lädt noch... Warte ${waitTime.toFixed(1)}s (Versuch ${6 - retries}/5)`);
-                await sleep(waitTime * 1000);
-                retries--;
-                continue; // Nächster Schleifen-Durchlauf
-            }
-
-            // Fall 2: Rate Limit (Zu viele Anfragen)
-            if (status === 429) {
-                console.log(`🛑 Rate Limit! Warte 60s...`);
-                await sleep(60000);
+                const wait = (errData.estimated_time || 20) + 5; // +5s Puffer
+                console.log(`⏳ KI lädt (${wait}s)...`);
+                await sleep(wait * 1000);
                 retries--;
                 continue;
             }
-
-            // Fall 3: Echter Fehler (z.B. falscher Token)
-            console.error(`💥 Fataler API-Fehler bei "${title.substring(0, 15)}...":`);
-            console.error(`   Status: ${status}`);
-            console.error(`   Details:`, JSON.stringify(errData));
-            console.error(`   Message:`, error.message);
             
-            // Bei fatalen Fehlern brechen wir diesen Artikel ab
-            break; 
+            // Anderer Fehler -> Loggen und abbrechen
+            console.log(`⚠️ API Fehler: ${error.message}`);
+            break;
         }
     }
 
-    // Wenn alle Retries aufgebraucht sind:
-    console.log(`⚠️ Gebe auf für: "${title.substring(0, 20)}..." -> Nutze Originaltext.`);
     return { summary: title, context: "", tags: [] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Debug Mode)...");
+    console.log("🚀 Starte Fix-Run...");
     
+    // Quellen laden
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
-    catch(e) { 
-        console.log("⚠️ Keine sources.json gefunden, nutze Defaults.");
-        sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; 
-    }
+    catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
 
     const existingNews = loadExistingNews();
     let newNewsFeed = [];
 
     for (const source of sources) {
         try {
-            console.log(`\n📡 Quelle: ${source.name}`);
+            console.log(`\n📡 ${source.name}...`);
             const feed = await parser.parseURL(source.url);
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Cache Check
+                // Cache-Logik: Wir nutzen den Cache NUR, wenn er valide Daten hat (Kontext existiert)
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Strenger Cache Check: Nur nutzen, wenn Kontext da ist UND Text != Titel
-                if (cached && cached.text && cached.text !== cached.title && cached.context) {
+                // CHECK: Ist der Cache "gesund"? (Hat er Kontext? Ist der Text ungleich dem Titel?)
+                const isCacheHealthy = cached && cached.text && cached.text !== cached.title && cached.context && cached.context.length > 2;
+
+                if (isCacheHealthy) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
+                    // console.log(`✅ Aus Cache: ${item.title.substring(0,20)}...`);
                     continue;
                 }
 
-                // Generierung
-                console.log(`🤖 Bearbeite: ${item.title.substring(0, 40)}...`);
-                const contentSnippet = item.contentSnippet || item.content || "";
+                console.log(`🤖 Generiere neu: ${item.title.substring(0, 30)}...`);
                 
-                const ai = await analyzeWithAI(item.title, contentSnippet);
+                // Hier übergeben wir den ContentSnippet UND Content, damit wir sicher Text haben
+                const rawContent = item.contentSnippet || item.content || "";
+                const ai = await analyzeWithAI(item.title, rawContent);
                 
                 newNewsFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
@@ -159,15 +151,14 @@ async function run() {
                     tags: ai.tags
                 });
                 
-                // Wichtig: Kurze Pause zwischen Artikeln, um Rate-Limits zu schonen
-                await sleep(2000); 
+                await sleep(3000); // 3 Sekunden Pause
             }
-        } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
+        } catch (e) { console.error(`❌ Fehler ${source.name}:`, e.message); }
     }
 
     newNewsFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     fs.writeFileSync('news.json', JSON.stringify(newNewsFeed, null, 2));
-    console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten gespeichert.`);
+    console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten.`);
 }
 
 run();
