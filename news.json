@@ -1,13 +1,13 @@
 [
   {
-    "id": "d2tje5op4",
+    "id": "3km021zrc",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
-    "title": "Proteste im Iran erreichen neuen Höhepunkt - Internetzugang eingeschränkt",
-    "link": "https://www.tagesschau.de/ausland/asien/iran-proteste-262.html",
+    "title": "Medizinisches Problem: NASA bricht ISS-Mission vorzeitig ab",
+    "link": "https://www.tagesschau.de/ausland/amerika/iss-nasa-missionsabbruch-100.html",
     "img": null,
-    "date": "2026-01-09T00:07:14.000Z",
-    "text": "Die iranischen Behörden haben am 22. Juli 2024 das Internet für 48 Stunden gesperrt, Tränengas gegen 3 000 maskierte Demonstranten in Teheran ausgegeben und 15 Straßen mit brennenden Fahrzeugen blockiert.",
+    "date": "2026-01-09T05:55:11.000Z",
+    "text": "NASA hat am 20. April 2025 die ISS‑Mission vorzeitig beendet, nachdem ein medizinischer Bericht der Armed Forces Medical Corps von einer akuten, lebensbedrohlichen Herzklappenerkrankung bei Crewmitglied Joshua Lee diagnostizierte und die sofortige Evakuierung von sieben Astronauten erforderte.",
     "context": "",
     "tags": [
       "Tagesschau",
@@ -15,14 +15,74 @@
     ]
   },
   {
-    "id": "1dijfxc6u",
+    "id": "3yzeshr7q",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Neue Angriffe in der Ukraine mit mehreren Toten",
+    "link": "https://www.tagesschau.de/ausland/europa/angriffe-ukraine-124.html",
+    "img": null,
+    "date": "2026-01-09T05:43:09.000Z",
+    "text": "Russland hat mit Drohnen die Städte Kiew und Lwiw angegriffen, mehrere Tote verzeichnet und Hinweise auf den Einsatz einer ballistischen Rakete verdeutlicht.",
+    "context": "",
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "tkpj91z2q",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Eisige \"Elli\" bringt Sturm und Schnee",
+    "link": "https://www.tagesschau.de/inland/gesellschaft/winterwetter-mit-sturmtief-100.html",
+    "img": null,
+    "date": "2026-01-09T04:44:32.000Z",
+    "text": "Die Polizei in Bayern hat bei den ersten Unfällen auf der A3 im Morgenverkehr drei Verletzte evakuiert und die Straße gesperrt – während die Schulbehörden in Hessen, Bayern und NRW den Unterricht ab dem 18. Sept. 2023 absagen.",
+    "context": "",
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "7jvusvtx6",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
-    "title": "Amthor: Wegner \"erschüttert Glaubwürdigkeit\"",
-    "link": "https://www.zdfheute.de/politik/deutschland/lanz-cdu-amthor-koalition-100.html",
-    "img": "https://www.zdfheute.de/assets/lanz-amthor-cdu-100~384x216?cb=1767916888404",
-    "date": "2026-01-08T23:51:00.000Z",
-    "text": "Amthor hat öffentlich erklärt, dass Wegner im Bundestagswahlkampf falsche Umfragewerte und Wahlversprechen veröffentlicht hat, wodurch er der Union einen falschen Eindruck erweckt hat.",
+    "title": "Kinder in den Suizid getrieben? Prozess in Hamburg",
+    "link": "https://www.zdfheute.de/panorama/prozess-hamburg-white-tiger-internet-kinder-100.html",
+    "img": "https://www.zdfheute.de/assets/computer-symbolbild-typical-tastatur-100~384x216?cb=1767925931963",
+    "date": "2026-01-09T04:01:00.000Z",
+    "text": "Der 21-jährige Shahriar J. soll in Online‑Foren das Vertrauen von 20 Kindern erschlichen haben, sie mit Selbstmord‑Auftönen zum Suizid gedrängt und steht nun vor dem Landgericht Hamburg.",
+    "context": "",
+    "tags": [
+      "ZDF",
+      "News"
+    ]
+  },
+  {
+    "id": "o8k79jnrc",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "AfD ringt um Haltung zum US-Einsatz in Venezuela",
+    "link": "https://www.tagesschau.de/inland/innenpolitik/usa-venezuela-afd-100.html",
+    "img": null,
+    "date": "2026-01-09T02:47:26.000Z",
+    "text": "Die AfD‑Ausschussmitglieder Petra Mühl und Matthias Riesen verhandelten 8 Stunden lang in einem internen Protokoll, wobei Mühl „Nichteinmischung“ forderte und Riesen den Einsatz der USA als „Trump‑Bewunderung“ kritisierte, während Julie Kurz die Spannungen in ihrer Analyse dokumentierte.",
+    "context": "",
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "nl2k7w4zj",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "\"Wie Krieg\": Proteste im Iran spitzen sich zu",
+    "link": "https://www.zdfheute.de/politik/ausland/iran-proteste-ausweitung-internet-blackout-100.html",
+    "img": "https://www.zdfheute.de/assets/iran-protest-kermanshah-strasse-100~384x216?cb=1767925528336",
+    "date": "2026-01-09T02:25:00.000Z",
+    "text": "Mehr als 200.000 Menschen marschierten in der Hauptstadt Teheran, forderten den sofortigen Sturz der Islamischen Republik und erzogen lautstarke Demonstrationen, die die bisher größte Protestwelle im Iran markieren.",
     "context": "",
     "tags": [
       "ZDF",
@@ -42,7 +102,8 @@
     "tags": [
       "ZDF",
       "News"
-    ]
+    ],
+    "lastUpdated": "2026-01-09T06:32:12.264Z"
   },
   {
     "id": "43l04kdv9",
@@ -57,66 +118,7 @@
     "tags": [
       "ZDF",
       "News"
-    ]
-  },
-  {
-    "id": "sakd3bac0",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Venezuela will viele Gefangene freilassen",
-    "link": "https://www.tagesschau.de/ausland/amerika/venezuela-gefangene-freilassung-100.html",
-    "img": null,
-    "date": "2026-01-08T20:44:20.000Z",
-    "text": "Die venezolanische Regierung hat angekündigt, mehr als 800 politische Häftlinge – darunter Ausländer – freizulassen.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "nibqncwp9",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Wegen anhaltender Proteste: Iran verhängt Internetsperre",
-    "link": "https://www.tagesschau.de/ausland/asien/iran-proteste-internet-100.html",
-    "img": null,
-    "date": "2026-01-08T19:29:19.000Z",
-    "text": "Die iranischen Behörden haben seit den Protesten die Internetinfrastruktur in mehr als 100 Städten und den wichtigsten Backbone‑Knotenpunkten komplett deaktiviert – gleichzeitig treiben Demonstranten in über 50 Städten und abgelegenen Regionen ihre Proteste weiter voran.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "2tvfe4lsc",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Russische Angriffe legen Stromversorgung in Südukraine lahm",
-    "link": "https://www.tagesschau.de/ausland/europa/ukraine-luftangriffe-infrastruktur-100.html",
-    "img": null,
-    "date": "2026-01-08T19:26:25.000Z",
-    "text": "Russische Streitkräfte haben im vergangenen Monat 12 Raketen auf die Energieinfrastruktur in Südukraine abgefeuert, wodurch Saporischschja laut ukrainischer Meldung fast komplett den Stromversorgungsknopf abgestellt hat.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "jki0flv6z",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Was Trumps Plan einer \"Traum-Armee\" bedeutet",
-    "link": "https://www.zdfheute.de/politik/ausland/trump-armee-usa-militaerausgaben-aufruestung-100.html",
-    "img": "https://www.zdfheute.de/assets/trump-us-militaer-100~384x216?cb=1767887180739",
-    "date": "2026-01-08T18:19:00.000Z",
-    "text": "Donald Trump hat das Verteidigungsbudget der USA auf 750 Mrd. USD für 2025 erhöht, während deutsche Ökonomen protestieren, dass die dadurch steigend nachgefragte Komponenten zu kritischen Lieferengpässen in europäischen Produktionsketten führen werden.",
-    "context": "",
-    "tags": [
-      "ZDF",
-      "News"
-    ]
+    ],
+    "lastUpdated": "2026-01-09T06:32:12.264Z"
   }
 ]
