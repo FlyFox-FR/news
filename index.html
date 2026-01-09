@@ -314,7 +314,6 @@
                     <div class="card-body">
                         <div class="meta">
                             <span>${isNew ? '<span class="new-indicator"></span>' : ''}${item.sourceCountry || '🌍'} ${item.source} • ${relTime}</span>
-                            <span style="color:var(--accent)">1 Min. Lesezeit</span>
                         </div>
                         <a href="${item.link}" target="_blank" class="card-title">${highlightText(item.title, searchTerm)}</a>
                         ${item.text ? `<div class="scoop">${highlightText(item.text, searchTerm)}</div>` : ''}
