@@ -648,8 +648,7 @@
 
 // --- PROMOTE LOGIC ---
         
-        function promoteArticle(clusterId, relatedId) {
-            // 1. Cluster und Child finden
+      function promoteArticle(clusterId, relatedId) {
             const clusterIndex = allNewsData.findIndex(c => c.id === clusterId);
             if (clusterIndex === -1) return;
             const cluster = allNewsData[clusterIndex];
@@ -657,26 +656,31 @@
             const relatedIndex = cluster.related.findIndex(r => r.id === relatedId);
             if (relatedIndex === -1) return;
 
-            // 2. Merken (Persistenz)
-            // Wir speichern: "Dieser Artikel ID soll Chef sein"
+            // Merken
             let promoted = JSON.parse(localStorage.getItem('my_promoted_ids') || '[]');
             promoted.push(relatedId); 
-            // Optional: Den alten Chef vergessen, falls wir hin und her tauschen wollen, 
-            // aber einfaches Hinzufügen reicht meist.
             localStorage.setItem('my_promoted_ids', JSON.stringify(promoted));
 
-            // 3. Tauschen
+            // Tauschen
             performSwap(cluster, relatedIndex);
 
-            // 4. Neu rendern (damit man es sofort sieht)
+            // Neu rendern
             render();
             
-            // 5. Automatisch die Sources wieder aufklappen, damit man sieht was passiert ist
-            // Da sich die ID des Main-Artikels geändert hat, müssen wir die neue ID öffnen
+            // FIX: Scrollen und Aufklappen
+            // Da wir getauscht haben, hat der Haupt-Cluster jetzt die ID des ehemaligen Related-Items (relatedId)
+            const newMainId = relatedId; 
+            
             setTimeout(() => {
-                const newMainId = allNewsData[clusterIndex].id; // Das ist jetzt die ID des ehemaligen related Items
-                toggleVars(newMainId); 
-            }, 50);
+                // 1. Wieder aufklappen
+                toggleVars(newMainId);
+                
+                // 2. Zum Element scrollen (Zentrieren), damit es nicht wegspringt
+                const el = document.getElementById(`card-${newMainId}`);
+                if(el) {
+                    el.scrollIntoView({block: 'center', behavior: 'auto'});
+                }
+            }, 50); // Kleiner Timeout, damit der Browser das Rendering fertig hat
         }
 
         function performSwap(cluster, relatedIndex) {
@@ -834,23 +838,35 @@
                         </div>
                     </div>
 
-                  
-                    <div id="vars-${item.id}" class="variants-container" style="display:none; padding:20px; background:#121214; border-top:1px solid var(--border)">
-                        ${(item.related || []).map(r => `
-                            <div class="related-item-row">
-                                <!-- Der neue Promote Button -->
-                                <button class="btn-promote" onclick="promoteArticle('${item.id}', '${r.id}')" title="Nach oben holen">▲</button>
+                  <div id="vars-${item.id}" class="variants-container" style="display:none; padding:20px; background:#121214; border-top:1px solid var(--border)">
+                        ${(item.related || []).map(r => {
+                            // Check: Ist wirklich genug Text da?
+                            const isReadable = r.content && r.content.length > 200;
+                            
+                            return `
+                            <div class="related-item-row" style="display:flex; gap:12px; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px; align-items:center;">
+                                <button class="btn-promote" onclick="promoteArticle('${item.id}', '${r.id}')" title="Nach oben holen" style="
+                                    background: rgba(255,255,255,0.1); border: 1px solid #444; color: var(--accent);
+                                    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; 
+                                    justify-content: center; cursor: pointer; font-size: 0.8rem; flex-shrink:0;">▲</button>
                                 
-                                <div class="related-content">
+                                <div class="related-content" style="flex-grow:1">
                                     <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
                                     <div style="font-weight:bold; font-size:0.95rem; margin-bottom:6px; color:#fff">${r.title}</div>
-                                    <div style="display:flex; gap:10px; align-items:center">
+                                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                                         <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Original ↗</a>
-                                        ${r.content ? `<span style="font-size:0.65rem; color:#4ade80; border:1px solid #4ade80; padding:1px 5px; border-radius:4px">Lesbar</span>` : ''}
+                                        
+                                        <!-- DER NEUE BADGE -->
+                                        ${isReadable ? `
+                                            <span style="font-size:0.65rem; color:#fff; background:rgba(74, 222, 128, 0.2); 
+                                            border:1px solid #4ade80; padding:2px 8px; border-radius:10px; font-weight:600;">
+                                            📖 In App lesbar
+                                            </span>
+                                        ` : ''}
                                     </div>
                                 </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 `;
                 container.appendChild(card);
