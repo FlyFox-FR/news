@@ -5,55 +5,73 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- TEXT CLEANER ---
-function cleanString(str) {
-    return str.toLowerCase()
-        .replace(/[^\w\säöüß]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+// --- NEU: INTELLIGENTER ÄHNLICHKEITS-CHECK ---
+function cleanAndStem(text) {
+    if (!text) return [];
+    
+    // Stoppwörter (erweitert)
+    const stopWords = ["und", "oder", "aber", "der", "die", "das", "ein", "eine", "einer", "den", "dem", "des", "mit", "von", "bei", "für", "auf", "im", "in", "ist", "sind", "war", "wird", "werden", "nach", "über", "wegen", "dass", "hat", "haben", "wie", "als", "auch", "noch", "doch", "aus", "all", "gegen"];
+
+    return text.toLowerCase()
+        .replace(/[^\w\säöüß]/g, ' ') // Sonderzeichen weg
+        .split(/\s+/) // In Wörter splitten
+        .filter(w => w.length > 2) // Min 3 Zeichen
+        .filter(w => !stopWords.includes(w)) // Stoppwörter raus
+        .map(w => {
+            // "Stemming Light": Einfache Endungen entfernen, um "Sturm" == "Stürme" zu erkennen
+            if (w.length > 5) return w.replace(/(en|em|ern|er|es|e)$/, "");
+            return w;
+        });
 }
 
-// --- 1. IDENTITÄTS-CHECK (Ist es derselbe Artikel?) ---
-// Streng: Link gleich ODER Titel zu 90% gleich
-function isSameArticle(item1, item2) {
-    if (item1.link === item2.link) return true;
-    const t1 = cleanString(item1.originalTitle || item1.title);
-    const t2 = cleanString(item2.title);
-    return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 5) || (t2.includes(t1) && t2.length - t1.length < 5);
-}
+function getSimilarityScore(title1, title2) {
+    const set1 = cleanAndStem(title1);
+    const set2 = cleanAndStem(title2);
 
-// --- 2. THEMEN-CHECK (Gehört es zum selben Thema?) ---
-// Lockerer: Gemeinsame Wörter oder Teilwörter
-function isRelatedTopic(title1, title2) {
-    if (!title1 || !title2) return false;
+    if (set1.length === 0 || set2.length === 0) return 0;
 
-    const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach", "gegen", "über", "wird", "sich"];
-    
-    const getWords = (t) => cleanString(t).split(' ').filter(w => w.length > 2 && !stopWords.includes(w));
-    
-    const words1 = getWords(title1);
-    const words2 = getWords(title2);
+    let matchWeight = 0;
+    let totalWeight = 0;
 
-    let matches = 0;
+    // Wir gewichten lange, seltene Wörter höher!
+    // "Iran" (4) zählt weniger als "Oreschnik" (9) oder "Bundestagswahl" (14).
     
-    words1.forEach(w1 => {
-        // Exakter Match
-        if (words2.includes(w1)) {
-            matches++;
-            return; // Ein Wort nur einmal zählen
+    set1.forEach(w1 => {
+        const weight = w1.length * w1.length; // Quadratische Gewichtung: Länge ist Macht
+        totalWeight += weight;
+        
+        // Prüfen ob w1 in set2 enthalten ist (oder sehr ähnlich)
+        if (set2.some(w2 => w2 === w1 || (w1.length > 4 && w2.includes(w1)) || (w2.length > 4 && w1.includes(w2)))) {
+            matchWeight += weight * 2; // Match zählt für beide Seiten
         }
-        // Teilwort-Match (z.B. "Sturm" in "Sturmtief")
-        const partial = words2.find(w2 => (w1.length > 3 && w2.length > 3) && (w1.includes(w2) || w2.includes(w1)));
-        if (partial) matches++;
+    });
+    
+    set2.forEach(w2 => {
+        totalWeight += w2.length * w2.length;
     });
 
-    // ELLI-FIX: 
-    // Bei kurzen Titeln reicht schon 1 starkes Wort + 1 Teilwort, oder 2 Treffer.
-    // Bei langen Titeln brauchen wir mehr Evidenz.
-    const minLen = Math.min(words1.length, words2.length);
+    // Dice Koeffizient Formel (angepasst auf Gewichtung)
+    // 2 * (Gewicht der Matches) / (Gesamtgewicht beider Sätze)
+    const score = matchWeight / totalWeight;
     
-    if (minLen <= 4) return matches >= 1 && (matches / minLen) >= 0.4; // 40% Übereinstimmung bei kurzen Titeln
-    return matches >= 2;
+    return score;
+}
+
+// --- 1. DEDUPLIZIERUNG (Exakt gleiche Artikel verhindern) ---
+function isSameArticle(item1, item2) {
+    if (item1.link === item2.link) return true;
+    // Wenn Score extrem hoch (> 0.85), ist es quasi derselbe Titel
+    return getSimilarityScore(item1.originalTitle || item1.title, item2.title) > 0.85;
+}
+
+// --- 2. CLUSTERING (Themen gruppieren) ---
+function isRelatedTopic(title1, title2) {
+    const score = getSimilarityScore(title1, title2);
+    
+    // Schwellenwert: 0.35 hat sich als guter "Sweet Spot" erwiesen.
+    // Iran/Protest vs Iran/Militär hat einen Score von ca. 0.1 (nur "Iran" matcht, Rest nicht).
+    // Elli/Sturm vs Winter/Elli hat Score von ca. 0.5 (Elli + Sturm/Winter matcht).
+    return score > 0.35; 
 }
 
 function loadExistingNews() {
@@ -66,14 +84,12 @@ function loadExistingNews() {
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
-  const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
     2. Suche nach harten Fakten (Zahlen, Orte, Namen).
     3. Schreibe 2-4 Bulletpoints.
-    4. Erfinde NIE etwas. NICHTS erfinden. Was nicht so ungefähr in dem Kontext des Textes drinsteht, das kannst Du nicht nehmen. Dann nimm etwas aus dem Text.
-    5. Aber es wäre gut, wenn Du ein bisschen was aus dem ganzen Artikel nimmst, damit es wie eine ECHTE Zusammenfassung ist und nicht nur die ersten 3 Sätze.
     
     Format:
     {
@@ -81,7 +97,6 @@ async function analyzeWithPollinations(title, content, sourceName) {
       "scoop": "Kernaussage in einem Satz.",
       "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
     }`;
-    
     
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
@@ -115,13 +130,11 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- CLUSTERING LOGIK ---
 function clusterNews(allNews) {
     console.log(`🧹 Starte Clustering für ${allNews.length} Artikel...`);
     let clustered = [];
     let processedIds = new Set();
 
-    // Neueste zuerst
     allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     for (let i = 0; i < allNews.length; i++) {
@@ -135,9 +148,9 @@ function clusterNews(allNews) {
             let candidate = allNews[j];
             if (processedIds.has(candidate.id)) continue;
 
-            // Hier nutzen wir den toleranten Themen-Check
             if (isRelatedTopic(item.originalTitle, candidate.originalTitle)) {
-                console.log(`🔗 Cluster: "${candidate.originalTitle}" -> "${item.originalTitle}"`);
+                const score = getSimilarityScore(item.originalTitle, candidate.originalTitle);
+                console.log(`🔗 Cluster (Score ${score.toFixed(2)}): "${candidate.originalTitle}" -> "${item.originalTitle}"`);
                 group.push(candidate);
                 processedIds.add(candidate.id);
             }
@@ -155,13 +168,12 @@ function clusterNews(allNews) {
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Final Dedupe & Cluster)...");
+    console.log("🚀 Starte News-Abruf (Clean & Smart Cluster)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
     catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
 
-    // 1. Alles Vorhandene laden und flachklopfen
     const existingNews = loadExistingNews();
     let flatFeed = [];
     
@@ -172,9 +184,6 @@ async function run() {
         if (item.related) item.related.forEach(child => flatFeed.push(child));
     });
 
-    console.log(`📂 Cache geladen: ${flatFeed.length} Artikel.`);
-
-    // 2. Neue News holen und INTELLIGENT einfügen
     for (const source of sources) {
         try {
             console.log(`\n📡 ${source.name}...`);
@@ -182,26 +191,20 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // DER TÜRSTEHER: Gibt es diesen Artikel schon?
+                // Deduplizierung (Exakter Check)
                 const existingIndex = flatFeed.findIndex(n => isSameArticle(n, item));
                 
                 if (existingIndex !== -1) {
-                    // Update Datum, aber behalte KI-Daten (spart Tokens!)
-                    // console.log(`♻️ Update existierender Artikel: ${item.title.substring(0,20)}...`);
                     flatFeed[existingIndex].date = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString();
-                    continue; // Fertig, nicht neu generieren
+                    continue; 
                 }
 
-                // Wenn wirklich neu: KI anwerfen
                 console.log(`🤖 Neu: ${item.title.substring(0, 30)}...`);
                 const rawContent = item.contentSnippet || item.content || "";
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
                 
-                let imgUrl = item.enclosure?.url || item.itunes?.image;
-                if (!imgUrl) {
-                    const cleanPrompt = item.title.replace(/[^a-zA-Z0-9\s]/g, '').substring(0, 100);
-                    imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent("editorial news photo, realistic, " + cleanPrompt)}?width=800&height=400&nologo=true&model=flux`;
-                }
+                // KI-Bild Code wurde hier ENTFERNT (Wunsch gemäß)
+                let imgUrl = item.enclosure?.url || item.itunes?.image || null;
 
                 const newsItem = {
                     id: Math.random().toString(36).substr(2, 9),
@@ -224,7 +227,6 @@ async function run() {
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
-    // 3. Jetzt alles sauber gruppieren
     const finalFeed = clusterNews(flatFeed);
     
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
@@ -232,4 +234,3 @@ async function run() {
 }
 
 run();
-
