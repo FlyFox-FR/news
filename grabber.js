@@ -5,7 +5,7 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- HELPER ---
+// --- HELPER & FALLBACK ---
 function cleanString(str) {
     return str.toLowerCase().replace(/[^\w\säöüß]/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -17,7 +17,7 @@ function isSameArticle(item1, item2) {
     return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 5);
 }
 
-// Fallback Algo (Nur für den absoluten Notfall)
+// Fallback Algo
 function isRelatedTopicAlgorithmic(title1, title2) {
     const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach", "gegen", "über"];
     const getWords = (t) => cleanString(t).split(' ').filter(w => w.length > 2 && !stopWords.includes(w));
@@ -43,7 +43,7 @@ function loadExistingNews() {
     return [];
 }
 
-// 1. INHALTS-ANALYSE
+// --- 1. INHALT ---
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
@@ -69,10 +69,8 @@ async function analyzeWithPollinations(title, content, sourceName) {
     while (retries > 0) {
         try {
             const response = await axios.get(url, { timeout: 35000 });
-            let rawText = response.data;
-            if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
+            let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
 
-            // Basic Cleaning
             rawText = rawText.split("--- Support")[0]; 
             rawText = rawText.replace(/```json|```/g, "").trim();
             const firstOpen = rawText.indexOf('{');
@@ -94,7 +92,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- 2. KI CLUSTERING (DER LASER-CHIRURG FIX) ---
+// --- 2. CLUSTERING (MIT DEBUG & REASONING FILTER) ---
 async function clusterWithAI(articles) {
     if (articles.length === 0) return [];
     
@@ -105,65 +103,48 @@ async function clusterWithAI(articles) {
     const safeList = listForAI.substring(0, 3500);
 
     const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
-    
     Liste:
     ${safeList}
     
     Aufgabe: Gib ein JSON Array von Arrays zurück. Jedes innere Array enthält die IDs, die zusammengehören.
-    Beispiel Format: [[0, 5], [1], [2, 3]]
-    
+    Beispiel: [[0, 5], [1], [2, 3]]
     Regeln:
     1. "Sturm Elli" und "Unwetter im Norden" = GLEICHES EVENT -> Gruppieren.
     2. "Iran Protest" und "Iran Militärübung" = UNTERSCHIEDLICH -> Nicht gruppieren.
-    3. Antworte NUR mit dem JSON Code. Keine Einleitung, keine Nummerierung.`;
-    
+    3. Antworte NUR mit dem JSON. Keine Erklärung!`;
 
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     try {
         const response = await axios.get(url, { timeout: 120000 });
-        let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         
-        console.log("🔍 Raw KI Response (Auszug):", rawText.substring(0, 100));
+        // DEBUGGING: Wir speichern die rohe Antwort!
+        let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data, null, 2);
+        fs.writeFileSync('debug_ai_response.txt', rawText); // <--- HIER SPEICHERN WIR
+        console.log("🐛 KI-Antwort gespeichert in debug_ai_response.txt");
 
-        // --- DER FIX: LASER EXTRAKTION ---
-        // Wir suchen nach [[ ... ]] (Array von Arrays)
-        // \s* erlaubt Leerzeichen, .*? nimmt alles dazwischen
-        const jsonMatch = rawText.match(/\[\s*\[.*?\]\s*\]/s);
+        // --- LASER PARSER 2.0 ---
+        // Das Modell könnte { "role": "assistant", "content": "[[1,2]]" } zurückgeben.
+        // Wir suchen im GANZEN Text einfach nach [[ ... ]] mit Zahlen drin.
+        // Regex Erklärung: Suche nach [[ gefolgt von Zahlen/Kommas/Klammern gefolgt von ]]
+        const magicMatch = rawText.match(/\[\s*\[[\d\s,\[\]]*\]\s*\]/);
 
-        if (jsonMatch) {
-            // Wir nehmen nur den gefundenen Teil, alles andere (Text, Nummerierung) wird weggeworfen
-            rawText = jsonMatch[0];
+        if (magicMatch) {
+            rawText = magicMatch[0]; // Wir nehmen nur das gefundene Array!
         } else {
-            // Fallback: Vielleicht fehlen die äußeren Klammern? Versuche [ ... ]
-            const simpleMatch = rawText.match(/\[.*?\]/s);
-            if (simpleMatch) rawText = simpleMatch[0];
+            throw new Error("Kein Array-Muster [[...]] im Text gefunden.");
         }
 
-        // Putzen von Backslashes (häufiger Fehler)
-        rawText = rawText.replace(/\\/g, "");
-
-        let groups;
-        try {
-            groups = JSON.parse(rawText);
-        } catch (e) {
-            console.error("⚠️ JSON Parse Error trotz Regex. Versuche Reparatur...");
-            // Letzter Rettungsversuch: Manchmal fehlen Kommas
-            throw e; 
-        }
-        
-        if (!Array.isArray(groups)) throw new Error("Kein Array zurückbekommen");
+        const groups = JSON.parse(rawText);
+        if (!Array.isArray(groups)) throw new Error("Format ist kein Array");
 
         console.log("🧠 KI-Gruppierung erfolgreich!");
         
         let clusteredFeed = [];
         let usedIndices = new Set();
 
-        // Gruppen verarbeiten
         groups.forEach(groupIndices => {
-            // Sicherstellen, dass es IDs sind und existieren
-            if (!Array.isArray(groupIndices)) return; 
-            
+            if (!Array.isArray(groupIndices)) return;
             let validIndices = groupIndices.filter(i => activeArticles[i] !== undefined);
             if (validIndices.length === 0) return;
 
@@ -193,7 +174,6 @@ async function clusterWithAI(articles) {
             clusteredFeed.push(parent);
         });
 
-        // Vergessene Items
         activeArticles.forEach((item, index) => {
             if (!usedIndices.has(index)) {
                 item.related = [];
@@ -206,11 +186,10 @@ async function clusterWithAI(articles) {
     } catch (e) {
         console.error("❌ KI-Clustering fehlgeschlagen:", e.message);
         console.log("⚙️ Starte algorithmischen Fallback (Math-Mode)...");
-        return clusterAlgorithmic(articles); // Fallback auf deinen alten Mathe-Algo
+        return clusterAlgorithmic(articles);
     }
 }
 
-// Fallback Funktion (Der Mathe-Algo, den du schon hattest)
 function clusterAlgorithmic(allNews) {
     let clustered = [];
     let processedIds = new Set();
@@ -255,7 +234,7 @@ function clusterAlgorithmic(allNews) {
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Ultra Robust)...");
+    console.log("🚀 Starte News-Abruf (Debug & Fix)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -277,7 +256,6 @@ async function run() {
         try {
             console.log(`\n📡 ${source.name}...`);
             const feed = await parser.parseURL(source.url);
-            
             let addedCount = 0;
             let checkedCount = 0;
             const maxLookback = 20; 
@@ -321,7 +299,6 @@ async function run() {
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
-    // Safety Save
     flatFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     fs.writeFileSync('news.json', JSON.stringify(flatFeed, null, 2));
 
@@ -330,7 +307,6 @@ async function run() {
         flatFeed = flatFeed.slice(0, 60);
     }
 
-    // HYBRID CLUSTERING
     const finalFeed = await clusterWithAI(flatFeed);
     
     finalFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
