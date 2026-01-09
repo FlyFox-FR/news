@@ -4,11 +4,10 @@ const fs = require('fs');
 
 const parser = new Parser();
 
-// Konfiguration
+// KONFIGURATION
+// Wir nehmen das stabilste Modell, das es gibt. Kein Flash, kein Beta-Kram.
+const MODEL_NAME = "gemini-pro"; 
 const API_KEY = process.env.GEMINI_API_KEY;
-
-// Wir versuchen Flash (schnell), Fallback ist Pro (stabil)
-const MODEL_NAME = "gemini-1.5-flash"; 
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: MODEL_NAME });
@@ -43,6 +42,7 @@ async function analyzeWithGemini(title, content, sourceName) {
         const response = await result.response;
         let summary = response.text();
         
+        // Aufräumen
         summary = summary.trim().replace(/\*\*/g, '').replace(/^["']|["']$/g, '');
 
         if (!summary || summary.length < 5) throw new Error("Leere Antwort");
@@ -54,15 +54,14 @@ async function analyzeWithGemini(title, content, sourceName) {
         };
 
     } catch (error) {
-        // Falls Flash nicht will, versuchen wir es nicht nochmal, sondern nehmen den Titel
-        // Das spart Zeit und Nerven.
-        console.error(`⚠️ Fehler:`, error.message);
+        console.error(`⚠️ Fehler bei "${title.substring(0, 15)}...":`, error.message);
+        // Fallback
         return { summary: title, context: "", tags: [sourceName] };
     }
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Gemini Final)...");
+    console.log("🚀 Starte News-Abruf (Gemini PRO Stable)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -80,6 +79,7 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
+                // Cache Logik
                 if (cached && cached.text && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue;
