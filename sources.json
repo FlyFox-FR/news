@@ -16,5 +16,11 @@
     "url": "https://www.spiegel.de/index.rss",
     "count": 5,
     "country": "🇩🇪"
+  },
+    {
+    "name": "rbb24",
+    "url": "https://www.rbb24.de/index.xml/feed=rss.xml",
+    "count": 5,
+    "country": "🇩🇪"
   }
 ]
