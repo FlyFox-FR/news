@@ -4,12 +4,12 @@ const fs = require('fs');
 
 const parser = new Parser();
 
-// KONFIGURATION
-// Wir nutzen Gemini 1.5 Flash - das ist das schnellste und kosteneffizienteste Modell
-const MODEL_NAME = "gemini-1.5-flash"; 
+// Konfiguration
 const API_KEY = process.env.GEMINI_API_KEY;
 
-// Initialisiere Google AI
+// Wir versuchen Flash (schnell), Fallback ist Pro (stabil)
+const MODEL_NAME = "gemini-1.5-flash"; 
+
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
@@ -28,10 +28,8 @@ async function analyzeWithGemini(title, content, sourceName) {
         return { summary: title, context: "", tags: [] };
     }
 
-    // Input bereinigen
     const safeContent = (content || "").substring(0, 2000).replace(/<[^>]*>/g, "");
 
-    // Der Prompt für Gemini
     const prompt = `Du bist ein professioneller Nachrichten-Redakteur.
     Aufgabe: Fasse den folgenden Artikel in einem einzigen, prägnanten deutschen Satz zusammen.
     
@@ -41,13 +39,10 @@ async function analyzeWithGemini(title, content, sourceName) {
     Antworte NUR mit der Zusammenfassung. Keine Einleitung, keine Formatierung.`;
 
     try {
-        // Gemini Anfrage (sehr simpel im Vergleich zu Hugging Face)
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        
         let summary = response.text();
         
-        // Aufräumen (Leerzeichen, Markdown entfernen)
         summary = summary.trim().replace(/\*\*/g, '').replace(/^["']|["']$/g, '');
 
         if (!summary || summary.length < 5) throw new Error("Leere Antwort");
@@ -59,14 +54,15 @@ async function analyzeWithGemini(title, content, sourceName) {
         };
 
     } catch (error) {
-        console.error(`⚠️ Gemini Fehler bei "${title.substring(0, 15)}...":`, error.message);
-        // Fallback auf Titel
+        // Falls Flash nicht will, versuchen wir es nicht nochmal, sondern nehmen den Titel
+        // Das spart Zeit und Nerven.
+        console.error(`⚠️ Fehler:`, error.message);
         return { summary: title, context: "", tags: [sourceName] };
     }
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Google Gemini Edition)...");
+    console.log("🚀 Starte News-Abruf (Gemini Final)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -84,7 +80,6 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Cache-Check: Nur nutzen, wenn Text existiert und ungleich Titel ist
                 if (cached && cached.text && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue;
@@ -93,8 +88,6 @@ async function run() {
                 console.log(`🤖 Gemini analysiert: ${item.title.substring(0, 30)}...`);
                 
                 const rawContent = item.contentSnippet || item.content || "";
-                
-                // Aufruf der neuen Google Funktion
                 const ai = await analyzeWithGemini(item.title, rawContent, source.name);
                 
                 newNewsFeed.push({
@@ -110,8 +103,7 @@ async function run() {
                     tags: ai.tags
                 });
                 
-                // Gemini ist schnell, aber wir sind nett und warten kurz (Rate Limit Schutz)
-                await sleep(1500); 
+                await sleep(1000); 
             }
         } catch (e) { console.error(`❌ Fehler ${source.name}:`, e.message); }
     }
