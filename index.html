@@ -316,70 +316,103 @@
             alert("Link kopiert!");
         }
 
-        function render() {
-            const container = document.getElementById('feed');
-            const search = document.getElementById('search').value.toLowerCase();
-            container.innerHTML = '';
+function render() {
+    const container = document.getElementById('feed');
+    const search = document.getElementById('search').value.toLowerCase();
+    container.innerHTML = '';
 
-            let data = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+    let data = [];
 
-            if(selectedSource) {
-                data = data.filter(i => i.source === selectedSource || i.related?.some(r => r.source === selectedSource));
+    if (selectedSource) {
+        // --- SPEZIAL-LOGIK FÜR QUELLEN-FILTER ---
+        // Wir suchen in allen Clustern nach Artikeln DIESER Quelle
+        let extractedArticles = [];
+        allNewsData.forEach(cluster => {
+            // 1. Ist der Hauptartikel von der Quelle?
+            if (cluster.source === selectedSource) {
+                const item = { ...cluster };
+                item.related = []; // Wir zeigen keine anderen Quellen an
+                extractedArticles.push(item);
             }
-
-            if(currentSort === 'time') data.sort((a,b) => new Date(b.date) - new Date(a.date));
-            else data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
-
-            if(search) {
-                data = data.filter(i => i.title.toLowerCase().includes(search) || i.text.toLowerCase().includes(search));
+            // 2. Sind Artikel in "related" von dieser Quelle?
+            if (cluster.related && cluster.related.length > 0) {
+                cluster.related.forEach(rel => {
+                    if (rel.source === selectedSource) {
+                        extractedArticles.push(rel);
+                    }
+                });
             }
+        });
+        data = extractedArticles;
+    } else {
+        // --- NORMALE ANSICHT (CLUSTER) ---
+        data = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+    }
 
-            if(data.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--text-muted)">Keine Artikel gefunden.</div>`;
-                return;
-            }
+    // Sortierung (Wichtig, damit die extrahierten Artikel chronologisch sind)
+    if (currentSort === 'time') {
+        data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    } else {
+        data.sort((a, b) => (b.related?.length || 0) - (a.related?.length || 0));
+    }
 
-            data.forEach(item => {
-                const isSaved = savedNews.some(s => s.news.id === item.id);
-                const time = new Date(item.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
-                container.innerHTML += `
-                    <div class="card" style="position:relative">
-                        <button class="btn-save ${isSaved ? 'saved' : ''}" onclick="openSaveMenu('${item.id}', event)">${isSaved ? '★' : '☆'}</button>
-                        ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
-                        <div class="card-body">
-                            <div class="meta">
-                                <span>${item.sourceCountry} ${item.source} • ${time}</span>
-                                <span class="reading-time">${calculateReadingTime(item)}</span>
-                            </div>
-                            <a href="${item.link}" target="_blank" class="card-title">${item.title}</a>
-                            <div class="scoop">${item.text}</div>
-                            <ul class="bullets">${(item.bullets||[]).map(b => `<li>${b}</li>`).join('')}</ul>
-                        </div>
-                        <div class="actions">
-                            <a href="${item.link}" target="_blank" class="btn-link">ARTIKEL ÖFFNEN →</a>
-                            <div style="display:flex; gap:10px; align-items:center">
-                                <button class="btn-share" onclick="copyLink('${item.link}')" title="Link kopieren">🔗</button>
-                                ${item.related?.length ? `
-                                    <button class="btn-toggle" onclick="toggleVars('${item.id}', this)">
-                                        <span>📚 ${item.related.length} Quellen</span>
-                                        <span class="chevron">▼</span>
-                                    </button>` : ''}
-                            </div>
-                        </div>
-                        <div id="vars-${item.id}" class="variants-container">
-                            ${(item.related||[]).map(r => `
-                                <div style="margin-bottom:15px; border-bottom:1px solid #222; padding-bottom:10px">
-                                    <div class="meta"><span>${r.source}</span></div>
-                                    <div style="font-weight:bold; font-size:0.9rem; margin-bottom:5px">${r.title}</div>
-                                    <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.7rem">ZUM ARTIKEL</a>
-                                </div>
-                            `).join('')}
-                        </div>
+    // Suche anwenden
+    if (search) {
+        data = data.filter(i => 
+            i.title.toLowerCase().includes(search) || 
+            (i.text && i.text.toLowerCase().includes(search))
+        );
+    }
+
+    if (data.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--text-muted)">Keine Artikel von "${selectedSource || ''}" gefunden.</div>`;
+        return;
+    }
+
+    // Rendering der Karten
+    data.forEach(item => {
+        const isSaved = savedNews.some(s => s.news.id === item.id);
+        const time = new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const isFilterActive = selectedSource !== null;
+
+        container.innerHTML += `
+            <div class="card" style="position:relative">
+                <button class="btn-save ${isSaved ? 'saved' : ''}" onclick="openSaveMenu('${item.id}', event)">${isSaved ? '★' : '☆'}</button>
+                ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
+                <div class="card-body">
+                    <div class="meta">
+                        <span>${item.sourceCountry || '🌍'} ${item.source} • ${time}</span>
+                        <span class="reading-time">${calculateReadingTime(item)}</span>
                     </div>
-                `;
-            });
-        }
+                    <a href="${item.link}" target="_blank" class="card-title">${item.title}</a>
+                    ${item.text ? `<div class="scoop">${item.text}</div>` : ''}
+                    <ul class="bullets">${(item.bullets || []).map(b => `<li>${b}</li>`).join('')}</ul>
+                </div>
+                <div class="actions">
+                    <a href="${item.link}" target="_blank" class="btn-link">ARTIKEL ÖFFNEN →</a>
+                    <div style="display:flex; gap:10px; align-items:center">
+                        <button class="btn-share" onclick="copyLink('${item.link}')" title="Link kopieren">🔗</button>
+                        ${!isFilterActive && item.related?.length ? `
+                            <button class="btn-toggle" onclick="toggleVars('${item.id}', this)">
+                                <span>📚 ${item.related.length} Quellen</span>
+                                <span class="chevron">▼</span>
+                            </button>` : ''}
+                    </div>
+                </div>
+                <div id="vars-${item.id}" class="variants-container">
+                    ${(item.related || []).map(r => `
+                        <div style="margin-bottom:15px; border-bottom:1px solid #222; padding-bottom:10px">
+                            <div class="meta"><span>${r.source}</span></div>
+                            <div style="font-weight:bold; font-size:0.9rem; margin-bottom:5px">${r.title}</div>
+                            <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.7rem">ZUM ARTIKEL</a>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    });
+}
+        
 
         function toggleVars(id, btn) {
             const el = document.getElementById('vars-' + id);
