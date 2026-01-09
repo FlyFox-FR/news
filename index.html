@@ -576,6 +576,49 @@
             return `Noch ${hours} Std.`;
         }
 
+
+    // --- CONTEXT MENU LOGIC ---
+        let activeMenuId = null;
+
+        function toggleCardMenu(event, id) {
+            event.stopPropagation(); // Verhindert Bubbling
+            const menu = document.getElementById(`menu-${id}`);
+            const btn = document.getElementById(`btn-menu-${id}`);
+            
+            // Wenn dieses Menü schon offen ist -> schließen
+            if (activeMenuId === id) {
+                closeAllMenus();
+                return;
+            }
+
+            // Erst alle anderen schließen
+            closeAllMenus();
+
+            // Dieses öffnen
+            menu.classList.add('show');
+            btn.classList.add('active');
+            activeMenuId = id;
+        }
+
+        function closeAllMenus() {
+            if(activeMenuId) {
+                const menu = document.getElementById(`menu-${activeMenuId}`);
+                const btn = document.getElementById(`btn-menu-${activeMenuId}`);
+                if(menu) menu.classList.remove('show');
+                if(btn) btn.classList.remove('active');
+                activeMenuId = null;
+            }
+        }
+
+        // Klick irgendwo anders schließt Menüs
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.action-right')) {
+                closeAllMenus();
+            }
+        });
+
+
+        // --- RENDER FUNCTION (UPDATED) ---
         function render() {
             const container = document.getElementById('feed');
             const searchTerm = document.getElementById('search').value.trim().toLowerCase();
@@ -583,11 +626,8 @@
 
             let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
             
-            // 1. DATE FILTER (mit Timezone Fix)
             if(currentTab === 'feed' && selectedDateFilter) {
-                baseData = baseData.filter(item => {
-                    return getLocalDateString(item.date) === selectedDateFilter;
-                });
+                baseData = baseData.filter(item => getLocalDateString(item.date) === selectedDateFilter);
             }
 
             let data = [];
@@ -642,15 +682,39 @@
                         <div class="scoop">${highlightText(item.text, searchTerm)}</div>
                         <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
                     </div>
+                    
+                    <!-- NEW ACTION BAR -->
                     <div class="actions">
-                        ${hasContent ? `<button class="btn-reader" onclick="openReader('${item.id}')">📖 Lesen</button>` : ''}
-                        <a href="${item.link}" target="_blank" class="btn-link">Original →</a>
-                        <button class="btn-link" style="background:none; border:none; cursor:pointer;" onclick="shareArticle('${item.id}')">📤 Teilen</button>
-                        ${selectedSources.length === 0 && item.related?.length ? `
-                            <button class="btn-toggle" onclick="toggleVars('${item.id}')">
-                                <span>📚 ${item.related.length} Quellen</span>
-                            </button>` : ''}
+                        <!-- LEFT: Original -->
+                        <div class="action-left">
+                            <a href="${item.link}" target="_blank" class="btn-link">Original ↗</a>
+                        </div>
+
+                        <!-- CENTER: Reader -->
+                        <div class="action-center">
+                            ${hasContent ? `<button class="btn-reader" onclick="openReader('${item.id}')">📖 Lesen</button>` : ''}
+                        </div>
+
+                        <!-- RIGHT: Sources & Menu -->
+                        <div class="action-right">
+                            ${selectedSources.length === 0 && item.related?.length ? `
+                                <button class="btn-toggle" onclick="toggleVars('${item.id}')">
+                                    <span>📚 ${item.related.length}</span>
+                                </button>` : ''}
+                            
+                            <button id="btn-menu-${item.id}" class="btn-menu" onclick="toggleCardMenu(event, '${item.id}')">⋮</button>
+                            
+                            <!-- Context Menu Dropdown -->
+                            <div id="menu-${item.id}" class="action-dropdown">
+                                <div class="menu-option" onclick="shareArticle('${item.id}')">
+                                    <span>📤</span> Teilen
+                                </div>
+                                <!-- Platzhalter für später: -->
+                                <!-- <div class="menu-option"><span>🚩</span> Melden</div> -->
+                            </div>
+                        </div>
                     </div>
+
                     <div id="vars-${item.id}" class="variants-container" style="display:none; padding:20px; background:#121214; border-top:1px solid var(--border)">
                         ${(item.related || []).map(r => `
                             <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px">
@@ -665,6 +729,7 @@
             });
         }
 
+    
         function toggleVars(id) { const el = document.getElementById('vars-' + id); el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
         function setSort(s) { currentSort = s; document.getElementById('btn-time').classList.toggle('active', s === 'time'); document.getElementById('btn-trend').classList.toggle('active', s === 'trend'); render(); }
