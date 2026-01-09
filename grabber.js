@@ -111,7 +111,23 @@ function loadExistingNews() {
 
 async function analyzeWithPollinations(title, fullText, sourceName) {
     const context = fullText && fullText.length > 500 ? fullText.substring(0, 5000) : title;
-    const instruction = `Du bist News-Redakteur. Analysiere: "${context.replace(/"/g, "'").substring(0, 4000)}". Antworte NUR JSON. Sprache: DEUTSCH. Titel: Neutral. Scoop: Max 2 Sätze. Bullets: 3 Fakten. Format: {"newTitle": "...", "scoop": "...", "bullets": ["..."]}`;
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+    Antworte NUR mit validem JSON.
+    ANWEISUNG:
+    1. Sprache: ZWINGEND DEUTSCH.
+    2. ERFINDE NICHTS! Versuche dich an den Kontext der Artikel zu halten.
+    3. Suche nach harten Fakten (Zahlen, Orte).
+    4. Wenn Du wirklich keine harten Fakten, Orte, Namen etc. findest, dann schreibe kein Bulletpoint mit "Keine Orte, Fakten etc... im Text gefunden", sondern dann schreibe etwas zum Inhalt/Kontext des Artikels.
+    5. Schreibe 2-4 Bulletpoints.
+
+    Format:
+    {
+      "newTitle": "Sachliche Überschrift",
+      "scoop": "Kernaussage in einem Satz.",
+      "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
+    }`
+    
+    
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
     
     let retries = 2;
