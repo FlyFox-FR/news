@@ -5,41 +5,25 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- ÄHNLICHKEITS-CHECK (Smarter) ---
+// --- ÄHNLICHKEITS-CHECK ---
 function isSimilar(title1, title2) {
     if (!title1 || !title2) return false;
-
-    // Füllwörter ignorieren
-    const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach", "gegen", "über"];
-
-    const clean = t => t.toLowerCase()
-        .replace(/[^\w\säöüß]/g, ' ') 
-        .split(/\s+/)
-        .filter(w => w.length > 2)
-        .filter(w => !stopWords.includes(w));
-
+    const clean = t => t.toLowerCase().replace(/[^\w\säöüß]/g, ' ').split(/\s+/).filter(w => w.length > 2);
     const words1 = clean(title1);
     const words2 = clean(title2);
 
-    // Gemeinsame Wörter zählen
     let matches = 0;
+    words1.forEach(w1 => { if (words2.includes(w1)) matches++; });
+    
+    // Teilwort-Match für kurze Titel wie "Sturm Elli"
     words1.forEach(w1 => {
-        if (words2.includes(w1)) matches++;
+        words2.forEach(w2 => {
+            if (w1 !== w2 && (w1.includes(w2) || w2.includes(w1)) && w1.length > 4) matches++;
+        });
     });
 
-    // --- LOGIK-ÄNDERUNG ---
-    
-    // 1. Wenn ein Titel sehr kurz ist (< 4 relevante Wörter), müssen fast alle Wörter gleich sein.
-    // Das verhindert "Iran Protest" == "Iran Militär".
-    const minLen = Math.min(words1.length, words2.length);
-    if (minLen < 4) {
-        return matches >= (minLen - 1); // Fast exakt gleich
-    }
-
-    // 2. Bei langen Titeln reichen 40% Übereinstimmung ODER mind. 3 starke Treffer
-    const threshold = Math.min(words1.length, words2.length) * 0.4;
-    
-    return matches >= 3 || matches > threshold;
+    const threshold = Math.min(words1.length, words2.length) * 0.4; 
+    return matches >= 2 || matches > threshold;
 }
 
 function loadExistingNews() {
@@ -52,15 +36,14 @@ function loadExistingNews() {
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
-    // --- PROMPT (Anti-Halluzination) ---
-    const instruction = `Du bist ein strenger Fakten-Checker.
-    Analysiere: "${title} - ${safeContent}"
-    
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
-    2. Nenne NUR Länder/Personen, die im Text stehen. ERFINDE NICHTS (z.B. keine Beteiligung von Deutschland, wenn es nicht da steht).
-    3. Suche nach harten Fakten (Zahlen, Orte).
+    2. Suche nach harten Fakten (Zahlen, Orte, Namen).
+    3. Schreibe 2-4 Bulletpoints.
+    4. Erfinde NIE etwas. NICHTS erfinden. Was nicht so ungefähr in dem Kontext des Textes drinsteht, das kannst Du nicht nehmen. Dann nimm etwas aus dem Text.
+    5. Aber es wäre gut, wenn Du ein bisschen was aus dem ganzen Artikel nimmst, damit es wie eine ECHTE Zusammenfassung ist und nicht nur die ersten 3 Sätze.
     
     Format:
     {
@@ -101,18 +84,21 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- CLUSTERING LOGIK ---
+// --- NEU: DER STAUBSAUGER (POST-PROCESSING) ---
 function clusterNews(allNews) {
     console.log("🧹 Starte Clustering...");
     let clustered = [];
     let processedIds = new Set();
 
+    // Sortiere nach Datum, damit das neueste immer der "Parent" wird
     allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     for (let i = 0; i < allNews.length; i++) {
         let item = allNews[i];
+        
         if (processedIds.has(item.id)) continue;
 
+        // Suche nach Duplikaten im Rest der Liste
         let group = [item];
         processedIds.add(item.id);
 
@@ -127,21 +113,26 @@ function clusterNews(allNews) {
             }
         }
 
+        // Das Haupt-Element ist das erste (neueste)
         let parent = group[0];
+        // Alle anderen kommen in 'related' (auch wenn sie vorher schon related hatten, wir flachen das ab)
         parent.related = [];
+        
         for (let k = 1; k < group.length; k++) {
             parent.related.push(group[k]);
+            // Falls das Kind selbst schon Varianten hatte, rette die auch
             if (group[k].related && group[k].related.length > 0) {
                 parent.related.push(...group[k].related);
             }
         }
+        
         clustered.push(parent);
     }
     return clustered;
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Strict Cluster)...");
+    console.log("🚀 Starte News-Abruf (Post-Process Cluster)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -149,15 +140,26 @@ async function run() {
 
     const existingNews = loadExistingNews();
     
-    // Alles in einen Topf werfen (flach)
+    // Wir sammeln hier ALLES (Cache + Neu), aber flach (ohne Cluster Struktur)
+    // Wenn im Cache schon Cluster waren, brechen wir die auf, um neu zu sortieren
     let flatFeed = [];
+    
+    // Cache "entpacken"
     existingNews.forEach(item => {
+        // Haupt-Item
         let cleanItem = { ...item };
-        delete cleanItem.related;
+        delete cleanItem.related; // Löschen, wird neu berechnet
         flatFeed.push(cleanItem);
-        if (item.related) item.related.forEach(child => flatFeed.push(child));
+        
+        // Kinder auch als eigenständige Items behandeln für den Moment
+        if (item.related && item.related.length > 0) {
+            item.related.forEach(child => {
+                flatFeed.push(child);
+            });
+        }
     });
 
+    // Neue News holen
     for (const source of sources) {
         try {
             console.log(`\n📡 ${source.name}...`);
@@ -165,19 +167,13 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
+                // Check ob schon in flacher Liste (über Link)
                 if (flatFeed.find(n => n.link === item.link)) continue;
 
                 console.log(`🤖 Analysiere: ${item.title.substring(0, 30)}...`);
                 const rawContent = item.contentSnippet || item.content || "";
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
                 
-                // --- BILD ---
-                let imgUrl = item.enclosure?.url || item.itunes?.image;
-                if (!imgUrl) {
-                    const cleanPrompt = item.title.replace(/[^a-zA-Z0-9\s]/g, '').substring(0, 100);
-                    imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent("editorial news photo, realistic, " + cleanPrompt)}?width=800&height=400&nologo=true&model=flux`;
-                }
-
                 const newsItem = {
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
@@ -185,7 +181,7 @@ async function run() {
                     title: ai.newTitle || item.title,
                     originalTitle: item.title,
                     link: item.link,
-                    img: imgUrl,
+                    img: item.enclosure?.url || item.itunes?.image || null,
                     date: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
                     text: ai.summary,
                     bullets: ai.bullets,
@@ -199,9 +195,11 @@ async function run() {
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
+    // JETZT erst gruppieren wir alles auf einmal
     const finalFeed = clusterNews(flatFeed);
+
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
-    console.log(`✅ Fertig! ${finalFeed.length} Themen-Cluster.`);
+    console.log(`✅ Fertig! ${finalFeed.length} Themen-Cluster (aus ${flatFeed.length} Einzel-News).`);
 }
 
 run();
