@@ -1,15 +1,10 @@
-name: Update News with AI
+name: Update News with Gemini
 
 on:
   schedule:
-    # CRON ERLÄUTERUNG (GitHub nutzt UTC-Zeit):
-    # 6 UTC = 07:00 Uhr in DE (Winterzeit) / 08:00 (Sommerzeit)
-    # 22 UTC = 23:00 Uhr in DE (Winterzeit) / 00:00 (Sommerzeit)
-    # /2 = Alle 2 Stunden
-    # Ergebnis: Der Bot läuft tagsüber alle 2h, nachts schläft er.
+    # Dein Zeitplan: Alle 2 Stunden zwischen 7 und 23 Uhr
     - cron: '0 6-22/2 * * *'
-    
-  workflow_dispatch: # Button zum manuellen Starten bleibt erhalten
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -17,9 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    # Sicherheitsnetz: Bricht ab, falls er länger als 45 Min hängt
-    timeout-minutes: 45
+    timeout-minutes: 10 # Gemini ist schnell, 10 Min reichen locker
 
     steps:
     - name: Checkout Code
@@ -34,16 +27,16 @@ jobs:
       run: npm install
 
     - name: Run Grabber
+      # HIER IST DIE ÄNDERUNG!
+      # Wir sagen GitHub: "Nimm das Secret GEMINI_API_KEY und gib es dem Script."
       env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      # Mehr Speicher für Node, falls viele Quellen geladen werden
-      run: node --max-old-space-size=4096 grabber.js
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: node grabber.js
 
     - name: Commit and Push changes
       run: |
         git config --global user.name 'NewsBot'
         git config --global user.email 'bot@noreply.github.com'
         git add news.json
-        # Commit nur wenn sich was geändert hat, um Fehler zu vermeiden
-        git commit -m "Update News content" || echo "Keine Änderungen"
+        git commit -m "Update News via Gemini" || echo "Keine Änderungen"
         git push
