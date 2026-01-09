@@ -221,7 +221,7 @@
 
     <div class="container" id="feed"></div>
 
-    <script>
+<script>
         let allNewsData = [];
         let savedNews = [];
         let currentTab = 'feed';
@@ -238,6 +238,16 @@
             "Süddeutsche": "sueddeutsche.de", "Bild": "bild.de", "ARD": "ard.de"
         };
 
+        // --- TIMEZONE HELPER ---
+        // Gibt das Datum als YYYY-MM-DD basierend auf der LOKALEN Zeit des Nutzers zurück
+        function getLocalDateString(dateInput) {
+            const d = new Date(dateInput);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function getSourceLogo(sourceName) {
             const domain = sourceDomains[sourceName];
             return domain ? `https://www.google.com/s2/favicons?sz=64&domain=${domain}` : `https://cdn-icons-png.flaticon.com/512/2540/2540832.png`;
@@ -252,7 +262,7 @@
             if (diffMin < 60) return `vor ${diffMin} Min.`;
             const diffStd = Math.floor(diffMin / 60);
             if (diffStd < 24) return `vor ${diffStd} Std.`;
-            return past.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+            return past.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' });
         }
 
         function highlightText(text, term) {
@@ -278,46 +288,18 @@
                 const r = await fetch('debug.json?t=' + Date.now());
                 const logs = await r.json();
                 let html = '';
-                
                 logs.forEach((run, index) => {
                     const date = new Date(run.timestamp).toLocaleString();
-                    html += `
-                        <div class="debug-run">
-                            <div class="debug-run-header" onclick="toggleDebugRun(${index})">
-                                <span>${date}</span>
-                                <span>▼</span>
-                            </div>
-                            <div class="debug-content" id="run-${index}">
-                    `;
-                    
+                    html += `<div class="debug-run"><div class="debug-run-header" onclick="toggleDebugRun(${index})"><span>${date}</span><span>▼</span></div><div class="debug-content" id="run-${index}">`;
                     for (const [src, stats] of Object.entries(run.sources)) {
-                        html += `
-                            <div class="debug-source">
-                                <div class="debug-source-title">${src}</div>
-                                <div>
-                                    <span class="debug-stat stat-good">Added: ${stats.added}</span>
-                                    <span class="debug-stat stat-warn">Cache: ${stats.skipped_cache}</span>
-                                    <span class="debug-stat stat-bad">Short: ${stats.skipped_content}</span>
-                                </div>
-                                <ul class="debug-list">
-                                    ${stats.details.map(d => `<li>${d}</li>`).join('')}
-                                </ul>
-                            </div>
-                        `;
+                        html += `<div class="debug-source"><div class="debug-source-title">${src}</div><div><span class="debug-stat stat-good">Added: ${stats.added}</span><span class="debug-stat stat-warn">Cache: ${stats.skipped_cache}</span><span class="debug-stat stat-bad">Short: ${stats.skipped_content}</span></div><ul class="debug-list">${stats.details.map(d => `<li>${d}</li>`).join('')}</ul></div>`;
                     }
                     html += `</div></div>`;
                 });
                 area.innerHTML = html;
-            } catch(e) {
-                area.innerHTML = "Keine Logs gefunden oder Fehler beim Laden.";
-            }
+            } catch(e) { area.innerHTML = "Keine Logs gefunden."; }
         }
-
-        function toggleDebugRun(index) {
-            const el = document.getElementById(`run-${index}`);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
-        }
-
+        function toggleDebugRun(index) { const el = document.getElementById(`run-${index}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
         function closeDebug() { document.getElementById('debug-overlay').classList.remove('active'); }
 
         // --- FETCH & INIT ---
@@ -327,13 +309,15 @@
                 allNewsData = await r.json();
                 const storedFilters = localStorage.getItem('selected_sources');
                 if(storedFilters) { selectedSources = JSON.parse(storedFilters); updateFilterUI(); }
+                
                 updateSourceDropdown();
-                initDateFilterOptions();
+                initDateFilterOptions(); // Datumsoptionen aufbauen
                 
                 const urlParams = new URLSearchParams(window.location.search);
                 const sharedId = urlParams.get('id');
-                if(sharedId) handleDeepLink(sharedId);
-                else {
+                if(sharedId) {
+                    handleDeepLink(sharedId);
+                } else {
                     const savedDate = localStorage.getItem('date_filter');
                     if(savedDate) selectedDateFilter = savedDate;
                     updateDateBtnLabel();
@@ -342,19 +326,33 @@
             } catch(e) { console.error("Ladefehler", e); }
         }
 
+        // --- DATE FILTER LOGIC (FIXED) ---
         function initDateFilterOptions() {
             const days = new Set();
-            allNewsData.forEach(item => { days.add(new Date(item.date).toISOString().split('T')[0]); });
+            allNewsData.forEach(item => { 
+                // Fix: Nutze lokale Zeit statt UTC String
+                days.add(getLocalDateString(item.date)); 
+            });
+            
             const sortedDays = Array.from(days).sort().reverse();
             const dropdown = document.getElementById('date-dropdown');
             dropdown.innerHTML = '';
-            const today = new Date().toISOString().split('T')[0];
-            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+            const today = getLocalDateString(new Date());
+            const yesterdayDate = new Date();
+            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+            const yesterday = getLocalDateString(yesterdayDate);
 
             sortedDays.forEach(day => {
                 let label = day.split('-').reverse().slice(0,2).join('.'); 
                 if(day === today) label = "Heute";
                 else if(day === yesterday) label = "Gestern";
+                else {
+                    const d = new Date(day);
+                    const daysMap = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+                    label = `${daysMap[d.getDay()]} ${label}`;
+                }
+
                 const div = document.createElement('div');
                 div.className = `date-option ${selectedDateFilter === day ? 'active' : ''}`;
                 div.innerHTML = `<span>${label}</span>`;
@@ -367,16 +365,23 @@
         }
 
         function toggleDateDropdown() { document.getElementById('date-dropdown').classList.toggle('show'); }
+        
         function setDateFilter(dayStr) {
-            selectedDateFilter = dayStr; localStorage.setItem('date_filter', dayStr || '');
-            updateDateBtnLabel(); document.getElementById('date-dropdown').classList.remove('show');
-            initDateFilterOptions(); render();
+            selectedDateFilter = dayStr; 
+            localStorage.setItem('date_filter', dayStr || '');
+            updateDateBtnLabel(); 
+            document.getElementById('date-dropdown').classList.remove('show');
+            initDateFilterOptions(); 
+            render();
         }
+        
         function updateDateBtnLabel() {
             const btn = document.getElementById('btn-date');
-            if(!selectedDateFilter) { btn.innerHTML = '📅 Datum'; btn.classList.remove('active'); } 
-            else { 
-                const today = new Date().toISOString().split('T')[0];
+            if(!selectedDateFilter) { 
+                btn.innerHTML = '📅 Datum'; 
+                btn.classList.remove('active'); 
+            } else { 
+                const today = getLocalDateString(new Date());
                 btn.innerHTML = selectedDateFilter === today ? '📅 Heute' : `📅 ${selectedDateFilter.split('-').slice(1).reverse().join('.')}`; 
                 btn.classList.add('active'); 
             }
@@ -386,12 +391,15 @@
             let item = allNewsData.find(n => n.id === id);
             if (!item) { const saved = savedNews.find(s => s.news.id === id); if (saved) item = saved.news; }
             if(item) {
-                const itemDate = new Date(item.date).toISOString().split('T')[0];
-                setDateFilter(itemDate); openReader(id);
+                // Fix: Datum korrekt setzen für Deep Link
+                const itemDate = getLocalDateString(item.date);
+                setDateFilter(itemDate); 
+                openReader(id);
                 setTimeout(() => { const el = document.getElementById(`card-${id}`); if(el) el.scrollIntoView({block: 'center'}); }, 500);
             } else { alert("Artikel nicht mehr verfügbar."); render(); }
         }
 
+        // --- READER ---
         function openReader(id) {
             let item = allNewsData.find(n => n.id === id);
             if (!item) { const saved = savedNews.find(s => s.news.id === id); if (saved) item = saved.news; }
@@ -499,8 +507,12 @@
             container.innerHTML = '';
 
             let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+            
+            // 1. DATE FILTER (mit Timezone Fix)
             if(currentTab === 'feed' && selectedDateFilter) {
-                baseData = baseData.filter(item => item.date.startsWith(selectedDateFilter));
+                baseData = baseData.filter(item => {
+                    return getLocalDateString(item.date) === selectedDateFilter;
+                });
             }
 
             let data = [];
@@ -608,5 +620,6 @@
         loadSavedItems(); fetchData();
         fetch('config.json?t=' + Date.now()).then(r => r.json()).then(c => { repoConfig = c; document.getElementById('config-status').innerText = "System online ✅"; });
     </script>
+    
 </body>
 </html>
