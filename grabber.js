@@ -47,7 +47,7 @@ async function fetchArticleText(url) {
             html = html.replace(regex, '');
         });
 
-        const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+        const containerMatch = html.match(/<article[^>]*>([\s\\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\\S]*?)<\/main>/i);
         if (!containerMatch) return ""; 
 
         let contentScope = containerMatch[1];
@@ -62,7 +62,7 @@ async function fetchArticleText(url) {
 }
 
 function extractParagraphs(htmlContent) {
-    const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
+    const pRegex = /<p[^>]*>([\s\\S]*?)<\/p>/gi;
     let paragraphs = [];
     let match;
     while ((match = pRegex.exec(htmlContent)) !== null) {
@@ -248,9 +248,9 @@ async function runClusteringPipeline(allArticles) {
     return finalClusters;
 }
 
-// --- MAIN LOOP ---
+// --- MAIN LOOP MIT DEBUG-LOGS ---
 async function run() {
-    console.log("🚀 Start News-Bot v4.0 (Overlay Ready)...");
+    console.log("🚀 Start News-Bot v4.1 (Debug Mode)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -267,29 +267,37 @@ async function run() {
 
     for (const source of sources) {
         try {
-            console.log(`\n📡 ${source.name} (Ziel: ${source.count})...`);
+            console.log(`\n📡 ${source.name} (Ziel: ${source.count} Artikel)...`);
             const feed = await parser.parseURL(source.url);
             let added = 0;
             let skipped = 0;
 
             for (const item of feed.items) {
                 if (added >= source.count) break;
-                if (skipped >= 5) { console.log(`   🛑 Zu viele Skips bei ${source.name}.`); break; }
+                if (skipped >= 5) { console.log(`   🛑 Zu viele Skips (${skipped}) bei ${source.name}. Breche Quelle ab.`); break; }
 
                 const exists = flatFeed.some(n => isSameArticle(n, item));
-                if (exists) { skipped++; continue; }
+                if (exists) {
+                    console.log(`   ⏩ Skip (Cache): ${item.title.substring(0, 40)}...`);
+                    skipped++;
+                    continue;
+                }
 
                 let fullText = "";
                 if (source.scrape !== false) {
-                    process.stdout.write(`   🔍 Prüfe: ${item.title.substring(0, 30)}... `);
                     fullText = await fetchArticleText(item.link);
-                    if (fullText.length < 500) { console.log(`❌ Zu kurz.`); skipped++; continue; } 
-                    else { console.log(`✅ OK (${fullText.length}).`); }
+                    if (fullText.length < 500) {
+                        console.log(`   ❌ Skip (zu wenig Text: ${fullText.length}): ${item.title.substring(0, 40)}...`);
+                        skipped++;
+                        continue;
+                    }
                 } else {
                     fullText = (item.contentSnippet || item.content || "").substring(0, 5000);
                 }
-
+                
+                console.log(`   ✅ Verarbeite: ${item.title.substring(0, 40)}... (${fullText.length} Zeichen)`);
                 const ai = await analyzeWithPollinations(item.title, fullText, source.name);
+                
                 flatFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
@@ -314,8 +322,6 @@ async function run() {
 
     flatFeed = pruneNews(flatFeed);
     flatFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    // LIMIT AUF 120 ERHÖHT
     if (flatFeed.length > 120) {
         console.log(`✂️ Cleanup: Behalte Top 120.`);
         flatFeed = flatFeed.slice(0, 120);
