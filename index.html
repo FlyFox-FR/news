@@ -202,7 +202,36 @@
         }
         .menu-option:hover { background: rgba(255,255,255,0.05); color: var(--accent); }
         .menu-option:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        /* Promote Button in der Related-Liste */
+        .btn-promote {
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid var(--border); 
+            color: var(--accent);
+            width: 28px; height: 28px; 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.8rem;
+            transition: 0.2s;
+            flex-shrink: 0; /* Damit er nicht gequetscht wird */
+        }
+        .btn-promote:hover {
+            background: var(--accent); 
+            color: #fff; 
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
         
+        /* Layout Anpassung für die Related Items */
+        .related-item-row {
+            display: flex; 
+            align-items: center; /* Vertikal zentriert */
+            gap: 12px; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #333; 
+            padding-bottom: 12px;
+        }
+        .related-content { flex-grow: 1; }
     </style>
 </head>
 <body>
@@ -617,6 +646,96 @@
             }
         });
 
+// --- PROMOTE LOGIC ---
+        
+        function promoteArticle(clusterId, relatedId) {
+            // 1. Cluster und Child finden
+            const clusterIndex = allNewsData.findIndex(c => c.id === clusterId);
+            if (clusterIndex === -1) return;
+            const cluster = allNewsData[clusterIndex];
+            
+            const relatedIndex = cluster.related.findIndex(r => r.id === relatedId);
+            if (relatedIndex === -1) return;
+
+            // 2. Merken (Persistenz)
+            // Wir speichern: "Dieser Artikel ID soll Chef sein"
+            let promoted = JSON.parse(localStorage.getItem('my_promoted_ids') || '[]');
+            promoted.push(relatedId); 
+            // Optional: Den alten Chef vergessen, falls wir hin und her tauschen wollen, 
+            // aber einfaches Hinzufügen reicht meist.
+            localStorage.setItem('my_promoted_ids', JSON.stringify(promoted));
+
+            // 3. Tauschen
+            performSwap(cluster, relatedIndex);
+
+            // 4. Neu rendern (damit man es sofort sieht)
+            render();
+            
+            // 5. Automatisch die Sources wieder aufklappen, damit man sieht was passiert ist
+            // Da sich die ID des Main-Artikels geändert hat, müssen wir die neue ID öffnen
+            setTimeout(() => {
+                const newMainId = allNewsData[clusterIndex].id; // Das ist jetzt die ID des ehemaligen related Items
+                toggleVars(newMainId); 
+            }, 50);
+        }
+
+        function performSwap(cluster, relatedIndex) {
+            // Wir tauschen alle relevanten Datenfelder zwischen Main und Related[i]
+            const relatedItem = cluster.related[relatedIndex];
+            
+            // Kopie des aktuellen Main (ohne related Array, das bleibt beim Parent)
+            const oldMain = {
+                id: cluster.id,
+                source: cluster.source,
+                sourceCountry: cluster.sourceCountry,
+                title: cluster.title,
+                originalTitle: cluster.originalTitle,
+                link: cluster.link,
+                img: cluster.img,
+                date: cluster.date,
+                text: cluster.text,
+                bullets: cluster.bullets,
+                tags: cluster.tags,
+                content: cluster.content
+            };
+
+            // Main mit Related überschreiben
+            Object.assign(cluster, {
+                id: relatedItem.id,
+                source: relatedItem.source,
+                sourceCountry: relatedItem.sourceCountry,
+                title: relatedItem.title,
+                originalTitle: relatedItem.originalTitle,
+                link: relatedItem.link,
+                img: relatedItem.img,
+                date: relatedItem.date,
+                text: relatedItem.text,
+                bullets: relatedItem.bullets,
+                tags: relatedItem.tags,
+                content: relatedItem.content
+            });
+
+            // Das alte Main Item in das Array packen
+            cluster.related[relatedIndex] = oldMain;
+        }
+
+        function applyPromotedArticles() {
+            const promotedIds = JSON.parse(localStorage.getItem('my_promoted_ids') || '[]');
+            if (promotedIds.length === 0) return;
+
+            allNewsData.forEach(cluster => {
+                if (!cluster.related) return;
+                
+                // Prüfen, ob einer der Related Items ein "Promoted" Item ist
+                const matchIndex = cluster.related.findIndex(r => promotedIds.includes(r.id));
+                
+                if (matchIndex !== -1) {
+                    // Treffer! Tauschen.
+                    performSwap(cluster, matchIndex);
+                }
+            });
+        }
+    
 
         // --- RENDER FUNCTION (UPDATED) ---
         function render() {
@@ -715,12 +834,21 @@
                         </div>
                     </div>
 
+                  
                     <div id="vars-${item.id}" class="variants-container" style="display:none; padding:20px; background:#121214; border-top:1px solid var(--border)">
                         ${(item.related || []).map(r => `
-                            <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px">
-                                <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
-                                <div style="font-weight:bold; font-size:0.95rem; margin-bottom:6px; color:#fff">${r.title}</div>
-                                <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Zum Artikel</a>
+                            <div class="related-item-row">
+                                <!-- Der neue Promote Button -->
+                                <button class="btn-promote" onclick="promoteArticle('${item.id}', '${r.id}')" title="Nach oben holen">▲</button>
+                                
+                                <div class="related-content">
+                                    <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
+                                    <div style="font-weight:bold; font-size:0.95rem; margin-bottom:6px; color:#fff">${r.title}</div>
+                                    <div style="display:flex; gap:10px; align-items:center">
+                                        <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Original ↗</a>
+                                        ${r.content ? `<span style="font-size:0.65rem; color:#4ade80; border:1px solid #4ade80; padding:1px 5px; border-radius:4px">Lesbar</span>` : ''}
+                                    </div>
+                                </div>
                             </div>
                         `).join('')}
                     </div>
