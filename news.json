@@ -1,84 +1,126 @@
 [
   {
-    "id": "iqjedght3",
-    "source": "Tagesschau",
+    "id": "2vo3baa2e",
+    "source": "rbb24",
     "sourceCountry": "🇩🇪",
-    "title": "Stromausfälle in Großbritannien und Frankreich durch Wintersturm 'Goretti'",
-    "originalTitle": "Massive Stromausfälle in Großbritannien und Frankreich nach Wintersturm",
-    "link": "https://www.tagesschau.de/ausland/europa/wintersturm-stromausfall-europaeische-nachbarn-100.html",
+    "title": "Spandau will Grabstelle von Hatun Sürücü dauerhaft erhalten",
+    "originalTitle": "20. Todestag: Spandau will Grabstelle von Hatun Sürücü dauerhaft erhalten ",
+    "link": "https://www.rbb24.de/politik/beitrag/2026/01/berlin-spandau-grabstelle-hatun-sueruecue-dauerhaft-friedhof-gatow-gedenkstaette.html",
     "img": null,
-    "date": "2026-01-09T15:22:34.000Z",
-    "text": "Der Wintersturm 'Goretti' führt zu weitreichenden Stromausfällen, geschlossenen Schulen und einer vorübergehenden Abschaltung des Atomkraftwerks Flamanville.",
+    "date": "2026-01-09T15:44:40.000Z",
+    "text": "Anlässlich ihres 20. Todestages hat die Spandauer Stadtverwaltung beschlossen, die Grabstätte der geschäftstätigen türkischdeutschen Opfere Hatun Sürücü zu erhalten.",
     "bullets": [
-      "Stromausfälle infolge des Wintersturms 'Goretti' in Großbritannien und Frankreich",
-      "Viele Schulen bleiben geschlossen und Züge stehen still",
-      "Flamanville-Atomkraftwerk in Frankreich wird vorübergehend abgeschaltet"
+      "Hatun Sürücü wurde am 3. Juli 2003 in Berlin getötet – ihr 20. Todestag fiel 2023.",
+      "Die Grabstätte befindet sich im Landesfriedhof Spandau, einem der größten Friedhöfe des Berliner Bezirks.",
+      "Die Spandauer Verwaltung hat offiziell festgelegt, die Grabstelle dauerhaft zu sichern, um das Andenken zu wahren."
     ],
     "tags": [
-      "Tagesschau",
+      "rbb24",
       "News"
     ],
     "related": []
   },
   {
-    "id": "7lzgieuk4",
-    "source": "Spiegel",
+    "id": "u3k06bg7j",
+    "source": "rbb24",
     "sourceCountry": "🇩🇪",
-    "title": "Operativer Barbrand in Crans-Montana: 40 Tote, Betreiber in Untersuchungshaft",
-    "originalTitle": "Crans-Montana – Le Constellation: Behörden nehmen Betreiber fest",
-    "link": "https://www.spiegel.de/panorama/justiz/crans-montana-le-constellation-behoerden-nehmen-betreiber-fest-a-6e7934df-8fc9-4696-bd05-9589e6976e92#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/fc71927e-5477-4f7e-bb49-31bb75f89189_w520_r2.08_fpx30.02_fpy46.98.jpg",
-    "date": "2026-01-09T15:07:00.000Z",
-    "text": "Bei einem Brand einer Bar in Crans-Montana, Schweiz, wurden 40 Menschen getötet und der Betreiber hält sich in Untersuchungshaft.",
+    "title": "Erika‑Heß‑Eisstadion im Wedding eröffnet Außenfläche nach dreijähriger Schließung",
+    "originalTitle": "Nach drei Jahren Pause: Erika-Heß-Eisstadion im Wedding öffnet wieder Außenfläche",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/berlin-mitte-eisstadion-erika-hess-oeffnung-schlittschuh-januar-2026.html",
+    "img": null,
+    "date": "2026-01-09T15:44:05.000Z",
+    "text": "Im Berliner Bezirk Wedding wird das EZ-Stadion nach drei Jahren Offline-Zeit wieder für den öffentlichen Anschluss seiner Außenspitze geöffnet.",
     "bullets": [
-      "Ort: Crans-Montana, Schweiz",
-      "Todesopfer: 40 Personen",
-      "Der Betreiber befindet sich in Untersuchungshaft"
+      "Erika‑Heß‑Eisstadion liegt im Berliner Stadtteil Wedding",
+      "Nach einer Schließung seit 2020 (drei Jahre) wird die Außenfläche erneut freigegeben",
+      "Die Eröffnung richtet sich zuerst an Eishockey‑ und Speedskating‑Sportler"
     ],
     "tags": [
-      "Spiegel",
+      "rbb24",
       "News"
     ],
     "related": []
   },
   {
-    "id": "ogxvkgq55",
-    "source": "Spiegel",
-    "sourceCountry": "🇩🇪",
-    "title": "Widerstand gegen ICE als potenzielle Gefährdung",
-    "originalTitle": "Minneapolis, USA: Warum Widerstand gegen Trumps ICE so gefährlich ist",
-    "link": "https://www.spiegel.de/ausland/minneapolis-usa-warum-widerstand-gegen-trumps-ice-so-gefaehrlich-ist-a-9dc26c56-9e94-413e-935c-d5548f7fb2aa#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/d1de61ed-0575-4b2d-95f9-3eac47d46806_w520_r2.08_fpx70_fpy44.99.jpg",
-    "date": "2026-01-09T14:37:00.000Z",
-    "text": "Der Protest gegen ICE in Minneapolis, USA wird zunehmend brutal und könnte von der Trump‑Regierung zu politischen Zwecken genutzt werden.",
-    "bullets": [
-      "Minneapolis liegt im Bundesstaat Minnesota, USA.",
-      "Die US‑Einwanderungsbehörde ICE wird im Text als brutaler und enthemter beschrieben.",
-      "Der Protest entsteht nach dem Totschlag einer Frau am Mittwoch und könnte von der Trump‑Regierung instrumentalisiert werden."
-    ],
-    "tags": [
-      "Spiegel",
-      "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "78ui2nisc",
+    "id": "qnynrj0kb",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
-    "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
-    "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
-    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
-    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
-    "date": "2026-01-09T14:34:00.000Z",
-    "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
+    "title": "Sturmtief Elli betrifft Bahn- und Flugverkehr in Deutschland",
+    "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+    "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+    "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+    "date": "2026-01-09T15:39:00.000Z",
+    "text": "Sturmtief Elli führt zu Flugabsagen und verlangsamten ICE-Verbindungen in Nord- und Süddeutschland.",
     "bullets": [
-      "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
-      "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
-      "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
+      "Mehrere Flüge in Deutschland wurden gestrichen",
+      "ICE-Verbindungen mussten im gesamten Land verlangsamt werden",
+      "Bodenverkehr in Nord- und Süddeutschland ist stark beeinträchtigt"
     ],
     "tags": [
       "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "78ui2nisc",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
+        "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
+        "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+        "date": "2026-01-09T15:24:00.000Z",
+        "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
+        "bullets": [
+          "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
+          "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
+          "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ]
+      },
+      {
+        "id": "hgg8rejn6",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Wintersturm Elli lässt Deutschland von Schnee und Glätte zurückhalten",
+        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
+        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
+        "img": null,
+        "date": "2026-01-09T13:03:55.000Z",
+        "text": "Der Sturm bringt heftige Schneefälle, starke Glätte und vermehrte Bahnausfälle, die den öffentlichen Verkehr, Schulen und den Straßenverkehr stark beeinträchtigen.",
+        "bullets": [
+          "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
+          "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
+          "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "yfhm7irox",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
+    "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
+    "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
+    "date": "2026-01-09T15:31:00.000Z",
+    "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
+    "bullets": [
+      "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
+      "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
+      "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
+    ],
+    "tags": [
+      "Spiegel",
       "News"
     ],
     "related": [
@@ -102,58 +144,108 @@
           "News"
         ],
         "related": []
-      },
+      }
+    ]
+  },
+  {
+    "id": "df8hhlbqs",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Voller Schnee in Deutschland: Karte dokumentiert jüngste Schneefälle",
+    "originalTitle": "Diese Karte zeigt, wie viel es geschneit hat",
+    "link": "https://www.zdfheute.de/video/panorama-schnee-deutschland-winter-daten-karte-100.html",
+    "img": "https://www.zdfheute.de/assets/karte-schnee-deutschland-video-100~384x216?cb=1767972277651",
+    "date": "2026-01-09T15:24:00.000Z",
+    "text": "Die Karte zeigt die aktuelle Schneemenge in Deutschland, inklusive langanhaltendem Schneefall in einigen Regionen.",
+    "bullets": [
+      "Karte demonstriert die Menge des Schneefalls bundesweit.",
+      "Besonders großer Schneefall ist in jüngster Zeit aufgetreten.",
+      "Einige Orte verzeichneten stundenlangen Schneefall.",
+      "Die Entwicklung der Schneedecke wird zeitlich nachverfolgt."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "iqjedght3",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Stromausfälle in Großbritannien und Frankreich durch Wintersturm 'Goretti'",
+    "originalTitle": "Massive Stromausfälle in Großbritannien und Frankreich nach Wintersturm",
+    "link": "https://www.tagesschau.de/ausland/europa/wintersturm-stromausfall-europaeische-nachbarn-100.html",
+    "img": null,
+    "date": "2026-01-09T15:22:34.000Z",
+    "text": "Der Wintersturm 'Goretti' führt zu weitreichenden Stromausfällen, geschlossenen Schulen und einer vorübergehenden Abschaltung des Atomkraftwerks Flamanville.",
+    "bullets": [
+      "Stromausfälle infolge des Wintersturms 'Goretti' in Großbritannien und Frankreich",
+      "Viele Schulen bleiben geschlossen und Züge stehen still",
+      "Flamanville-Atomkraftwerk in Frankreich wird vorübergehend abgeschaltet"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "mrru0kk95",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Crans-Montana: Brandunglück in Bar – Besitzer in Untersuchungshaft",
+    "originalTitle": "Crans-Montana: Einer der Bar-Besitzer in Untersuchungshaft",
+    "link": "https://www.zdfheute.de/panorama/schweiz-crans-montana-brand-trauer-aussage-bar-betreiber-100.html",
+    "img": "https://www.zdfheute.de/assets/betreiber-der-bar-le-constellation-schweiz-100~384x216?cb=1767963918180",
+    "date": "2026-01-09T15:19:00.000Z",
+    "text": "Ein Barbesitzer in Crans-Montana befindet sich nach Brandunglücke in Untersuchungshaft, während der Bundespräsident Aufklärung ohne Verzögerung verlangt.",
+    "bullets": [
+      "Ort des Brandes: Crans-Montana",
+      "Betroffener: einer der Barbesitzer",
+      "Verhaftung: Untersuchungshaft (U-Haft)",
+      "Reaktion: Bundespräsident fordert Aufklärung ohne Verzögerungen"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
       {
-        "id": "83bu9dzj7",
-        "source": "ZDF",
-        "sourceCountry": "🇩🇪",
-        "title": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-        "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-        "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
-        "date": "2026-01-09T12:42:00.000Z",
-        "text": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-        "bullets": [],
-        "tags": [
-          "ZDF"
-        ],
-        "related": []
-      },
-      {
-        "id": "qnynrj0kb",
-        "source": "ZDF",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief Elli betrifft Bahn- und Flugverkehr in Deutschland",
-        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
-        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
-        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
-        "date": "2026-01-09T12:00:00.000Z",
-        "text": "Sturmtief Elli führt zu Flugabsagen und verlangsamten ICE-Verbindungen in Nord- und Süddeutschland.",
-        "bullets": [
-          "Mehrere Flüge in Deutschland wurden gestrichen",
-          "ICE-Verbindungen mussten im gesamten Land verlangsamt werden",
-          "Bodenverkehr in Nord- und Süddeutschland ist stark beeinträchtigt"
-        ],
-        "tags": [
-          "ZDF",
-          "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "yfhm7irox",
+        "id": "7lzgieuk4",
         "source": "Spiegel",
         "sourceCountry": "🇩🇪",
-        "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
-        "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
-        "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
-        "date": "2026-01-09T07:58:00.000Z",
-        "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
+        "title": "Operativer Barbrand in Crans-Montana: 40 Tote, Betreiber in Untersuchungshaft",
+        "originalTitle": "Crans-Montana – Le Constellation: Behörden nehmen Betreiber fest",
+        "link": "https://www.spiegel.de/panorama/justiz/crans-montana-le-constellation-behoerden-nehmen-betreiber-fest-a-6e7934df-8fc9-4696-bd05-9589e6976e92#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/fc71927e-5477-4f7e-bb49-31bb75f89189_w520_r2.08_fpx30.02_fpy46.98.jpg",
+        "date": "2026-01-09T15:07:00.000Z",
+        "text": "Bei einem Brand einer Bar in Crans-Montana, Schweiz, wurden 40 Menschen getötet und der Betreiber hält sich in Untersuchungshaft.",
         "bullets": [
-          "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
-          "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
-          "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
+          "Ort: Crans-Montana, Schweiz",
+          "Todesopfer: 40 Personen",
+          "Der Betreiber befindet sich in Untersuchungshaft"
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ]
+      },
+      {
+        "id": "u7s267lz9",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Feuer in Crans-Montana erschüttert Vertrauen Italiens in Schweizer Justiz",
+        "originalTitle": "Crans-Montana: In Italien ist das Vertrauen in die Schweizer Justiz erschüttert",
+        "link": "https://www.spiegel.de/ausland/crans-montana-in-italien-ist-das-vertrauen-in-die-schweizer-justiz-erschuettert-a-e47289c5-41b4-4128-bd9c-c2526a39121b#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/f5a0c884-ce59-4d79-aa73-8d4574aa6b2a_w520_r2.08_fpx68.67_fpy55.jpg",
+        "date": "2026-01-09T12:59:00.000Z",
+        "text": "Ein Brand in Crans-Montana tötete junge Menschen aus Frankreich und Italien, was in beiden Ländern Kritik an der Vorgehensweise der Schweizer Behörden auslöst.",
+        "bullets": [
+          "Ort des Brandes: Crans-Montana, Schweiz",
+          "Betroffene: junge Personen aus Frankreich und Italien, die beim Brand ums Leben kamen",
+          "Reaktion Italiens: Politiker und Angehörige fordern eine umfassende Beobachtung der Ermittlungen und kritisieren das Vorgehen der Schweizer Justiz",
+          "Gleichzeitige Kritik in Frankreich, weil dort ebenfalls Angehörige betroffen sind"
         ],
         "tags": [
           "Spiegel",
@@ -162,6 +254,27 @@
         "related": []
       }
     ]
+  },
+  {
+    "id": "ogxvkgq55",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Widerstand gegen ICE als potenzielle Gefährdung",
+    "originalTitle": "Minneapolis, USA: Warum Widerstand gegen Trumps ICE so gefährlich ist",
+    "link": "https://www.spiegel.de/ausland/minneapolis-usa-warum-widerstand-gegen-trumps-ice-so-gefaehrlich-ist-a-9dc26c56-9e94-413e-935c-d5548f7fb2aa#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/d1de61ed-0575-4b2d-95f9-3eac47d46806_w520_r2.08_fpx70_fpy44.99.jpg",
+    "date": "2026-01-09T14:37:00.000Z",
+    "text": "Der Protest gegen ICE in Minneapolis, USA wird zunehmend brutal und könnte von der Trump‑Regierung zu politischen Zwecken genutzt werden.",
+    "bullets": [
+      "Minneapolis liegt im Bundesstaat Minnesota, USA.",
+      "Die US‑Einwanderungsbehörde ICE wird im Text als brutaler und enthemter beschrieben.",
+      "Der Protest entsteht nach dem Totschlag einer Frau am Mittwoch und könnte von der Trump‑Regierung instrumentalisiert werden."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
   },
   {
     "id": "y63vbh7ib",
@@ -311,6 +424,66 @@
       "News"
     ],
     "related": []
+  },
+  {
+    "id": "83bu9dzj7",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+    "date": "2026-01-09T12:42:00.000Z",
+    "text": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "bullets": [],
+    "tags": [
+      "ZDF"
+    ],
+    "related": []
+  },
+  {
+    "id": "cku8qjhte",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "EU und Mercosur schließen nach 26 Jahren ein starkes Freihandelsabkommen",
+    "originalTitle": "Mercosur-Abkommen: EU und Südamerika schaffen großes Freihandelsbündnis",
+    "link": "https://www.spiegel.de/wirtschaft/service/mercosur-abkommen-eu-und-suedamerika-schaffen-grosses-freihandelsbuendnis-a-852b4229-f808-4292-a615-fa443bf9a129#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/3093cd6d-bca1-46eb-9cd8-719486f2ce41_w520_r2.08_fpx58.04_fpy50.97.jpg",
+    "date": "2026-01-09T11:54:00.000Z",
+    "text": "Nach 26 Jahren intensiver Verhandlungen tritt das EU‑Mercosur‑Abkommen in Kraft und ist damit eines der größten Freihandelsbündnisse weltweit.",
+    "bullets": [
+      "Die Verhandlungen zwischen der EU und den Mercosur-Staaten dauerten 26 Jahre.",
+      "Das neue Abkommen ist eines der größten Freihandelsbündnisse der Welt.",
+      "Es betreffen die vier Mercosur-Mitgliedsländer: Argentinien, Brasilien, Paraguay und Uruguay."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "6gzk2aj79",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "EU prüft Freihandelsabkommen mit Mercosur-Staaten – Bauern warnen vor unfairem Wettbewerb",
+        "originalTitle": "Wie Bauern und Wirtschaft auf das Mercosur-Abkommen blicken",
+        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/mercosur-abkommen-bauern-wirtschaft-100.html",
+        "img": null,
+        "date": "2026-01-09T13:20:30.000Z",
+        "text": "Der Abschluss des Freihandelsabkommens zwischen der EU und vier Mercosur-Staaten steht zur Umsetzung bereit und löst bei Politik, Wirtschaft und Landwirtschaft unterschiedliche Reaktionen aus.",
+        "bullets": [
+          "Freihandelsabkommen zwischen der EU und vier Mercosur-Staaten (Argentina, Brasilien, Paraguay, Uruguay) steht zur Umsetzung bereit.",
+          "Der Weg für den Abschluss des Abkommens ist frei – die Entscheidung liegt in Sicht.",
+          "Hoffnungen breiten sich in der deutschen Politik und bei der Wirtschaft aus, da der Handel erweitert werden soll.",
+          "Viele Bauern fürchten unfairen Wettbewerb, der durch das Abkommen entstehen könnte."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
   },
   {
     "id": "a89lw1t3u",
