@@ -5,9 +5,41 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- HELPER ---
+// --- HELPER: TEXT BEREINIGUNG ---
 function cleanString(str) {
+    if (!str) return "";
     return str.toLowerCase().replace(/[^\w\säöüß]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// --- HELPER: VOLLTEXT EXTRAKTION (LIGHTWEIGHT) ---
+// Versucht, den Haupttext aus der HTML-Seite zu holen, ohne schwere Bibliotheken.
+async function fetchArticleText(url) {
+    try {
+        // Timeout 5s, User-Agent setzen damit wir nicht sofort geblockt werden
+        const { data } = await axios.get(url, { 
+            timeout: 5000,
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NewsBot/1.0)' }
+        });
+
+        // Sehr einfacher Parser: Sucht nach Text in <p> Tags
+        // Wir entfernen Script, Style und Tags
+        let text = data.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, "")
+                       .replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, "")
+                       .replace(/<[^>]+>/g, "|"); // Tags durch Pipe ersetzen
+
+        // Pipes nutzen um Blöcke zu trennen, leere Teile entfernen
+        let chunks = text.split('|').map(t => t.trim()).filter(t => t.length > 50);
+        
+        // Wir nehmen an, dass die längsten Textblöcke der Artikel sind
+        // Wir nehmen die Top 10 längsten Blöcke
+        chunks.sort((a, b) => b.length - a.length);
+        const mainContent = chunks.slice(0, 8).join(" ... ");
+
+        return mainContent.substring(0, 3500); // Begrenzen auf 3500 Zeichen für die KI
+    } catch (e) {
+        // Fallback: Wenn Abruf scheitert, nichts zurückgeben
+        return "";
+    }
 }
 
 // Prüft auf Duplikate
@@ -59,18 +91,20 @@ function loadExistingNews() {
     return [];
 }
 
-// 1. INHALTS-ANALYSE
-async function analyzeWithPollinations(title, content, sourceName) {
-    const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
-
-    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+// 1. INHALTS-ANALYSE (Jetzt mit Volltext-Support!)
+async function analyzeWithPollinations(title, fullText, sourceName) {
+    // Wenn wir Volltext haben, nutzen wir ihn, sonst den Titel
+    const context = fullText && fullText.length > 200 ? fullText : title;
+    
+    const instruction = `Du bist News-Redakteur.
+    Analysiere diesen Text: "${context.substring(0, 2000)}..."
+    
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
-    2. ERFINDE NICHTS! Versuche dich an den Kontext der Artikel zu halten.
-    3. Suche nach harten Fakten (Zahlen, Orte).
-    4. Wenn Du wirklich keine harten Fakten, Orte, Namen etc. findest, dann schreibe kein Bulletpoint mit "Keine Orte, Fakten etc... im Text gefunden", sondern dann schreibe etwas zum Inhalt/Kontext des Artikels.
-    5. Schreibe 2-4 Bulletpoints.
+    2. Fasse die Kernaussage prägnant zusammen (Scoop).
+    3. Extrahiere harte Fakten (Zahlen, Orte, Namen) in Bulletpoints.
+    4. Titel soll sachlich und neutral sein (kein Clickbait).
 
     Format:
     {
@@ -84,7 +118,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
     let retries = 3;
     while (retries > 0) {
         try {
-            const response = await axios.get(url, { timeout: 35000 });
+            const response = await axios.get(url, { timeout: 45000 }); // Etwas mehr Zeit geben
             let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
 
             try {
@@ -205,7 +239,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- HAUPTFUNKTION ---
 async function run() {
-    console.log("🚀 Starte News-Abruf (mit 24h Pruning)...");
+    console.log("🚀 Starte News-Abruf (mit Volltext & Pruning)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -241,8 +275,14 @@ async function run() {
                     continue; 
                 }
 
-                console.log(`🤖 Neu: ${item.title.substring(0, 30)}...`);
-                const ai = await analyzeWithPollinations(item.title, item.contentSnippet || item.content || "", source.name);
+                console.log(`🔍 Scanne: ${item.title.substring(0, 30)}...`);
+                
+                // NEU: Volltext holen für bessere KI-Analyse
+                const fullText = await fetchArticleText(item.link);
+                console.log(`   📄 Text gefunden: ${fullText.length} Zeichen`);
+
+                // KI Analyse mit Volltext
+                const ai = await analyzeWithPollinations(item.title, fullText, source.name);
                 
                 flatFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
@@ -256,6 +296,7 @@ async function run() {
                     text: ai.summary,
                     bullets: ai.bullets,
                     tags: ai.tags,
+                    content: fullText, // Speichern für späteren Chat/RAG
                     related: []
                 });
                 addedCount++;
