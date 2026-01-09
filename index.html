@@ -492,7 +492,7 @@
                         </div>
                         <a href="${item.link}" target="_blank" class="card-title">${highlightText(item.title, searchTerm)}</a>
                     
-                    // NEU: Zeigt im Zen-Modus den Volltext, sonst die Zusammenfassung
+                    
 ${
     isZenMode && item.content 
     ? `<div class="zen-content">${highlightText(item.content.replace(/\.\.\./g, '<br><br>'), searchTerm)}</div>` 
