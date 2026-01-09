@@ -54,15 +54,13 @@
         .source-item:hover { background: rgba(255,255,255,0.05); }
         .source-item input { width: 18px; height: 18px; accent-color: var(--accent); pointer-events: none; }
 
-        /* --- SIDEBAR RE-DESIGN (STATS FIX) --- */
+        /* --- SIDEBAR --- */
         .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--bg); z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(8px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
         
         .sidebar-header { padding: 30px 20px 20px; font-family: 'Merriweather', serif; font-size: 1.4rem; font-weight: 700; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
-
-        /* Metrics Cards Fix */
         .sidebar-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
         .metric-card { background: var(--surface); border: 1px solid var(--border); padding: 15px 10px; border-radius: 16px; text-align: center; display: flex; flex-direction: column; gap: 5px; }
         .metric-card .val { font-size: 1.4rem; font-weight: 800; color: var(--accent); font-family: 'Inter'; }
@@ -82,9 +80,11 @@
         
         .card-img { width: 100%; height: 240px; object-fit: cover; border-bottom: 1px solid var(--border); }
         .card-body { padding: 24px; }
-        .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 600; }
+        .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 600; align-items: center; }
         
-        /* New Dot Indicator */
+        .source-logo { width: 18px; height: 18px; border-radius: 4px; object-fit: contain; background: #fff; padding: 1px; }
+        .expiry-info { font-size: 0.65rem; color: #fbbf24; background: rgba(251, 191, 36, 0.1); padding: 2px 8px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+
         .new-indicator { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
@@ -101,10 +101,18 @@
         .btn-toggle { background: var(--surface-variant); color: #fff; border: 1px solid var(--border); padding: 8px 18px; border-radius: 25px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         
         .btn-save { position: absolute; top: 18px; right: 18px; z-index: 10; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); width: 44px; height: 44px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; }
-        .btn-save.saved { color: #fbbf24; border-color: #fbbf24; }
+        .btn-save.saved { color: #fbbf24; border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+
+        /* --- SAVE MODAL --- */
+        #save-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        #save-modal.active { display: flex; }
+        .modal-content { background: var(--surface); border: 1px solid var(--border); width: 90%; max-width: 320px; border-radius: 24px; overflow: hidden; animation: fadeInUp 0.3s ease; }
+        .modal-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); font-weight: bold; }
+        .modal-option { padding: 16px 20px; text-align: center; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; font-weight: 500; }
+        .modal-option:hover { background: rgba(255,255,255,0.05); color: var(--accent); }
+        .modal-option:last-child { border-bottom: none; color: #666; }
 
         #back-to-top { position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: white; width: 56px; height: 56px; border-radius: 50%; border: none; display: none; align-items: center; justify-content: center; z-index: 100; cursor: pointer; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-
     </style>
 </head>
 <body>
@@ -112,25 +120,28 @@
     <div id="scroll-progress"></div>
     <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
+    <!-- Modal für Speicher-Dauer -->
+    <div id="save-modal">
+        <div class="modal-content">
+            <div class="modal-header">Merkdauer wählen</div>
+            <div class="modal-option" onclick="confirmSave(24)">24 Stunden</div>
+            <div class="modal-option" onclick="confirmSave(48)">48 Stunden</div>
+            <div class="modal-option" onclick="confirmSave(168)">1 Woche</div>
+            <div class="modal-option" onclick="confirmSave(720)">1 Monat</div>
+            <div class="modal-option" onclick="confirmSave(0)">Für immer</div>
+            <div class="modal-option" onclick="closeSaveModal()">Abbrechen</div>
+        </div>
+    </div>
+
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">Nachrichten <button onclick="toggleMenu()" style="background:none; border:none; color:var(--text-muted); font-size:1.8rem; cursor:pointer">✕</button></div>
-        
-        <!-- SIDEBAR METRICS FIX -->
+        <div class="sidebar-header">Nachrichten<button onclick="toggleMenu()" style="background:none; border:none; color:var(--text-muted); font-size:1.8rem; cursor:pointer">✕</button></div>
         <div class="sidebar-metrics">
-            <div class="metric-card">
-                <span class="val" id="stat-articles">0</span>
-                <span class="lbl">Artikel</span>
-            </div>
-            <div class="metric-card">
-                <span class="val" id="stat-clusters">0</span>
-                <span class="lbl">Themen</span>
-            </div>
+            <div class="metric-card"><span class="val" id="stat-articles">0</span><span class="lbl">Artikel</span></div>
+            <div class="metric-card"><span class="val" id="stat-clusters">0</span><span class="lbl">Themen</span></div>
         </div>
-
         <div class="nav-item active" id="nav-feed" onclick="switchTab('feed')"><span>🗞️</span> Feed</div>
         <div class="nav-item" id="nav-saved" onclick="switchTab('saved')"><span>🔖</span> Gemerkt</div>
-        
         <div class="admin-card">
             <button class="update-btn" onclick="triggerUpdate()" id="update-btn">🔄 Update starten</button>
             <div style="text-align:center; font-size:0.65rem; color:var(--text-muted)" id="config-status">Check...</div>
@@ -148,7 +159,6 @@
                 <button class="sort-btn" id="btn-trend" onclick="setSort('trend')">🔥 Trends</button>
             </div>
         </div>
-        
         <div class="search-area">
             <div class="search-wrapper">
                 <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="render()">
@@ -176,14 +186,24 @@
         let currentSort = 'time';
         let selectedSources = []; 
         let repoConfig = null;
+        let pendingSaveId = null;
 
-        // --- RELATIVE ZEIT (UX FEATURE) ---
+        const sourceDomains = {
+            "ZDF": "zdf.de", "Tagesschau": "tagesschau.de", "Spiegel": "spiegel.de",
+            "Welt": "welt.de", "Zeit": "zeit.de", "FAZ": "faz.net", "Focus": "focus.de",
+            "N-TV": "n-tv.de", "Süddeutsche": "sueddeutsche.de", "Bild": "bild.de", "ARD": "ard.de"
+        };
+
+        function getSourceLogo(sourceName) {
+            const domain = sourceDomains[sourceName];
+            return domain ? `https://www.google.com/s2/favicons?sz=64&domain=${domain}` : `https://cdn-icons-png.flaticon.com/512/2540/2540832.png`;
+        }
+
         function getRelativeTime(dateStr) {
             const now = new Date();
             const past = new Date(dateStr);
             const diffMs = now - past;
             const diffMin = Math.floor(diffMs / 60000);
-            
             if (diffMin < 1) return "gerade eben";
             if (diffMin < 60) return `vor ${diffMin} Min.`;
             const diffStd = Math.floor(diffMin / 60);
@@ -202,17 +222,11 @@
             try {
                 const r = await fetch('news.json?t=' + Date.now());
                 allNewsData = await r.json();
-                
-                // FILTER AUS LOCALSTORAGE LADEN
                 const storedFilters = localStorage.getItem('selected_sources');
-                if(storedFilters) {
-                    selectedSources = JSON.parse(storedFilters);
-                    updateFilterUI();
-                }
-
+                if(storedFilters) { selectedSources = JSON.parse(storedFilters); updateFilterUI(); }
                 updateSourceDropdown();
                 render();
-            } catch(e) { console.error("Fehler beim Laden"); }
+            } catch(e) { console.error("Ladefehler"); }
         }
 
         function updateSourceDropdown() {
@@ -221,19 +235,16 @@
                 if(i.source) sources.add(i.source);
                 i.related?.forEach(r => sources.add(r.source));
             });
-
             const container = document.getElementById('source-options');
             container.innerHTML = '';
             Array.from(sources).sort().forEach(source => {
                 const isChecked = selectedSources.includes(source);
                 const item = document.createElement('div');
                 item.className = 'source-item';
-                item.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><span>${source}</span>`;
+                item.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><img src="${getSourceLogo(source)}" class="source-logo"><span>${source}</span>`;
                 item.onclick = (e) => { e.stopPropagation(); toggleSourceSelection(source); };
                 container.appendChild(item);
             });
-            
-            // Stats Sidebar
             let total = 0;
             allNewsData.forEach(i => total += 1 + (i.related?.length || 0));
             document.getElementById('stat-articles').innerText = total;
@@ -244,7 +255,6 @@
             const index = selectedSources.indexOf(source);
             if (index > -1) selectedSources.splice(index, 1);
             else selectedSources.push(source);
-            
             localStorage.setItem('selected_sources', JSON.stringify(selectedSources));
             updateFilterUI();
             updateSourceDropdown();
@@ -263,16 +273,52 @@
             const count = selectedSources.length;
             const badge = document.getElementById('filter-count');
             const trigger = document.getElementById('filter-trigger');
-            if (count > 0) {
-                badge.innerText = count; badge.style.display = 'block';
-                trigger.classList.add('active');
-            } else {
-                badge.style.display = 'none'; trigger.classList.remove('active');
-            }
+            if (count > 0) { badge.innerText = count; badge.style.display = 'block'; trigger.classList.add('active'); }
+            else { badge.style.display = 'none'; trigger.classList.remove('active'); }
         }
 
         function toggleFilterDropdown() { document.getElementById('filter-dropdown').classList.toggle('show'); }
         window.onclick = (e) => { if (!e.target.closest('.search-wrapper')) document.getElementById('filter-dropdown').classList.remove('show'); };
+
+        // --- SPEICHER LOGIK ---
+        function toggleSave(id) {
+            const isAlreadySaved = savedNews.some(s => s.news.id === id);
+            if(isAlreadySaved) {
+                savedNews = savedNews.filter(s => s.news.id !== id);
+                localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+                render();
+            } else {
+                pendingSaveId = id;
+                document.getElementById('save-modal').classList.add('active');
+            }
+        }
+
+        function closeSaveModal() {
+            document.getElementById('save-modal').classList.remove('active');
+            pendingSaveId = null;
+        }
+
+        function confirmSave(hours) {
+            if(!pendingSaveId) return;
+            let found = allNewsData.find(n => n.id === pendingSaveId);
+            if(!found) allNewsData.forEach(c => { if(!found) found = c.related?.find(r => r.id === pendingSaveId); });
+            
+            if(found) {
+                const expiresAt = hours === 0 ? null : Date.now() + (hours * 3600000);
+                savedNews.push({ news: found, expiresAt: expiresAt, savedAt: Date.now() });
+                localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+            }
+            closeSaveModal();
+            render();
+        }
+
+        function getExpiryLabel(expiresAt) {
+            if(!expiresAt) return "Dauerhaft gemerkt";
+            const diff = expiresAt - Date.now();
+            const hours = Math.ceil(diff / 3600000);
+            if(hours > 24) return `Noch ${Math.ceil(hours/24)} Tage`;
+            return `Noch ${hours} Std.`;
+        }
 
         function render() {
             const container = document.getElementById('feed');
@@ -281,12 +327,10 @@
 
             let data = [];
             if (selectedSources.length > 0) {
-                let extracted = [];
                 allNewsData.forEach(cluster => {
-                    if (selectedSources.includes(cluster.source)) extracted.push({ ...cluster, related: [] });
-                    cluster.related?.forEach(rel => { if (selectedSources.includes(rel.source)) extracted.push(rel); });
+                    if (selectedSources.includes(cluster.source)) data.push({ ...cluster, related: [] });
+                    cluster.related?.forEach(rel => { if (selectedSources.includes(rel.source)) data.push(rel); });
                 });
-                data = extracted;
             } else {
                 data = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
             }
@@ -300,36 +344,43 @@
             }
 
             data.forEach((item, index) => {
-                const isSaved = savedNews.some(s => s.news.id === item.id);
+                const savedObj = savedNews.find(s => s.news.id === item.id);
                 const relTime = getRelativeTime(item.date);
-                const isNew = (new Date() - new Date(item.date)) < 3600000; // Jünger als 1 Std.
+                const isNew = (new Date() - new Date(item.date)) < 3600000;
 
                 const card = document.createElement('div');
                 card.className = 'card animate-fade';
                 card.style.animationDelay = (index * 0.05) + 's';
                 
+                let metaExtra = '';
+                if(currentTab === 'saved' && savedObj) {
+                    metaExtra = `<span class="expiry-info" onclick="toggleSave('${item.id}')">${getExpiryLabel(savedObj.expiresAt)}</span>`;
+                }
+
                 card.innerHTML = `
-                    <button class="btn-save ${isSaved ? 'saved' : ''}" onclick="toggleSave('${item.id}')">${isSaved ? '★' : '☆'}</button>
+                    <button class="btn-save ${savedObj ? 'saved' : ''}" onclick="toggleSave('${item.id}')">${savedObj ? '★' : '☆'}</button>
                     ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
                     <div class="card-body">
                         <div class="meta">
-                            <span>${isNew ? '<span class="new-indicator"></span>' : ''}${item.sourceCountry || '🌍'} ${item.source} • ${relTime}</span>
+                            <span style="display:flex; align-items:center; gap:8px;">
+                                ${isNew ? '<span class="new-indicator"></span>' : ''}
+                                <img src="${getSourceLogo(item.source)}" class="source-logo">
+                                ${item.source} • ${relTime}
+                            </span>
+                            ${metaExtra}
                         </div>
                         <a href="${item.link}" target="_blank" class="card-title">${highlightText(item.title, searchTerm)}</a>
                         ${item.text ? `<div class="scoop">${highlightText(item.text, searchTerm)}</div>` : ''}
                         <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
                     </div>
                     <div class="actions">
-                        <a href="${item.link}" target="_blank" class="btn-link">Artikel lesen →</a>
+                        <a href="${item.link}" target="_blank" class="btn-link">Lesen →</a>
                         <div style="display:flex; gap:12px; align-items:center">
                             <button onclick="copyLink('${item.link}')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem">🔗</button>
-                            ${selectedSources.length === 0 && item.related?.length ? `
-                                <button class="btn-toggle" onclick="toggleVars('${item.id}', this)">
-                                    <span>📚 ${item.related.length} Quellen</span>
-                                </button>` : ''}
+                            ${selectedSources.length === 0 && item.related?.length ? `<button class="btn-toggle" onclick="toggleVars('${item.id}')">📚 ${item.related.length} Quellen</button>` : ''}
                         </div>
                     </div>
-                    <div id="vars-${item.id}" class="variants-container" style="display:none; padding:20px; background:#121214; border-top:1px solid var(--border)">
+                    <div id="vars-${item.id}" class="variants-container" style="display:none">
                         ${(item.related || []).map(r => `
                             <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px">
                                 <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
@@ -343,7 +394,7 @@
             });
         }
 
-        function toggleVars(id, btn) {
+        function toggleVars(id) {
             const el = document.getElementById('vars-' + id);
             el.style.display = el.style.display === 'none' ? 'block' : 'none';
         }
@@ -353,18 +404,6 @@
         function switchTab(t) { currentTab = t; document.getElementById('nav-feed').classList.toggle('active', t === 'feed'); document.getElementById('nav-saved').classList.toggle('active', t === 'saved'); toggleMenu(); render(); }
         function copyLink(l) { navigator.clipboard.writeText(l); alert("Link kopiert!"); }
         
-        function toggleSave(id) {
-            const idx = savedNews.findIndex(s => s.news.id === id);
-            if(idx > -1) savedNews.splice(idx, 1);
-            else {
-                let found = allNewsData.find(n => n.id === id);
-                if(!found) allNewsData.forEach(c => { if(!found) found = c.related?.find(r => r.id === id); });
-                if(found) savedNews.push({ news: found });
-            }
-            localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
-            render();
-        }
-
         async function triggerUpdate() {
             let t = localStorage.getItem('gh_token') || prompt("GitHub Token:");
             if(!t) return; localStorage.setItem('gh_token', t);
@@ -372,7 +411,7 @@
             const res = await fetch(`https://api.github.com/repos/${repoConfig.repository}/actions/workflows/update.yml/dispatches`, {
                 method: 'POST', headers: {'Authorization': `Bearer ${t}`}, body: JSON.stringify({ref:'main'})
             });
-            if(res.ok) alert("Update gestartet!");
+            if(res.ok) alert("Update läuft!");
             document.getElementById('update-btn').innerText = "🔄 Update starten";
         }
 
@@ -384,10 +423,19 @@
             document.getElementById('back-to-top').style.display = winScroll > 500 ? 'flex' : 'none';
         };
 
-        const rawSaved = localStorage.getItem('my_saved_news');
-        if(rawSaved) savedNews = JSON.parse(rawSaved);
+        function loadSavedItems() {
+            const raw = localStorage.getItem('my_saved_news');
+            if(raw) {
+                let items = JSON.parse(raw);
+                // Ablauffrist prüfen
+                savedNews = items.filter(item => !item.expiresAt || item.expiresAt > Date.now());
+                if(items.length !== savedNews.length) localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+            }
+        }
+
+        loadSavedItems();
         fetchData();
-        fetch('config.json?t=' + Date.now()).then(r => r.json()).then(c => { repoConfig = c; document.getElementById('config-status').innerText = "System bereit ✅"; });
+        fetch('config.json?t=' + Date.now()).then(r => r.json()).then(c => { repoConfig = c; document.getElementById('config-status').innerText = "System online ✅"; });
     </script>
 </body>
 </html>
