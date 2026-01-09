@@ -52,7 +52,7 @@ async function fetchArticleText(url) {
         let totalLength = paragraphs.join(" ").length;
         if (totalLength < 800) paragraphs = extractParagraphs(html); // Fallback
         let fullText = decodeEntities(paragraphs.join('\n\n'));
-        if (fullText.length > 15000) fullText = fullText.substring(0, 15000);
+        if (fullText.length > 30000) fullText = fullText.substring(0, 30000);
         return fullText;
     } catch (e) { return ""; }
 }
