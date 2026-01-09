@@ -1,5 +1,47 @@
 [
   {
+    "id": "iqjedght3",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Stromausfälle in Großbritannien und Frankreich durch Wintersturm 'Goretti'",
+    "originalTitle": "Massive Stromausfälle in Großbritannien und Frankreich nach Wintersturm",
+    "link": "https://www.tagesschau.de/ausland/europa/wintersturm-stromausfall-europaeische-nachbarn-100.html",
+    "img": null,
+    "date": "2026-01-09T15:22:34.000Z",
+    "text": "Der Wintersturm 'Goretti' führt zu weitreichenden Stromausfällen, geschlossenen Schulen und einer vorübergehenden Abschaltung des Atomkraftwerks Flamanville.",
+    "bullets": [
+      "Stromausfälle infolge des Wintersturms 'Goretti' in Großbritannien und Frankreich",
+      "Viele Schulen bleiben geschlossen und Züge stehen still",
+      "Flamanville-Atomkraftwerk in Frankreich wird vorübergehend abgeschaltet"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "7lzgieuk4",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Operativer Barbrand in Crans-Montana: 40 Tote, Betreiber in Untersuchungshaft",
+    "originalTitle": "Crans-Montana – Le Constellation: Behörden nehmen Betreiber fest",
+    "link": "https://www.spiegel.de/panorama/justiz/crans-montana-le-constellation-behoerden-nehmen-betreiber-fest-a-6e7934df-8fc9-4696-bd05-9589e6976e92#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/fc71927e-5477-4f7e-bb49-31bb75f89189_w520_r2.08_fpx30.02_fpy46.98.jpg",
+    "date": "2026-01-09T15:07:00.000Z",
+    "text": "Bei einem Brand einer Bar in Crans-Montana, Schweiz, wurden 40 Menschen getötet und der Betreiber hält sich in Untersuchungshaft.",
+    "bullets": [
+      "Ort: Crans-Montana, Schweiz",
+      "Todesopfer: 40 Personen",
+      "Der Betreiber befindet sich in Untersuchungshaft"
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "ogxvkgq55",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -78,6 +120,27 @@
         "related": []
       },
       {
+        "id": "qnynrj0kb",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief Elli betrifft Bahn- und Flugverkehr in Deutschland",
+        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+        "date": "2026-01-09T12:00:00.000Z",
+        "text": "Sturmtief Elli führt zu Flugabsagen und verlangsamten ICE-Verbindungen in Nord- und Süddeutschland.",
+        "bullets": [
+          "Mehrere Flüge in Deutschland wurden gestrichen",
+          "ICE-Verbindungen mussten im gesamten Land verlangsamt werden",
+          "Bodenverkehr in Nord- und Süddeutschland ist stark beeinträchtigt"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      },
+      {
         "id": "yfhm7irox",
         "source": "Spiegel",
         "sourceCountry": "🇩🇪",
@@ -123,6 +186,28 @@
     "related": []
   },
   {
+    "id": "jd6p5ry92",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Jahr der Wahrheit für Friedrich Merz",
+    "originalTitle": "Das Jahr der Wahrheit für Friedrich Merz",
+    "link": "https://www.zdfheute.de/politik/deutschland/merz-cdu-wahljahr-analyse-100.html",
+    "img": "https://www.zdfheute.de/assets/friedrich-merz-766~384x216?cb=1767948677799",
+    "date": "2026-01-09T14:24:00.000Z",
+    "text": "Die CDU sieht sich im 'Super-Wahljahr' 2026 mit Turbulenzen konfrontiert: Kai Wegner wird in Berlin zunehmend verworfen, Rainer Haseloff tritt als CDU-Politiker zurück und die geplante Bundesvorstandsklausur muss abgesagt werden.",
+    "bullets": [
+      "Friedrich Merz",
+      "Kai Wegner",
+      "Rainer Haseloff",
+      "Berlin"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "rn5m7z2zj",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -137,6 +222,48 @@
       "AfD – Antragsteller und Unterstützer",
       "BSW – unterstützte den Auflösungsantrag",
       "SPD und CDU – stimmten gegen die Auflösung"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "wvgzy3idw",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Transfer-Coup: Füchse Berlin holen Dika Mem",
+    "originalTitle": "Transfer-Coup perfekt: Füchse Berlin holen Weltklasse-Spieler Dika Mem",
+    "link": "https://www.rbb24.de/sport/beitrag/2026/01/fuechse-berlin-neuzugang-handball-dika-mem-barcelona.html",
+    "img": null,
+    "date": "2026-01-09T14:18:54.000Z",
+    "text": "Füchse Berlin verpflichten den Weltklasse-Spieler Dika Mem.",
+    "bullets": [
+      "Füchse Berlin verpflichten Dika Mem",
+      "Dika Mem gilt als Weltklasse-Spieler",
+      "Der Transfer wird als Coup bezeichnet"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "eddcxlukw",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Kritische Erkenntnisse aus der Potsdamer Katastrophenschutz‑Übung",
+    "originalTitle": "Übung offenbart Lücken im Potsdamer Katastrophenschutz",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/potsdam-katastrophenschutz-auswertung-uebung-technik-zentrum-verbesserung.html",
+    "img": null,
+    "date": "2026-01-09T14:15:21.000Z",
+    "text": "Der in Potsdam durchgeführte Notfallwettbewerb hat entscheidende Lücken im Katastrophenschutz aufgedeckt.",
+    "bullets": [
+      "Potsdam – Ort der Übung und des Resümees",
+      "Deutschland – Verweis auf das nationale Rahmenprogramm für Katastrophenschutz",
+      "Katastrophenschutz – Kennzeichnung der identifizierten Schwachstellen"
     ],
     "tags": [
       "rbb24",
@@ -161,6 +288,47 @@
     ],
     "tags": [
       "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "daaa4ov7n",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Autoindustrie angetrieben: Produktionsplus in Deutschland",
+    "originalTitle": "Industrieproduktion - Rettet die Autoindustrie die Konjunktur?",
+    "link": "https://www.tagesschau.de/wirtschaft/finanzen/elektroautos-konjunktur-industrieproduktion-100.html",
+    "img": null,
+    "date": "2026-01-09T13:52:15.000Z",
+    "text": "Deutsche E‑Autos treiben das Produktionsplus der Autoindustrie an und unterstützen damit das Konjunkturwachstum.",
+    "bullets": [
+      "In jüngster Zeit hat die Autoindustrie ein starkes Produktionsplus verzeichnet.",
+      "E‑Autos aus Deutschland sind besonders gefragt."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "a89lw1t3u",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Wetter: Schnee, Sturm und Glätte – Ist der Winter in Deutschland wirklich außergewöhnlich?",
+    "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
+    "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
+    "date": "2026-01-08T19:56:00.000Z",
+    "text": "Der Beitrag erörtert, ob der aktuelle Winter mit Schnee, Sturm und Glätte in Deutschland kälter und verschneit ist als üblich, und beleuchtet die regionale Wahrnehmung.",
+    "bullets": [
+      "Der Artikel beschreibt ungewöhnliche Wetterbedingungen – Schnee, Sturm und Glätte.",
+      "Er stellt die Frage, ob der aktuelle Winter in Deutschland tatsächlich kälter und verschneiter ist als üblich.",
+      "Der Fokus liegt auf der regionalen Wahrnehmung und der Erkundung, wie diese Wetterlage wirkt."
+    ],
+    "tags": [
+      "Spiegel",
       "News"
     ],
     "related": []
