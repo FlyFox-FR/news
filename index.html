@@ -175,13 +175,23 @@
     </div>
 
     <script>
-        // --- KONFIGURATION (HIER ÄNDERN!) ---
-        const REPO_OWNER = 'DEIN_GITHUB_USERNAME'; // z.B. 'MaxMustermann'
-        const REPO_NAME = 'DEIN_REPO_NAME';       // z.B. 'news-flash'
-        // ------------------------------------
 
-        let allNewsData = [];
-        let savedNews = [];
+        // --- KONFIGURATION (DYNAMISCH) ---
+    let repoConfig = null;
+
+    // Wir laden die Config, die der Bot erstellt hat
+    fetch('config.json?t=' + Date.now())
+        .then(r => r.json())
+        .then(config => {
+            repoConfig = config;
+            checkConfig(); // Status prüfen, sobald Config da ist
+        })
+        .catch(e => console.log("Config noch nicht erstellt (passiert beim nächsten Run)"));
+
+    // --- VARIABLEN ---
+    let allNewsData = [];
+    let savedNews = [];
+
         let currentTab = 'feed';
         let currentSort = 'time';
         let itemToSaveId = null;
@@ -191,18 +201,23 @@
         fetchData();
         checkConfig();
 
-        function checkConfig() {
-            const hasToken = localStorage.getItem('gh_token');
-            const statusEl = document.getElementById('config-status');
-            if (REPO_OWNER === 'DEIN_GITHUB_USERNAME') {
-                statusEl.innerText = "⚠️ Repo-Name fehlt im Code!";
-                statusEl.style.color = "red";
-            } else if (!hasToken) {
-                statusEl.innerText = "Key fehlt (Klick Button)";
-            } else {
-                statusEl.innerText = "Bereit ✅";
-            }
+     
+    function checkConfig() {
+        const hasToken = localStorage.getItem('gh_token');
+        const statusEl = document.getElementById('config-status');
+        
+        if (!repoConfig) {
+            statusEl.innerText = "Lade Config...";
+            statusEl.style.color = "orange";
+        } else if (!hasToken) {
+            statusEl.innerText = "Key fehlt (Klick Button)";
+            statusEl.style.color = "#aaa";
+        } else {
+            statusEl.innerText = "Bereit ✅";
+            statusEl.style.color = "var(--success)";
         }
+    }
+
 
         // --- ADMIN UPDATE FUNCTION ---
         async function triggerUpdate() {
@@ -214,7 +229,13 @@
                 if (token) {
                     localStorage.setItem('gh_token', token);
                     checkConfig();
-                } else {
+                } 
+                       // SICHERHEITS-CHECK
+        if (!repoConfig || !repoConfig.repository) {
+            alert("Fehler: config.json fehlt. Warte auf den nächsten automatischen Run oder erstelle sie einmalig.");
+            return;
+        }                
+                else {
                     return;
                 }
             }
@@ -227,10 +248,9 @@
             dot.className = 'status-dot loading';
             label.innerText = 'Starte Workflow...';
             btn.disabled = true;
-
-            try {
-                // 3. GitHub API Request
-                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/update.yml/dispatches`;
+   try {
+            // HIER IST DIE ÄNDERUNG: Wir nutzen repoConfig.repository
+            const url = `https://api.github.com/repos/${repoConfig.repository}/actions/workflows/update.yml/dispatches`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
