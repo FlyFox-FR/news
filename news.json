@@ -1,1 +1,175 @@
-
+[
+  {
+    "id": "tjh1ih9a7",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "DB stoppt Fernverkehr im Norden wegen Wintersturm Elli",
+    "originalTitle": "\"Elli\" bringt Schnee: Bahn stoppt Fernverkehr im Norden",
+    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+    "date": "2026-01-09T10:56:00.000Z",
+    "text": "Der Wintersturm 'Elli' hat die Deutsche Bahn gezwungen, den Fernverkehr im Norden zu stornieren und führte zu Schulschließungen in vielen Regionen.",
+    "bullets": [
+      "Wintersturm 'Elli' belastet bundesweit die Infrastruktur und verursacht starken Schneefall und Glätte.",
+      "Die Deutsche Bahn hat den Fernverkehr im nördlichen Teil des Landes eingestellt, um die Sicherheit zu gewährleisten.",
+      "In mehreren Schulstandorten kam es zu Ausfall von Unterrichtswochen wegen der Unwetterbedingungen.",
+      "State Department of Traffic (StVerwaltung) hat Vorwarnungen und Evakuierungspläne veröffentlicht, um Risiken zu minimieren."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "tyn9zycq7",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief „Elli“ stört Bahn‑ und Flugverkehr in Nord‑ und Süddeutschland",
+        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+        "date": "2026-01-09T08:46:00.000Z",
+        "text": "Wetterstärke von Sturmtief „Elli“ führt zu gestrichenen Flügen und verlangsamten ICE‑Verbindungen entlang zentral deutscher Strecken.",
+        "bullets": [
+          "Sturmtief „Elli“ brach mit Windgeschwindigkeiten von bis zu 140 km/h Bergen und führten zu landschaftlichen Schäden in Niedersachsen, Bayern und dem Rhein-Ruhr‑Gebiet.",
+          "Lufthansa, Eurowings und Air Berlin streichten rund 30 zentrale Flüge (Regionalstationen: Frankfurt, München, Düsseldorf).",
+          "ICE‑Verbindungen zwischen Hamburg und München wurden kurzfristig heruntergefahren, was zu Verspätungen von 60–120 Minuten führte.",
+          "Die Deutsche Bahn verzeichnete 13 Durchblitze in kritischen Signalstationen, wovon 3 mit Ausfall von Streckenabschnitten im Erzgebirge und der Nordsee inszeniert wurden."
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "jszvhkndn",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Südafrika führt Marineübung mit Russland, Iran und China durch – stark kritisiert",
+    "originalTitle": "Südafrikas brisantes Manöver mit Russland, Iran, China",
+    "link": "https://www.tagesschau.de/ausland/afrika/marinemanoever-suedafrika-100.html",
+    "img": null,
+    "date": "2026-01-09T10:42:15.000Z",
+    "text": "Südafrika hat eine gemeinsame Seeschlachtübung mit Russland, Iran und China initiiert, die in der Bevölkerung auf heftige Kritik stößt.",
+    "bullets": [
+      "Teilnehmer der Übung sind Deutschland, Russland, China und der Iran.",
+      "Die genaue Teilnehmerzahl der Soldaten und Seeeinheiten wurde im Artikel nicht genannt.",
+      "Der Einsatz wird von vielen Südafrikanern als potenziell destabilisernde außenpolitische Handlung angesehen."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "5w4kwp63z",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Proteste in Iran: Barrikaden, brennende Fahrzeuge und Angst vor Polizeigewalt",
+        "originalTitle": "ZDF-Korrespondentin im Iran: \"Angst hier im Land sehr groß\"",
+        "link": "https://www.zdfheute.de/politik/ausland/iran-proteste-demonstranten-angst-polizeigewalt-gaa-100.html",
+        "img": "https://www.zdfheute.de/assets/gaa-iran-100~384x216?cb=1767950586149",
+        "date": "2026-01-09T10:26:00.000Z",
+        "text": "Iranische Demonstranten setzen trotz großer Angst vor Polizeigewalt ihre Proteste fort.",
+        "bullets": [
+          "In Iran sind Barrikaden eingerichtet und Fahrzeuge verbrennen, während Proteste weitergehen.",
+          "Die ZDF-Korrespondentin Gaa berichtet, dass die Protestierenden große Angst vor Polizeigewalt haben.",
+          "Trotz der Angst bleibt die Stimmung der Demonstranten wütend und entschlossen."
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "heoq11l14",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Exportzahlen und unsichere Konjunktur verlangsamen den Aktienmarkt",
+    "originalTitle": "Marktbericht: Schwache Exportdaten dämpfen Kauflust",
+    "link": "https://www.tagesschau.de/wirtschaft/finanzen/marktberichte/marktbericht-dax-dow-geldanlage-aktienmarkt-100.html",
+    "img": null,
+    "date": "2026-01-09T10:05:24.000Z",
+    "text": "Schwache Exportdaten sowie heterogene Konjunkturindikatoren senken die Marktstimmung, während die noch anzukünftigen US-Arbeitsmarktdaten Anleger zögern lassen.",
+    "bullets": [
+      "Exportdaten lagen unter den Erwartungen und zeigten einen Rückgang, konkrete Prozentzahlen wurden nicht veröffentlicht",
+      "Der Aktienindex sank seit Wochenbeginn um 1,8 %",
+      "US-Arbeitsmarktdaten sind noch nicht veröffentlicht, die Veröffentlichung steht für das nächste Quartal aus"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "tgq11ej7x",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Zwei Verletzte bei Kontrolle durch US-Bundespolizist in Portland",
+    "originalTitle": "Portland: Zwei Verletzte bei Kontrolle durch US-Grenzbehörde",
+    "link": "https://www.tagesschau.de/ausland/amerika/zwei-verletzte-nach-ice-kontrolle-in-portland-100.html",
+    "img": null,
+    "date": "2026-01-09T10:04:26.000Z",
+    "text": "Ein Bundespolizist der US-Einwanderungsbehörde verletzte bei einer Kontrolle in Portland zwei Personen.",
+    "bullets": [
+      "Ort: Portland, Oregon – Kontrolle von US-Einwanderungsbehörde (U.S. Border Patrol)",
+      "Betroffene: 2 Personen, beide verletzt, keine Todesfälle",
+      "Verfolgt von: tödlichen Schüssen bei einem Einsatz der US-Einwanderungsbehörde in Minneapolis",
+      "Zeitpunkt: unmittelbar nach dem Vorfall in Minneapolis, identischer Einsatz-Motive der Behörde"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "eqk0ng5wn",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Kollaps in Crans-Montana: Nationaler Trauertag steht an",
+    "originalTitle": "Nationaler Trauertag nach Brandkatastrophe in Crans-Montana",
+    "link": "https://www.tagesschau.de/ausland/europa/schweiz-trauertag-nach-unglueck-crans-montana-100.html",
+    "img": null,
+    "date": "2026-01-09T09:46:37.000Z",
+    "text": "Schweiz richtet nach Brand in einer Bar in Crans‑Montana einen nationalen Trauertag ein, während die Staatsanwaltschaft mögliche Brandschutzversäumnisse prüft.",
+    "bullets": [
+      "Brandkatastrophe in einer Bar in Crans‑Montana erfasste mehrere Opfer",
+      "Schweiz gedenkt der Verstorbenen mit einem nationalen Trauertag",
+      "Staatsanwaltschaft untersucht Verfehlungen beim Brandschutz"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "yobz2kx3a",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Sturmtief Elli: Frost und heftiger Schneefall in Deutschland",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
+    "date": "2026-01-09T07:00:00.000Z",
+    "text": "Der Wetterdienst warnt vor mäßiger bis starker Schneelast und Gefriergefahr durch Sturmtief Elli.",
+    "bullets": [
+      "Sturmtief bezeichnet Wetterlage (Name „Elli“, 20. Jan. 2024)",
+      "Unverzügliche Schneemengen von 20 – 35 cm in Bayern und Baden‑Württemberg erwartet",
+      "Gefahr von Glatteis bei Temperaturen unter -10 °C auf Autobahnen der Alpenverbindung"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  }
+]
