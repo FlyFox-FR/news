@@ -1,7 +1,7 @@
 {
-  "name": "news-grabber-final",
-  "version": "4.0.0",
-  "description": "News Grabber",
+  "name": "news-grabber-pollinations",
+  "version": "5.0.0",
+  "description": "No Key AI",
   "main": "grabber.js",
   "scripts": {
     "start": "node grabber.js"
