@@ -178,6 +178,15 @@
 
         #back-to-top { position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: white; width: 56px; height: 56px; border-radius: 50%; border: none; display: none; align-items: center; justify-content: center; z-index: 100; cursor: pointer; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         body.zen-mode #back-to-top { background: #333; color: #888; }
+
+        /* CSS für den langen Text im Zen-Modus */
+.zen-content {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #d4d4d4;
+    white-space: pre-wrap; /* Damit Absätze erhalten bleiben */
+    margin-top: 20px;
+}
     </style>
 </head>
 <body>
