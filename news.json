@@ -19,7 +19,29 @@
       "Spiegel",
       "News"
     ],
-    "related": []
+    "related": [
+      {
+        "id": "dnt2oru5h",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Feuer in Crans-Montana: Tod von Jugendlichen aus Frankreich und Italien erschüttert Vertrauen in Schweizer Justiz",
+        "originalTitle": "Crans-Montana: In Italien ist das Vertrauen in die Schweizer Justiz erschüttert",
+        "link": "https://www.spiegel.de/ausland/crans-montana-in-italien-ist-das-vertrauen-in-die-schweizer-justiz-erschuettert-a-e47289c5-41b4-4128-bd9c-c2526a39121b#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/f5a0c884-ce59-4d79-aa73-8d4574aa6b2a_w520_r2.08_fpx68.67_fpy55.jpg",
+        "date": "2026-01-09T12:59:00.000Z",
+        "text": "Mehrere junge Menschen aus Frankreich und Italien starben bei einem Brand in Crans-Montana, woraufhin in Italien das Vertrauen in die Schweizer Justiz erschüttert und Politiker beider Länder die Ermittlungen genau verfolgen wollen.",
+        "bullets": [
+          "Brand tötete mehrere junge Personen aus Frankreich und Italien in Crans-Montana.",
+          "Italienisches Vertrauen in die Schweizer Justiz erschüttert.",
+          "Politiker beider Länder kritisieren Vorgehen der Schweizer Behörden und fordern Beobachtung der Ermittlungen."
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ],
+        "related": []
+      }
+    ]
   },
   {
     "id": "ozyojyjij",
@@ -134,7 +156,7 @@
         "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
         "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
         "img": null,
-        "date": "2026-01-09T12:52:05.000Z",
+        "date": "2026-01-09T13:03:18.000Z",
         "text": "Wintertief \"Elli\" verursacht im Norden und Osten Deutschlands Ausfälle und Fahrplanänderungen bei der Deutschen Bahn.",
         "bullets": [
           "Das Sturmtief \"Elli\" zieht über Deutschland und bringt starkes Schneefall und Eis",
@@ -233,22 +255,23 @@
         "related": []
       },
       {
-        "id": "9ruvdesma",
-        "source": "Spiegel",
+        "id": "p4j21ow36",
+        "source": "Tagesschau",
         "sourceCountry": "🇩🇪",
-        "title": "Witterungsbericht: Schnee, Sturm und Glätte im deutschen Winter",
-        "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
-        "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
-        "date": "2026-01-08T19:56:00.000Z",
-        "text": "Der derzeitige Winter ist insbesondere in Regionen Deutschlands von Schnee, Sturm und Glätte geprägt.",
+        "title": "Wintersturm Elli: Schneefall, Glätte und Bahnausfälle brechen in Deutschland",
+        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
+        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
+        "img": null,
+        "date": "2026-01-09T13:03:55.000Z",
+        "text": "Der Sturm ’Elli’ bringt starken Schneefall und Glätte, führt zu Bahnausfällen, stehenden Zügen und tödlichen Unfällen in weiten Teilen Deutschlands.",
         "bullets": [
-          "Starke Schneefälle und Sturmobliegenheiten",
-          "Besonders ausgeprägte Glätte in mehreren deutschen Regionen",
-          "Unklare Temperaturentwicklung im Vergleich zum Vorjahreswinter"
+          "Wintersturm Elli trifft weite Teile Deutschlands und erzeugt heftigen Schneefall sowie Glätte",
+          "Durch den Sturm entstehen Bahnausfälle, stehende Züge und tödliche Unfälle",
+          "Bahnreisende, Schüler und Autofahrer sind besonders betroffen",
+          "Schwerpunkte fallen vor allem auf Bahn- und Straßenverkehr"
         ],
         "tags": [
-          "Spiegel",
+          "Tagesschau",
           "News"
         ],
         "related": []
@@ -313,6 +336,27 @@
       "Der Artikel erwähnt lediglich die Namen Marco Rubio, Donald Trump und Henry Kissinger.",
       "Henry Kissinger steht in Verbindung mit mehreren gleichzeitig ausgeübten Ämtern.",
       "Im Text werden keine konkreten Zahlen, Orte oder sonstige harte Fakten genannt."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "9ruvdesma",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Witterungsbericht: Schnee, Sturm und Glätte im deutschen Winter",
+    "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
+    "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
+    "date": "2026-01-08T19:56:00.000Z",
+    "text": "Der derzeitige Winter ist insbesondere in Regionen Deutschlands von Schnee, Sturm und Glätte geprägt.",
+    "bullets": [
+      "Starke Schneefälle und Sturmobliegenheiten",
+      "Besonders ausgeprägte Glätte in mehreren deutschen Regionen",
+      "Unklare Temperaturentwicklung im Vergleich zum Vorjahreswinter"
     ],
     "tags": [
       "Spiegel",
