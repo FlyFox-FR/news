@@ -1,5 +1,111 @@
 [
   {
+    "id": "c6zrbr8v4",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Wintersturm \"Elli\" stoppt Bahnverkehr im Norden",
+    "originalTitle": "\"Elli\" bringt Schnee: Bahn stoppt Fernverkehr im Norden",
+    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+    "date": "2026-01-09T14:34:00.000Z",
+    "text": "Der Wintersturm \"Elli\" zwingt die Deutsche Bahn zur Einstellung des Fernverkehrs im Norden und führt zu ausfallendem Schulunterricht in vielen Regionen, während bundesweit schwierige Bedingungen herrschen.",
+    "bullets": [
+      "Deutsche Bahn hat den Fernverkehr im Norden eingestellt.",
+      "Der Wintersturm \"Elli\" verursacht bundesweite schwierige Bedingungen.",
+      "In vielen Regionen fällt der Schulunterricht aus."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "ll2rr7vir",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Sturmtief Elli: Schnee und Wind treffen Berlin und Brandenburg milder als befürchtet",
+    "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
+    "img": null,
+    "date": "2026-01-09T14:32:38.000Z",
+    "text": "Das Sturmtief Elli bringt Schnee und starken Wind nach Deutschland, aber Berlin und Brandenburg werden weniger stark betroffen als zunächst gedacht.",
+    "bullets": [
+      "Sturmtief 'Elli' bringt Schnee und starken Wind nach Deutschland",
+      "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich befürchtet",
+      "Behörden und Wetterdienste rufen zur Vorsicht auf"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "b3gpbn01b",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Sturmtief \"Elli\" gefährdet deutschen Bahnverkehr",
+    "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
+    "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+    "img": null,
+    "date": "2026-01-09T14:29:06.000Z",
+    "text": "Das Wintertief \"Elli\" führt zu Zugausfällen in Nord- und Ostdeutschland.",
+    "bullets": [
+      "Wintertief \"Elli\" zieht über Deutschland und bringt viel Schnee und Eis.",
+      "Zugverkehr im Norden Deutschlands bleibt laut Bahn bis auf Weiteres eingestellt.",
+      "Ausfälle im Bahnverkehr sind auch in Ostdeutschland zu erwarten."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "tut4ulzbz",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Verwaltungsgericht Berlin genehmigt Transport von über 150 hochradioaktiven Castor‑Behältern von Jülich nach Ahaus",
+    "originalTitle": "Atommülltransporte durch NRW dürfen stattfinden",
+    "link": "https://www.tagesschau.de/inland/regional/nordrheinwestfalen/atommuell-transporte-nrw-100.html",
+    "img": null,
+    "date": "2026-01-09T14:26:00.000Z",
+    "text": "Der Berliner Gerichtshof nimmt den Transport von mehr als 150 Castor‑Behältern durch NRW zu, obwohl der BUND einen Eilantrag bislang abgelehnt hatte.",
+    "bullets": [
+      "Mehr als 150 Castor‑Behälter mit hochradioaktivem Material müssen vom Zwischenlager Jülich nach Ahaus befördert werden",
+      "Die Entscheidung wurde vom Verwaltungsgericht Berlin getroffen",
+      "Der Eilantrag des Umweltverbands BUND wurde damit abgelehnt"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "c11ne2xop",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Das Jahr der Wahrheit für Friedrich Merz",
+    "originalTitle": "Das Jahr der Wahrheit für Friedrich Merz",
+    "link": "https://www.zdfheute.de/politik/deutschland/merz-cdu-wahljahr-analyse-100.html",
+    "img": "https://www.zdfheute.de/assets/friedrich-merz-766~384x216?cb=1767948677799",
+    "date": "2026-01-09T14:24:00.000Z",
+    "text": "Ein schwieriger Anlauf für die CDU 2026, beleuchtet durch Kai Wegners Verwicklungen, Rainer Haseloffs Rücktritt und die Absetzung der Bundesvorstands‑Klausur.",
+    "bullets": [
+      "2026 als „Super‑Wahljahr“ für die CDU",
+      "Kai Wegner verzettelt sich in Berlin",
+      "Rainer Haseloff tritt aus seiner Position ab",
+      "Bundesvorstands‑Klausur muss abgesagt werden"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "4ast04pkf",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -34,27 +140,6 @@
       "Bereich des Transfers: Berliner Füchse",
       "Zielspieler: Dika Mem",
       "Transfer als \"perfekter Coup\" bezeichnet"
-    ],
-    "tags": [
-      "rbb24",
-      "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "ll2rr7vir",
-    "source": "rbb24",
-    "sourceCountry": "🇩🇪",
-    "title": "Sturmtief Elli: Schnee und Wind treffen Berlin und Brandenburg milder als befürchtet",
-    "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
-    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
-    "img": null,
-    "date": "2026-01-09T14:17:01.000Z",
-    "text": "Das Sturmtief Elli bringt Schnee und starken Wind nach Deutschland, aber Berlin und Brandenburg werden weniger stark betroffen als zunächst gedacht.",
-    "bullets": [
-      "Sturmtief 'Elli' bringt Schnee und starken Wind nach Deutschland",
-      "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich befürchtet",
-      "Behörden und Wetterdienste rufen zur Vorsicht auf"
     ],
     "tags": [
       "rbb24",
@@ -105,40 +190,20 @@
     "related": []
   },
   {
-    "id": "b3gpbn01b",
+    "id": "t0h7hf39h",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
-    "title": "Sturmtief \"Elli\" gefährdet deutschen Bahnverkehr",
-    "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
-    "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+    "title": "Russland greift Ukraine erneut an – Einsatz der Mittelstreckenrakete \"Oreschnik\"",
+    "originalTitle": "Russland greift Ukraine an - auch mit neuer \"Oreschnik\"-Rakete",
+    "link": "https://www.tagesschau.de/ausland/europa/russland-ukraine-angriffe-108.html",
     "img": null,
-    "date": "2026-01-09T14:06:35.000Z",
-    "text": "Das Wintertief \"Elli\" führt zu Zugausfällen in Nord- und Ostdeutschland.",
+    "date": "2026-01-09T14:09:19.000Z",
+    "text": "Russland setzte die neue Mittelstreckenrakete \"Oreschnik\" ein, um Ziele in der Westukraine zu attackieren, wobei mehrere Tote verzeichnet wurden.",
     "bullets": [
-      "Wintertief \"Elli\" zieht über Deutschland und bringt viel Schnee und Eis.",
-      "Zugverkehr im Norden Deutschlands bleibt laut Bahn bis auf Weiteres eingestellt.",
-      "Ausfälle im Bahnverkehr sind auch in Ostdeutschland zu erwarten."
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "tut4ulzbz",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Verwaltungsgericht Berlin genehmigt Transport von über 150 hochradioaktiven Castor‑Behältern von Jülich nach Ahaus",
-    "originalTitle": "Atommülltransporte durch NRW dürfen stattfinden",
-    "link": "https://www.tagesschau.de/inland/regional/nordrheinwestfalen/atommuell-transporte-nrw-100.html",
-    "img": null,
-    "date": "2026-01-09T14:02:41.000Z",
-    "text": "Der Berliner Gerichtshof nimmt den Transport von mehr als 150 Castor‑Behältern durch NRW zu, obwohl der BUND einen Eilantrag bislang abgelehnt hatte.",
-    "bullets": [
-      "Mehr als 150 Castor‑Behälter mit hochradioaktivem Material müssen vom Zwischenlager Jülich nach Ahaus befördert werden",
-      "Die Entscheidung wurde vom Verwaltungsgericht Berlin getroffen",
-      "Der Eilantrag des Umweltverbands BUND wurde damit abgelehnt"
+      "Russland",
+      "Ukraine",
+      "Westukraine",
+      "\"Oreschnik\" (Mittelstreckenrakete)"
     ],
     "tags": [
       "Tagesschau",
@@ -226,6 +291,27 @@
     ],
     "tags": [
       "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "2xogeloi6",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Neubauten im Bundestag: Kosten explodieren laut Vizepräsident",
+    "originalTitle": "Bundestag: Vizepräsident Omid Nouripour von den Grünen sieht neue Kosten bei Neubauten",
+    "link": "https://www.spiegel.de/politik/deutschland/bundestag-vizepraesident-omid-nouripour-von-den-gruenen-sieht-neue-kosten-bei-neubauten-a-b7d4942e-7841-40fb-898d-4970676be642#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/729a47d6-7e69-4edb-a457-e197c80c1350_w520_r2.08_fpx40.69_fpy45.jpg",
+    "date": "2026-01-09T13:25:00.000Z",
+    "text": "Omid Nouripour erklärt, warum die Baukosten im Parlamentsgebäude außer Kontrolle geraten sind.",
+    "bullets": [
+      "Der Vizepräsident betont die gestiegenen Kosten bei Neubauten im Bundestag.",
+      "Dauerhafte Baustellen belasten die Arbeitsabläufe im Parlament.",
+      "Sanierungsstau und Geruchsprobleme erschweren die Instandhaltung der Gebäudestruktur."
+    ],
+    "tags": [
+      "Spiegel",
       "News"
     ],
     "related": []
@@ -443,6 +529,27 @@
     "related": []
   },
   {
+    "id": "5v49o2ngn",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "«White Tiger»-Prozess in Hamburg: Gerichtsverfahren gegen Shahriar J. wegen schwerwiegender Onlineverbrechen",
+    "originalTitle": "»White Tiger«-Prozess in Hamburg: Die wichtigsten Fragen und Antworten zum Verfahren",
+    "link": "https://www.spiegel.de/panorama/justiz/white-tiger-prozess-in-hamburg-die-wichtigsten-fragen-und-antworten-zum-verfahren-a-d13667ee-f770-4622-9dde-0ed5f062a9d9#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/60f75b00-508f-454e-91e7-aa6e462f6c2c_w520_r2.08_fpx58.51_fpy50.jpg",
+    "date": "2026-01-09T12:17:00.000Z",
+    "text": "Der Prozess gegen Shahriar J. in Hamburg, der beschuldigt wird, unter Pseudonym schwerwiegende Verbrechen in Onlineforen begangen zu haben, beginnt mit der Festlegung, warum das Publikum nicht Zutritt zum Gerichtssaal erhält.",
+    "bullets": [
+      "Prozess findet in Hamburg, Deutschland, statt",
+      "Shahriar J. wird beschuldigt, schwerwiegende Onlineverbrechen unter Pseudonym begangen zu haben",
+      "Vor Ort ist das Publikum nicht im Gerichtssaal zugelassen"
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "ud5buqdwl",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
@@ -569,6 +676,22 @@
     "related": []
   },
   {
+    "id": "vye81mxky",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "»White Tiger« – Hamburg: Angeklagter offenbar kurz vor Prozessstart in U-Haft verprügelt",
+    "originalTitle": "»White Tiger« – Hamburg: Angeklagter offenbar kurz vor Prozessstart in U-Haft verprügelt",
+    "link": "https://www.spiegel.de/panorama/justiz/white-tiger-hamburg-angeklagter-offenbar-kurz-vor-prozessstart-in-u-haft-verpruegelt-a-80c5ef75-753b-43cf-bf52-337df730bb48#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/39850c69-3c6d-4e86-a6b0-e50626ee21db_w520_r2.08_fpx45_fpy35.58.jpg",
+    "date": "2026-01-09T11:56:00.000Z",
+    "text": "»White Tiger« – Hamburg: Angeklagter offenbar kurz vor Prozessstart in U-Haft verprügelt",
+    "bullets": [],
+    "tags": [
+      "Spiegel"
+    ],
+    "related": []
+  },
+  {
     "id": "o5srv9bwd",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -581,6 +704,28 @@
     "bullets": [
       "26 Jahre Verhandlungen zwischen EU und Mercosur",
       "EU-Handelsabkommen mit dem Mercosur‑Block eines der größten der Welt"
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "4qznhvana",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Ukraine-Krieg: Angriff auf katarische Botschaft in Kyiv",
+    "originalTitle": "Ukraine-Krieg: Selenskyj berichtet von Angriff auf Katars Botschaft in Kyjiw",
+    "link": "https://www.spiegel.de/ausland/ukraine-krieg-selenskyj-berichtet-von-angriff-auf-katars-botschaft-in-kyjiw-a-d01f2f21-5c05-4da4-92a5-0ba46b17c899#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/c8b61836-5faf-4098-8572-597c436a8786_w520_r2.08_fpx30.02_fpy45.jpg",
+    "date": "2026-01-09T11:51:00.000Z",
+    "text": "Ein groß angelegter Luftangriff Russlands traf die katarische Botschaft in der ukrainischen Hauptstadt Kyiv, woraufhin Präsident Selenskyj an die USA adressierte.",
+    "bullets": [
+      "Russlands groß angelegter Luftangriff traf die katarische Botschaft in der ukrainischen Hauptstadt Kyiv",
+      "Kyiv, die Hauptstadt der Ukraine, war der Ort des Angriffs",
+      "Präsident Selenskyj reagierte mit einer klaren Botschaft, insbesondere an die USA",
+      "Die katarische Botschaft wurde im Angriff getroffen"
     ],
     "tags": [
       "Spiegel",
@@ -631,22 +776,23 @@
     "related": []
   },
   {
-    "id": "c6zrbr8v4",
-    "source": "ZDF",
+    "id": "3q7c8oi4a",
+    "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
-    "title": "Wintersturm \"Elli\" stoppt Bahnverkehr im Norden",
-    "originalTitle": "\"Elli\" bringt Schnee: Bahn stoppt Fernverkehr im Norden",
-    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
-    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
-    "date": "2026-01-09T10:56:00.000Z",
-    "text": "Der Wintersturm \"Elli\" zwingt die Deutsche Bahn zur Einstellung des Fernverkehrs im Norden und führt zu ausfallendem Schulunterricht in vielen Regionen, während bundesweit schwierige Bedingungen herrschen.",
+    "title": "Südafrika plant gemeinsame Marineübung mit Russland, Iran und China",
+    "originalTitle": "Südafrikas brisantes Manöver mit Russland, Iran, China",
+    "link": "https://www.tagesschau.de/ausland/afrika/marinemanoever-suedafrika-100.html",
+    "img": null,
+    "date": "2026-01-09T10:42:15.000Z",
+    "text": "Südafrika kündigt eine Marineübung mit Russland, Iran und China an, die im Inland stark kritisiert wird und geopolitische Folgen haben könnte.",
     "bullets": [
-      "Deutsche Bahn hat den Fernverkehr im Norden eingestellt.",
-      "Der Wintersturm \"Elli\" verursacht bundesweite schwierige Bedingungen.",
-      "In vielen Regionen fällt der Schulunterricht aus."
+      "Südafrika plante die Übung zusammen mit Russland, Iran und China",
+      "Inside Südafrika gibt es heftige Kritik an dieser Zusammenarbeit",
+      "Mögliche weitreichende außenpolitische Konsequenzen für das Gastgeberland werden besorgt",
+      "Der Artikel stammt von Stephan Ueberbach"
     ],
     "tags": [
-      "ZDF",
+      "Tagesschau",
       "News"
     ],
     "related": []
@@ -711,6 +857,108 @@
     "tags": [
       "rbb24",
       "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "nmujrk0ah",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Marktbericht: Schwäche der Exportdaten bremsen Börsenkurssteigerung",
+    "originalTitle": "Marktbericht: Schwache Exportdaten dämpfen Kauflust",
+    "link": "https://www.tagesschau.de/wirtschaft/finanzen/marktberichte/marktbericht-dax-dow-geldanlage-aktienmarkt-100.html",
+    "img": null,
+    "date": "2026-01-09T10:05:24.000Z",
+    "text": "Schwache Exportzahlen dürften das Kauferlebnis belasten, während unterschiedliche Konjunkturindikatoren und bevorstehende US-Arbeitsmarktdaten Unsicherheit auslösen.",
+    "bullets": [
+      "Schwache Exportdaten verdrängen die bisherigen Kaufrückhaltungen.",
+      "Uneinheitliche Konjunkturdaten senden widersprüchliche Signale an die Märkte.",
+      "Anstehende Arbeitsmarktdaten der USA lassen Anleger zögern.",
+      "Der Aktienmarkt zeigt abnehmenden Schwung bis zum Wochenabschluss."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "tffd3415i",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Zwei Verletzte in Portland bei US-Grenzpolizei-Kontrolle",
+    "originalTitle": "Portland: Zwei Verletzte bei Kontrolle durch US-Grenzbehörde",
+    "link": "https://www.tagesschau.de/ausland/amerika/zwei-verletzte-nach-ice-kontrolle-in-portland-100.html",
+    "img": null,
+    "date": "2026-01-09T10:04:26.000Z",
+    "text": "Ein Bundespolizist der US-Grenzbehörde hat bei einer Kontrolle in Portland zwei Menschen verletzt.",
+    "bullets": [
+      "Zwei Personen wurden verletzt",
+      "Ort: Portland",
+      "Beteiligung: US-Grenzbehörde/Bundespolizist"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "95fkn96cs",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Fraktionswechsel in Brandenburg lassen Neuwahl nicht zwangsläufig aus",
+    "originalTitle": "Trotz Fraktionsübertritten: Warum die Regierungskrise in Brandenburg nicht zwangsläufig eine Neuwahl bedingt",
+    "link": "https://www.rbb24.de/politik/beitrag/2026/01/brandenburg-regierungskrise-landesverfassung-mandatsfreiheit-neuwahlen.html",
+    "img": null,
+    "date": "2026-01-09T09:59:22.000Z",
+    "text": "Trotz dreier Austritte und zweier Eintritte im Landtag möchte die AfD am Freitag die Neuwahl beantragen, aber nach Verfassung ist ein Fraktionswechsel kein zwingender Grund dafür.",
+    "bullets": [
+      "Drei Mitglieder haben die AfD aus ihrer Fraktion ausgetreten.",
+      "Zwei neue Mitglieder sind in die entgegengesetzte Fraktion eingetreten.",
+      "Die betreffenden Veränderungen fanden im Brandenburger Landtag statt."
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "8ynlmxs6v",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Zwei Initiativen starten Volksbegehren in schneereichen Berliner Straßen",
+    "originalTitle": "Volksbegehren \"Berlin autofrei\" und \"Berlin werbefrei\" starten ",
+    "link": "https://www.rbb24.de/politik/beitrag/2026/01/start-volksbegehren-berlin-autofrei-werbefrei.html",
+    "img": null,
+    "date": "2026-01-09T09:49:00.000Z",
+    "text": "Die Kampagnen 'Berlin autofrei' und 'Berlin werbefrei' sammeln trotz Schnee und Eis Signaturen, um bei der Abgeordnetenhauswahl über ihre Pläne abstimmen zu lassen.",
+    "bullets": [
+      "Berlin – Städtenamen der Initiativen",
+      "Abgeordnetenhauswahl – Ziel der Abstimmung",
+      "Unterschriften sammeln – Methode der Initiativen",
+      "Schnee und Eis auf den Straßen – Wetterbedingungen"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "hxa8oqw7w",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Nationaler Trauertag nach Brandkatastrophe in Crans-Montana",
+    "originalTitle": "Nationaler Trauertag nach Brandkatastrophe in Crans-Montana",
+    "link": "https://www.tagesschau.de/ausland/europa/schweiz-trauertag-nach-unglueck-crans-montana-100.html",
+    "img": null,
+    "date": "2026-01-09T09:46:37.000Z",
+    "text": "Nationaler Trauertag nach Brandkatastrophe in Crans-Montana",
+    "bullets": [],
+    "tags": [
+      "Tagesschau"
     ],
     "related": []
   },
@@ -782,6 +1030,70 @@
     "related": []
   },
   {
+    "id": "jg1m62ynh",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "BVG schließt Bahnhöfe in kalten Nächten aus Sicherheitsgründen",
+    "originalTitle": "Sicherheit: BVG will Bahnhöfe nicht für kalte Nächte öffnen",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/winter-obdachlose-kaelte-naechte-bvg-bahnhoefe-nicht-unterkunft-berlin.html",
+    "img": null,
+    "date": "2026-01-09T07:24:34.000Z",
+    "text": "Die BVG plant, Bahnhöfe in kalten Nächten nicht zu öffnen, um die Sicherheit der Fahrgäste zu gewährleisten.",
+    "bullets": [
+      "BVG entscheidet sich gegen Öffnung der Bahnhöfe bei niedrigen Temperaturen.",
+      "Maßnahme dient vor allem dem Schutz von Passagieren vor Gefahren im Freien.",
+      "Kein spezifischer Zeitrahmen oder Zahlenangaben im Artikel.",
+      "Verantwortlich für die Entscheidung ist die Berliner Verkehrsbetriebe."
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "u7lcchsvn",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Mpox-Infektionen auch in Berlin – Männer besonders betroffene Gruppe",
+    "originalTitle": "Mpox-Infektionen jetzt auch in Berlin - Vor allem Männer betroffen",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/berlin-lageso-warnung-mpox-berlin-infektion-virus-impfung.html",
+    "img": null,
+    "date": "2026-01-09T07:05:48.000Z",
+    "text": "Mpox-Infektionen zeigen sich in Berlin, wobei vor allem Männer betroffen sind.",
+    "bullets": [
+      "Mpox-Infektionen traten in Berlin auf.",
+      "Vor allem Männer sind in Berlin die am stärksten betroffene Gruppe.",
+      "Die Auftretensrate hat sich in Berlin erhöht."
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "lzlsz7rqo",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Deutschland Siegt Knapp Über Kroatien In EM-Vorbereitungs-Spiel",
+    "originalTitle": "EM-Vorbereitung: Deutsche Handballer bezwingen Kroatien knapp",
+    "link": "https://www.rbb24.de/sport/beitrag/2026/01/em-vorbereitung-handball-deutschland-kroatien.html",
+    "img": null,
+    "date": "2026-01-08T21:48:29.000Z",
+    "text": "Deutsche Handballer bezwingen Kroatien in einer knappen Begegnung als Vorbereitung auf die Europameisterschaft.",
+    "bullets": [
+      "Deutschland gewinnt das EM-Vorbereitungsspiel gegen Kroatien.",
+      "Der Sieg stellt einen erfolgreichen Schritt in Richtung der Europameisterschaft dar.",
+      "Die Begegnung zeigt die aktuelle Form beider Teams vor der großen Turniersaison."
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "u9qxa8wd5",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -798,6 +1110,27 @@
     ],
     "tags": [
       "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "hwbgjjuj5",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Außergewöhnliche Hitzewelle in Australien",
+    "originalTitle": "Außergewöhnliche Hitzewelle in Australien",
+    "link": "https://www.zdfheute.de/video/zdfheute-xpress/australien-hitzewelle-temperaturen-100.html",
+    "img": "https://www.zdfheute.de/assets/australien-hitzewelle-temperaturhoch-100~384x216?cb=1767893983637",
+    "date": "2026-01-08T19:25:00.000Z",
+    "text": "Im Süden Australiens herrschen derzeit extreme Temperaturen von deutlich über 40 °C.",
+    "bullets": [
+      "Australien",
+      "Südliches Australien",
+      "Temperaturen über 40 °C"
+    ],
+    "tags": [
+      "ZDF",
       "News"
     ],
     "related": []
@@ -824,6 +1157,49 @@
     "related": []
   },
   {
+    "id": "e6xk5c9tq",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Kirchen in Deutschland umfunktioniert: Klettersport und Kampfkunst als neue Nutzung",
+    "originalTitle": "Klettern in der Kirche",
+    "link": "https://www.zdfheute.de/video/heute-nachrichten/klettern-in-kirche-video-100.html",
+    "img": "https://www.zdfheute.de/assets/klettern-in-der-kirche-100~384x216?cb=1767884203619",
+    "date": "2026-01-08T15:03:00.000Z",
+    "text": "Viele Kirchen in Deutschland werden wegen sinkender Mitgliederzahlen neu gestaltet, um Klettersport und Kampfkunst zu beherbergen.",
+    "bullets": [
+      "Kirchengebäude in Deutschland werden neu genutzt",
+      "Neuartige Nutzungen umfassen Klettersport und Kampfkunst",
+      "Motiviert durch rückläufige Mitgliederzahlen"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "ccg5satwf",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Deutschland erkennt Niue als unabhängigen Inselstaat an",
+    "originalTitle": "Deutschland erkennt kleinen Inselstaat an",
+    "link": "https://www.zdfheute.de/video/heute-nachrichten/niue-suedsee-deutschland-anerkennung-video-100.html",
+    "img": "https://www.zdfheute.de/assets/alofi-niue-100~384x216?cb=1767881717264",
+    "date": "2026-01-08T14:23:00.000Z",
+    "text": "Deutschland hat den winzigen Inselstaat Niue im Südpazifik völkerrechtlich anerkannt und plant nun diplomatische Beziehungen.",
+    "bullets": [
+      "Deutschland erkennt Niue völkerrechtlich an",
+      "Bis 1974 gehörte Niue zu Neuseeland",
+      "Deutschland plant diplomatische Beziehungen mit Niue",
+      "Niue liegt im Südpazifik"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "sa1jmxnge",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
@@ -840,6 +1216,43 @@
     ],
     "tags": [
       "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "f50irjolg",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "\"Stranger Things\" auf Briefmarken verewigt",
+    "originalTitle": "\"Stranger Things\" auf Briefmarken verewigt",
+    "link": "https://www.zdfheute.de/video/hallo-deutschland/stranger-things-briefmarke-100.html",
+    "img": "https://www.zdfheute.de/assets/stranger-things-briefmarken-royal-mail-100~384x216?cb=1767795259927",
+    "date": "2026-01-07T16:10:00.000Z",
+    "text": "\"Stranger Things\" auf Briefmarken verewigt",
+    "bullets": [],
+    "tags": [
+      "ZDF"
+    ],
+    "related": []
+  },
+  {
+    "id": "x9opwo7iz",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Sondertilgung vs. ETF: Welcher Weg spart mehr?",
+    "originalTitle": "Immobilienkredit: Sondertilgung oder ETF – was sich finanziell mehr lohnt",
+    "link": "https://www.spiegel.de/wirtschaft/service/immobilienkredit-sondertilgung-oder-etf-was-sich-finanziell-mehr-lohnt-a-4831a24e-1674-4f36-8038-a471d11d31fa#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/79da3b46-3cea-4cce-bb0e-2338b0a745ef_w520_r2.08_fpx51_fpy34.jpg",
+    "date": "2025-12-10T04:30:00.000Z",
+    "text": "Sondertilgungen können Zehntausende Euro sparen, sind aber nicht immer die lukrativste Option.",
+    "bullets": [
+      "Der Artikel vergleicht die finanziellen Auswirkungen von zusätzlicher Tilgung eines Immobilienkredits mit Investitionen in ETFs.",
+      "Anhand einer Durchrechnung wird gezeigt, dass die Höhe der Einsparungen stark von Zinssatz, Tilgungsdauer und ETF-Erträgen abhängt.",
+      "Eine sorgfältige Analyse empfiehlt, die individuellen Kreditkonditionen und Markterwartungen zu prüfen, bevor man sich für eine Strategie entscheidet."
+    ],
+    "tags": [
+      "Spiegel",
       "News"
     ],
     "related": []
