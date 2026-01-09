@@ -16,42 +16,47 @@ async function analyzeWithPollinations(title, content, sourceName) {
     // Input bereinigen
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
-    // --- DER "TRUTH & FACTS" PROMPT ---
-    const instruction = `Du bist ein strenger Fakten-Checker für Nachrichten.
-    Analysiere diesen Text: "${title} - ${safeContent}"
+    // --- DER "DETAIL-JÄGER" PROMPT ---
+    const instruction = `Du bist ein investigativer News-Redakteur.
+    Analysiere diesen Input: "${title} - ${safeContent}"
     
-    Aufgabe: Erstelle ein JSON-Objekt.
+    Aufgabe: Erstelle ein JSON-Objekt auf DEUTSCH.
     
-    STRENGE REGELN (WICHTIG):
-    1. Nutze AUSSCHLIESSLICH Informationen, die im Input-Text stehen. Erfinde KEINE Zahlen, Namen oder Gründe dazu!
-    2. Wenn der Text kurz ist, erstelle nur 2 Bulletpoints. Wenn er lang ist, maximal 4.
-    3. Keine Nummerierung in den Texten (nicht "1.", nicht "Fakt:").
-    4. newTitle: Sachlich, kurz, kein Clickbait.
+    ANWEISUNG:
+    1. Suche aggressiv nach Details: Zahlen, Orte, Namen, Uhrzeiten, Geldbeträge.
+    2. Wenn im Text "48 Stunden" oder "3000 Menschen" steht, MUSS das in die Bullets.
+    3. Sprache: ZWINGEND DEUTSCH (auch wenn der Input Englisch ist).
+    4. Versuche immer 3 bis 4 Bulletpoints zu finden.
+    5. Sei präzise, aber nicht langweilig.
     
     Format:
     {
-      "newTitle": "Die neue Überschrift",
-      "scoop": "Die Kernaussage in einem Satz.",
+      "newTitle": "Knackige, informative Headline",
+      "scoop": "Der wichtigste Satz (Was ist passiert?).",
       "bullets": [
-        "Detail 1",
-        "Detail 2",
-        "Detail 3"
+        "Detail mit Zahl/Fakt 1",
+        "Detail mit Name/Ort 2",
+        "Hintergrund/Kontext 3"
       ]
     }`;
     
-    // Seed für Determinismus
+    // Seed für Variation
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     let retries = 3;
     while (retries > 0) {
         try {
-            const response = await axios.get(url, { timeout: 40000 });
+            // Timeout erhöht für bessere Ergebnisse
+            const response = await axios.get(url, { timeout: 35000 });
             
             let rawText = response.data;
             if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
 
-            // --- REPARATUR-KIT ---
-            // 1. Alles vor der ersten Klammer { und nach der letzten } wegwerfen
+            // --- REPARATUR & CLEANING ---
+            // Ad-Blocker
+            rawText = rawText.split("--- Support")[0]; 
+            
+            // JSON ausschneiden
             const firstOpen = rawText.indexOf('{');
             const lastClose = rawText.lastIndexOf('}');
             
@@ -59,21 +64,20 @@ async function analyzeWithPollinations(title, content, sourceName) {
                 rawText = rawText.substring(firstOpen, lastClose + 1);
             }
 
-            // 2. JSON Parsen
             let data;
             try {
                 data = JSON.parse(rawText);
             } catch (jsonError) {
-                console.log("⚠️ JSON kaputt, versuche Reparatur...");
-                // Manchmal fehlen Anführungszeichen, aber wir nutzen dann lieber den Fallback
+                // Fallback: Manchmal hilft ein simpler Regex Fix
+                console.log("⚠️ JSON Reparatur Versuch...");
                 throw new Error("Invalid JSON");
             }
 
-            // 3. Inhalt prüfen & putzen
+            // Validierung
             if (!data.bullets || !Array.isArray(data.bullets)) data.bullets = [];
             
-            // "Fakt 1:" oder "- " am Anfang entfernen
-            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*)\s*/i, "").trim());
+            // Aufzählungszeichen entfernen
+            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
 
             return { 
                 summary: data.scoop || title, 
@@ -98,12 +102,11 @@ async function analyzeWithPollinations(title, content, sourceName) {
         }
     }
 
-    // Fallback: Wenn alles scheitert
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Truth Mode)...");
+    console.log("🚀 Starte News-Abruf (Detail Hunter)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -124,8 +127,9 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Cache nutzen: Nur wenn Bullets da sind UND der Text nicht der Titel ist
-                if (cached && cached.bullets && cached.bullets.length > 0 && cached.text !== cached.title) {
+                // Cache nutzen? Nur wenn Bullets da sind.
+                // ACHTUNG: Ich habe den Cache-Check etwas gelockert, damit er englische Texte neu generiert (Deutsch-Zwang)
+                if (cached && cached.bullets && cached.bullets.length > 1 && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue; 
                 }
@@ -149,7 +153,7 @@ async function run() {
                     tags: ai.tags
                 });
                 
-                // 10 Sekunden Pause beibehalten
+                // 10 Sekunden Pause für Stabilität
                 await sleep(10000); 
             }
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
