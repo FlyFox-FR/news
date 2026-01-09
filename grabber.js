@@ -5,25 +5,55 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- ÄHNLICHKEITS-CHECK ---
-function isSimilar(title1, title2) {
+// --- TEXT CLEANER ---
+function cleanString(str) {
+    return str.toLowerCase()
+        .replace(/[^\w\säöüß]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+// --- 1. IDENTITÄTS-CHECK (Ist es derselbe Artikel?) ---
+// Streng: Link gleich ODER Titel zu 90% gleich
+function isSameArticle(item1, item2) {
+    if (item1.link === item2.link) return true;
+    const t1 = cleanString(item1.originalTitle || item1.title);
+    const t2 = cleanString(item2.title);
+    return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 5) || (t2.includes(t1) && t2.length - t1.length < 5);
+}
+
+// --- 2. THEMEN-CHECK (Gehört es zum selben Thema?) ---
+// Lockerer: Gemeinsame Wörter oder Teilwörter
+function isRelatedTopic(title1, title2) {
     if (!title1 || !title2) return false;
-    const clean = t => t.toLowerCase().replace(/[^\w\säöüß]/g, ' ').split(/\s+/).filter(w => w.length > 2);
-    const words1 = clean(title1);
-    const words2 = clean(title2);
+
+    const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach", "gegen", "über", "wird", "sich"];
+    
+    const getWords = (t) => cleanString(t).split(' ').filter(w => w.length > 2 && !stopWords.includes(w));
+    
+    const words1 = getWords(title1);
+    const words2 = getWords(title2);
 
     let matches = 0;
-    words1.forEach(w1 => { if (words2.includes(w1)) matches++; });
     
-    // Teilwort-Match für kurze Titel wie "Sturm Elli"
     words1.forEach(w1 => {
-        words2.forEach(w2 => {
-            if (w1 !== w2 && (w1.includes(w2) || w2.includes(w1)) && w1.length > 4) matches++;
-        });
+        // Exakter Match
+        if (words2.includes(w1)) {
+            matches++;
+            return; // Ein Wort nur einmal zählen
+        }
+        // Teilwort-Match (z.B. "Sturm" in "Sturmtief")
+        const partial = words2.find(w2 => (w1.length > 3 && w2.length > 3) && (w1.includes(w2) || w2.includes(w1)));
+        if (partial) matches++;
     });
 
-    const threshold = Math.min(words1.length, words2.length) * 0.4; 
-    return matches >= 2 || matches > threshold;
+    // ELLI-FIX: 
+    // Bei kurzen Titeln reicht schon 1 starkes Wort + 1 Teilwort, oder 2 Treffer.
+    // Bei langen Titeln brauchen wir mehr Evidenz.
+    const minLen = Math.min(words1.length, words2.length);
+    
+    if (minLen <= 4) return matches >= 1 && (matches / minLen) >= 0.4; // 40% Übereinstimmung bei kurzen Titeln
+    return matches >= 2;
 }
 
 function loadExistingNews() {
@@ -36,7 +66,7 @@ function loadExistingNews() {
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
-    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+  const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
@@ -51,6 +81,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
       "scoop": "Kernaussage in einem Satz.",
       "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
     }`;
+    
     
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
@@ -84,21 +115,19 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- NEU: DER STAUBSAUGER (POST-PROCESSING) ---
+// --- CLUSTERING LOGIK ---
 function clusterNews(allNews) {
-    console.log("🧹 Starte Clustering...");
+    console.log(`🧹 Starte Clustering für ${allNews.length} Artikel...`);
     let clustered = [];
     let processedIds = new Set();
 
-    // Sortiere nach Datum, damit das neueste immer der "Parent" wird
+    // Neueste zuerst
     allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     for (let i = 0; i < allNews.length; i++) {
         let item = allNews[i];
-        
         if (processedIds.has(item.id)) continue;
 
-        // Suche nach Duplikaten im Rest der Liste
         let group = [item];
         processedIds.add(item.id);
 
@@ -106,60 +135,46 @@ function clusterNews(allNews) {
             let candidate = allNews[j];
             if (processedIds.has(candidate.id)) continue;
 
-            if (isSimilar(item.originalTitle, candidate.originalTitle)) {
-                console.log(`🔗 Gruppiere "${candidate.originalTitle}" -> "${item.originalTitle}"`);
+            // Hier nutzen wir den toleranten Themen-Check
+            if (isRelatedTopic(item.originalTitle, candidate.originalTitle)) {
+                console.log(`🔗 Cluster: "${candidate.originalTitle}" -> "${item.originalTitle}"`);
                 group.push(candidate);
                 processedIds.add(candidate.id);
             }
         }
 
-        // Das Haupt-Element ist das erste (neueste)
         let parent = group[0];
-        // Alle anderen kommen in 'related' (auch wenn sie vorher schon related hatten, wir flachen das ab)
         parent.related = [];
-        
         for (let k = 1; k < group.length; k++) {
             parent.related.push(group[k]);
-            // Falls das Kind selbst schon Varianten hatte, rette die auch
-            if (group[k].related && group[k].related.length > 0) {
-                parent.related.push(...group[k].related);
-            }
+            if (group[k].related) parent.related.push(...group[k].related);
         }
-        
         clustered.push(parent);
     }
     return clustered;
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Post-Process Cluster)...");
+    console.log("🚀 Starte News-Abruf (Final Dedupe & Cluster)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
     catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
 
+    // 1. Alles Vorhandene laden und flachklopfen
     const existingNews = loadExistingNews();
-    
-    // Wir sammeln hier ALLES (Cache + Neu), aber flach (ohne Cluster Struktur)
-    // Wenn im Cache schon Cluster waren, brechen wir die auf, um neu zu sortieren
     let flatFeed = [];
     
-    // Cache "entpacken"
     existingNews.forEach(item => {
-        // Haupt-Item
         let cleanItem = { ...item };
-        delete cleanItem.related; // Löschen, wird neu berechnet
+        delete cleanItem.related;
         flatFeed.push(cleanItem);
-        
-        // Kinder auch als eigenständige Items behandeln für den Moment
-        if (item.related && item.related.length > 0) {
-            item.related.forEach(child => {
-                flatFeed.push(child);
-            });
-        }
+        if (item.related) item.related.forEach(child => flatFeed.push(child));
     });
 
-    // Neue News holen
+    console.log(`📂 Cache geladen: ${flatFeed.length} Artikel.`);
+
+    // 2. Neue News holen und INTELLIGENT einfügen
     for (const source of sources) {
         try {
             console.log(`\n📡 ${source.name}...`);
@@ -167,13 +182,27 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Check ob schon in flacher Liste (über Link)
-                if (flatFeed.find(n => n.link === item.link)) continue;
+                // DER TÜRSTEHER: Gibt es diesen Artikel schon?
+                const existingIndex = flatFeed.findIndex(n => isSameArticle(n, item));
+                
+                if (existingIndex !== -1) {
+                    // Update Datum, aber behalte KI-Daten (spart Tokens!)
+                    // console.log(`♻️ Update existierender Artikel: ${item.title.substring(0,20)}...`);
+                    flatFeed[existingIndex].date = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString();
+                    continue; // Fertig, nicht neu generieren
+                }
 
-                console.log(`🤖 Analysiere: ${item.title.substring(0, 30)}...`);
+                // Wenn wirklich neu: KI anwerfen
+                console.log(`🤖 Neu: ${item.title.substring(0, 30)}...`);
                 const rawContent = item.contentSnippet || item.content || "";
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
                 
+                let imgUrl = item.enclosure?.url || item.itunes?.image;
+                if (!imgUrl) {
+                    const cleanPrompt = item.title.replace(/[^a-zA-Z0-9\s]/g, '').substring(0, 100);
+                    imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent("editorial news photo, realistic, " + cleanPrompt)}?width=800&height=400&nologo=true&model=flux`;
+                }
+
                 const newsItem = {
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
@@ -181,7 +210,7 @@ async function run() {
                     title: ai.newTitle || item.title,
                     originalTitle: item.title,
                     link: item.link,
-                    img: item.enclosure?.url || item.itunes?.image || null,
+                    img: imgUrl,
                     date: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
                     text: ai.summary,
                     bullets: ai.bullets,
@@ -195,11 +224,12 @@ async function run() {
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
-    // JETZT erst gruppieren wir alles auf einmal
+    // 3. Jetzt alles sauber gruppieren
     const finalFeed = clusterNews(flatFeed);
-
+    
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
-    console.log(`✅ Fertig! ${finalFeed.length} Themen-Cluster (aus ${flatFeed.length} Einzel-News).`);
+    console.log(`✅ Fertig! ${finalFeed.length} Themen-Cluster.`);
 }
 
 run();
+
