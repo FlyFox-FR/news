@@ -142,8 +142,6 @@
         </div>
         <div class="nav-item active" id="nav-feed" onclick="switchTab('feed')"><span>🗞️</span> Feed</div>
         <div class="nav-item" id="nav-saved" onclick="switchTab('saved')"><span>🔖</span> Gemerkt</div>
-        // Aktualisiert die Anzahl der gemerkten Artikel in der Seitenleiste
-         document.getElementById('nav-saved').innerHTML = `<span>🔖</span> Gemerkt (${savedNews.length})`;
         <div class="admin-card">
             <button class="update-btn" onclick="triggerUpdate()" id="update-btn">🔄 Update starten</button>
             <div style="text-align:center; font-size:0.65rem; color:var(--text-muted)" id="config-status">Check...</div>
