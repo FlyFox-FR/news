@@ -5,7 +5,7 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- HELPER & ALGORITHMISCHE LOGIK (FÜR FALLBACK) ---
+// --- HELPER ---
 function cleanString(str) {
     return str.toLowerCase().replace(/[^\w\säöüß]/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -17,7 +17,7 @@ function isSameArticle(item1, item2) {
     return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 5);
 }
 
-// Algorithmischer Vergleich (als Fallback, wenn KI versagt)
+// Fallback Algo (Nur für den absoluten Notfall)
 function isRelatedTopicAlgorithmic(title1, title2) {
     const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach", "gegen", "über"];
     const getWords = (t) => cleanString(t).split(' ').filter(w => w.length > 2 && !stopWords.includes(w));
@@ -43,11 +43,11 @@ function loadExistingNews() {
     return [];
 }
 
-// --- 1. INHALTS-ANALYSE ---
+// 1. INHALTS-ANALYSE
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
- const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+     const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
@@ -61,7 +61,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
       "newTitle": "Sachliche Überschrift",
       "scoop": "Kernaussage in einem Satz.",
       "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
-    }`;
+    }`
     
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
@@ -72,9 +72,9 @@ async function analyzeWithPollinations(title, content, sourceName) {
             let rawText = response.data;
             if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
 
+            // Basic Cleaning
             rawText = rawText.split("--- Support")[0]; 
-            rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-            // Aggressiver Cleaner für JSON
+            rawText = rawText.replace(/```json|```/g, "").trim();
             const firstOpen = rawText.indexOf('{');
             const lastClose = rawText.lastIndexOf('}');
             if (firstOpen !== -1 && lastClose !== -1) rawText = rawText.substring(firstOpen, lastClose + 1);
@@ -94,7 +94,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- 2. CLUSTERING (HYBRID: KI + ALGO FALLBACK) ---
+// --- 2. KI CLUSTERING (DER LASER-CHIRURG FIX) ---
 async function clusterWithAI(articles) {
     if (articles.length === 0) return [];
     
@@ -102,44 +102,68 @@ async function clusterWithAI(articles) {
     console.log(`🧠 KI sortiert Top ${activeArticles.length}...`);
 
     const listForAI = activeArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
-    // Kürzen für URL Limit
-    const safeList = listForAI.substring(0, 3000);
+    const safeList = listForAI.substring(0, 3500);
 
-  const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
+    const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
     
     Liste:
     ${safeList}
     
     Aufgabe: Gib ein JSON Array von Arrays zurück. Jedes innere Array enthält die IDs, die zusammengehören.
-    Beispiel: [[0, 5], [1], [2, 3]]
+    Beispiel Format: [[0, 5], [1], [2, 3]]
     
     Regeln:
     1. "Sturm Elli" und "Unwetter im Norden" = GLEICHES EVENT -> Gruppieren.
     2. "Iran Protest" und "Iran Militärübung" = UNTERSCHIEDLICH -> Nicht gruppieren.
-    3. Jede ID muss vorkommen.
-    4. Antworte NUR mit dem JSON.`;
+    3. Antworte NUR mit dem JSON Code. Keine Einleitung, keine Nummerierung.`;
+    
 
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     try {
-        const response = await axios.get(url, { timeout: 120000 }); // 2 Min Timeout
+        const response = await axios.get(url, { timeout: 120000 });
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         
-        // CLEANER UPDATE: Entferne Backslashes und alles vor dem ersten '['
-        rawText = rawText.replace(/\\/g, ""); // Backslashes killen
-        const jsonMatch = rawText.match(/\[.*\]/s); // Suche nach Array Struktur
-        if (jsonMatch) rawText = jsonMatch[0];
+        console.log("🔍 Raw KI Response (Auszug):", rawText.substring(0, 100));
 
-        const groups = JSON.parse(rawText);
-        if (!Array.isArray(groups)) throw new Error("Kein Array");
+        // --- DER FIX: LASER EXTRAKTION ---
+        // Wir suchen nach [[ ... ]] (Array von Arrays)
+        // \s* erlaubt Leerzeichen, .*? nimmt alles dazwischen
+        const jsonMatch = rawText.match(/\[\s*\[.*?\]\s*\]/s);
+
+        if (jsonMatch) {
+            // Wir nehmen nur den gefundenen Teil, alles andere (Text, Nummerierung) wird weggeworfen
+            rawText = jsonMatch[0];
+        } else {
+            // Fallback: Vielleicht fehlen die äußeren Klammern? Versuche [ ... ]
+            const simpleMatch = rawText.match(/\[.*?\]/s);
+            if (simpleMatch) rawText = simpleMatch[0];
+        }
+
+        // Putzen von Backslashes (häufiger Fehler)
+        rawText = rawText.replace(/\\/g, "");
+
+        let groups;
+        try {
+            groups = JSON.parse(rawText);
+        } catch (e) {
+            console.error("⚠️ JSON Parse Error trotz Regex. Versuche Reparatur...");
+            // Letzter Rettungsversuch: Manchmal fehlen Kommas
+            throw e; 
+        }
+        
+        if (!Array.isArray(groups)) throw new Error("Kein Array zurückbekommen");
 
         console.log("🧠 KI-Gruppierung erfolgreich!");
         
-        // --- GRUPPEN BAUEN ---
         let clusteredFeed = [];
         let usedIndices = new Set();
 
+        // Gruppen verarbeiten
         groups.forEach(groupIndices => {
+            // Sicherstellen, dass es IDs sind und existieren
+            if (!Array.isArray(groupIndices)) return; 
+            
             let validIndices = groupIndices.filter(i => activeArticles[i] !== undefined);
             if (validIndices.length === 0) return;
 
@@ -155,6 +179,7 @@ async function clusterWithAI(articles) {
             let parentRealIndex = validIndices[bestParentIndex];
             let parent = activeArticles[parentRealIndex];
             usedIndices.add(parentRealIndex);
+            
             parent.related = [];
 
             for (let i = 0; i < validIndices.length; i++) {
@@ -181,15 +206,14 @@ async function clusterWithAI(articles) {
     } catch (e) {
         console.error("❌ KI-Clustering fehlgeschlagen:", e.message);
         console.log("⚙️ Starte algorithmischen Fallback (Math-Mode)...");
-        return clusterAlgorithmic(articles);
+        return clusterAlgorithmic(articles); // Fallback auf deinen alten Mathe-Algo
     }
 }
 
-// Fallback Funktion (Dein alter Code)
+// Fallback Funktion (Der Mathe-Algo, den du schon hattest)
 function clusterAlgorithmic(allNews) {
     let clustered = [];
     let processedIds = new Set();
-    // Neueste zuerst
     allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     for (let i = 0; i < allNews.length; i++) {
@@ -210,16 +234,13 @@ function clusterAlgorithmic(allNews) {
             }
         }
 
-        // Bild Priorität im Algo-Modus
         let parent = group[0];
-        // Checken ob ein Kind ein Bild hat, wenn Parent keins hat
         if (!parent.img) {
             const childWithImgIndex = group.findIndex(g => g.img);
             if (childWithImgIndex !== -1) {
-                // Tausche Parent
                 parent = group[childWithImgIndex];
-                group.splice(childWithImgIndex, 1); // Rausnehmen
-                group.unshift(parent); // Vorne rein
+                group.splice(childWithImgIndex, 1);
+                group.unshift(parent);
             }
         }
 
@@ -234,7 +255,7 @@ function clusterAlgorithmic(allNews) {
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Hybrid Cluster)...");
+    console.log("🚀 Starte News-Abruf (Ultra Robust)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -256,6 +277,7 @@ async function run() {
         try {
             console.log(`\n📡 ${source.name}...`);
             const feed = await parser.parseURL(source.url);
+            
             let addedCount = 0;
             let checkedCount = 0;
             const maxLookback = 20; 
@@ -309,7 +331,6 @@ async function run() {
     }
 
     // HYBRID CLUSTERING
-    // Wir versuchen KI, wenn sie crashed, nimmt er Algo
     const finalFeed = await clusterWithAI(flatFeed);
     
     finalFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
