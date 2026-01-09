@@ -127,6 +127,81 @@
         .date-option:hover { background: rgba(255,255,255,0.05); color: #fff; }
         .date-option.active { background: rgba(59, 130, 246, 0.1); color: var(--accent); font-weight: 700; }
         .date-reset { border-top: 1px solid #333; margin-top: 5px; padding-top: 10px; text-align: center; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; }
+/* --- ACTION BAR (GRID LAYOUT) --- */
+        .actions { 
+            padding: 12px 24px 18px 24px; /* Oben etwas weniger, unten mehr Luft */
+            background: rgba(255,255,255,0.01); 
+            border-top: 1px solid var(--border); 
+            
+            /* Das Grid für perfekte Zentrierung */
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
+        body.zen-mode .actions { border: none; background: transparent; padding: 10px 0; opacity: 0.6; }
+
+        /* Links: Original */
+        .action-left { display: flex; justify-content: flex-start; }
+        
+        /* Mitte: Reader Button */
+        .action-center { display: flex; justify-content: center; }
+        
+        /* Rechts: Quellen & Menü */
+        .action-right { display: flex; justify-content: flex-end; gap: 8px; position: relative; }
+
+        /* Buttons Styles */
+        .btn-link { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
+        .btn-link:hover { color: var(--accent); }
+        body.zen-mode .btn-link { color: #666; }
+
+        /* Der prominente Reader Button */
+        .btn-reader {
+            background: var(--accent); color: #fff; border: none;
+            padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+        .btn-reader:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+        
+        /* Zen Mode Reader Button (dezenter) */
+        body.zen-mode .btn-reader {
+            background: transparent; border: 1px solid #555; color: #aaa; box-shadow: none;
+        }
+        body.zen-mode .btn-reader:hover { border-color: #eee; color: #eee; }
+
+        /* Quellen Button (kleiner) */
+        .btn-toggle { 
+            background: var(--surface-variant); color: #ccc; border: 1px solid var(--border); 
+            padding: 8px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; 
+            cursor: pointer; display: flex; align-items: center; gap: 6px; 
+        }
+        .btn-toggle:hover { background: rgba(255,255,255,0.1); }
+
+        /* Kontext Menü Button (Drei Punkte) */
+        .btn-menu {
+            background: transparent; border: 1px solid transparent; color: var(--text-muted);
+            width: 32px; height: 32px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-menu:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-menu.active { background: rgba(255,255,255,0.1); color: #fff; }
+
+        /* Dropdown Menü */
+        .action-dropdown {
+            position: absolute; bottom: 100%; right: 0; margin-bottom: 8px;
+            width: 160px; background: #1a1a1d; border: 1px solid var(--border);
+            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; flex-direction: column; overflow: hidden; z-index: 50;
+            animation: fadeIn 0.2s ease;
+        }
+        .action-dropdown.show { display: flex; }
+        .menu-option {
+            padding: 12px 16px; font-size: 0.85rem; color: #e0e0e0; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; transition: 0.2s;
+        }
+        .menu-option:hover { background: rgba(255,255,255,0.05); color: var(--accent); }
+        .menu-option:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
         
     </style>
 </head>
