@@ -6,118 +6,78 @@ const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // --- KONFIGURATION ---
-const MAX_DAYS = 4; // News behalten für 4 Tage
-const MAX_ITEMS = 600; // Sicherheitslimit (ca. 150 pro Tag)
+const MAX_DAYS = 4; 
+const MAX_ITEMS = 600; 
+
+// --- LOGGER STATE ---
+let currentRunLog = {
+    timestamp: new Date().toISOString(),
+    sources: {}
+};
+
+function logEvent(source, type, detail) {
+    if (!currentRunLog.sources[source]) {
+        currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, error: 0, details: [] };
+    }
+    const s = currentRunLog.sources[source];
+    
+    if (type === 'added') s.added++;
+    if (type === 'cache') s.skipped_cache++;
+    if (type === 'content') s.skipped_content++;
+    if (type === 'error') s.error++;
+    
+    if (detail) s.details.push(detail);
+}
 
 // --- HELPER ---
 function decodeEntities(text) {
     if (!text) return "";
-    return text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"')
-               .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&szlig;/g, 'ß')
-               .replace(/&auml;/g, 'ä').replace(/&ouml;/g, 'ö').replace(/&uuml;/g, 'ü')
-               .replace(/&Auml;/g, 'Ä').replace(/&Ouml;/g, 'Ö').replace(/&Uuml;/g, 'Ü')
-               .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
+    return text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&szlig;/g, 'ß').replace(/&auml;/g, 'ä').replace(/&ouml;/g, 'ö').replace(/&uuml;/g, 'ü').replace(/&Auml;/g, 'Ä').replace(/&Ouml;/g, 'Ö').replace(/&Uuml;/g, 'Ü').replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
 }
 
-function stripTags(html) {
-    return html.replace(/<[^>]+>/g, "").trim();
-}
+function stripTags(html) { return html.replace(/<[^>]+>/g, "").trim(); }
+function cleanString(str) { return str ? str.replace(/\s+/g, ' ').trim() : ""; }
 
-function cleanString(str) {
-    if (!str) return "";
-    return str.replace(/\s+/g, ' ').trim();
-}
-
-// --- CORE: ROBUSTER SCRAPER (v3.3 Logic restored) ---
+// --- SCRAPER ---
 async function fetchArticleText(url) {
     try {
-        const { data } = await axios.get(url, { 
-            timeout: 8000, 
-            headers: { 
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36' 
-            }
-        });
-
+        const { data } = await axios.get(url, { timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         let html = data;
-
-        // 1. Technischen Müll entfernen
-        const junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption'];
-        junkTags.forEach(tag => {
-            const regex = new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi');
-            html = html.replace(regex, '');
+        ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption'].forEach(tag => {
+            html = html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
         });
-
-        // 2. Strategie A: Hauptcontainer suchen
-        const containerRegex = /<article[^>]*>([\s\S]*?)<\/article>/i;
-        const mainRegex = /<main[^>]*>([\s\S]*?)<\/main>/i;
-        
-        let match = html.match(containerRegex) || html.match(mainRegex);
-        let contentScope = match ? match[1] : html;
-
-        // 3. Strategie B: Absätze extrahieren
-        let paragraphs = extractParagraphs(contentScope);
-
-        // 4. RETTUNGS-ANKER (Das fehlte in v4.1!): 
-        // Wenn < 800 Zeichen, scanne ganze Seite (wichtig für ZDF/Video-Seiten)
+        const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+        if (!containerMatch) return ""; 
+        let paragraphs = extractParagraphs(containerMatch[1]);
         let totalLength = paragraphs.join(" ").length;
-        if (totalLength < 800) {
-            console.log(`      ⚠️ Wenig Text im Container (${totalLength}). Scanne ganze Seite...`);
-            paragraphs = extractParagraphs(html);
-        }
-
-        let fullText = paragraphs.join('\n\n');
-        
-        // 5. Decoding & Limit
-        fullText = decodeEntities(fullText);
+        if (totalLength < 800) paragraphs = extractParagraphs(html); // Fallback
+        let fullText = decodeEntities(paragraphs.join('\n\n'));
         if (fullText.length > 15000) fullText = fullText.substring(0, 15000);
-        
         return fullText;
-
-    } catch (e) {
-        console.log(`⚠️ Skip Text für ${url}: ${e.message}`);
-        return "";
-    }
+    } catch (e) { return ""; }
 }
 
-// Zieht saubere P-Tags
 function extractParagraphs(htmlContent) {
     const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
     let paragraphs = [];
     let match;
-
     while ((match = pRegex.exec(htmlContent)) !== null) {
-        let rawText = match[1];
-        let cleanText = stripTags(rawText);
-
-        if (isValidParagraph(cleanText)) {
-            paragraphs.push(cleanText);
-        }
+        let cleanText = stripTags(match[1]);
+        if (isValidParagraph(cleanText)) paragraphs.push(cleanText);
     }
     return paragraphs;
 }
 
-// Filtert NUR technischen Müll
 function isValidParagraph(text) {
     text = text.trim();
-    if (text.length < 50) return false; // Zu kurz (oft Menüpunkte)
-    
+    if (text.length < 50) return false; 
     const lower = text.toLowerCase();
-
-    // Technische Blacklist
-    const blacklist = [
-        "alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", 
-        "melden sie sich an", "newsletter", "anzeige", "datenschutz", 
-        "impressum", "quelle:", "bild:", "foto:", "video:", 
-        "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang"
-    ];
-
+    const blacklist = ["alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", "melden sie sich an", "newsletter", "anzeige", "datenschutz", "impressum", "quelle:", "bild:", "foto:", "video:", "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang"];
     if (blacklist.some(bad => lower.includes(bad))) return false;
-    
     return true;
 }
 
-// --- LOGIK ---
-
+// --- LOGIC ---
 function isSameArticle(item1, item2) {
     if (item1.link === item2.link) return true;
     const t1 = cleanString(item1.originalTitle || item1.title).toLowerCase();
@@ -125,20 +85,12 @@ function isSameArticle(item1, item2) {
     return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 10);
 }
 
-// PRUNING: 4 Tage (96h)
 function pruneNews(newsArray) {
     const now = new Date();
     const retentionMs = MAX_DAYS * 24 * 60 * 60 * 1000; 
-    console.log(`🧹 Pruning: Prüfe ${newsArray.length} Items (Limit: ${MAX_DAYS} Tage)...`);
-    const filtered = newsArray.filter(item => {
-        const itemDate = new Date(item.date);
-        return (now - itemDate) < retentionMs;
-    });
-    console.log(`🧹 Pruning beendet: ${filtered.length} Items verbleiben.`);
-    return filtered;
+    return newsArray.filter(item => (now - new Date(item.date)) < retentionMs);
 }
 
-// Clustering
 function isRelatedTopicAlgorithmic(title1, title2) {
     const clean1 = cleanString(title1).toLowerCase();
     const clean2 = cleanString(title2).toLowerCase();
@@ -153,81 +105,45 @@ function isRelatedTopicAlgorithmic(title1, title2) {
 }
 
 function loadExistingNews() {
-    try {
-        if (fs.existsSync('news.json')) return JSON.parse(fs.readFileSync('news.json', 'utf8'));
-    } catch (e) { }
+    try { if (fs.existsSync('news.json')) return JSON.parse(fs.readFileSync('news.json', 'utf8')); } catch (e) { }
     return [];
 }
 
-// AI Analysis
 async function analyzeWithPollinations(title, fullText, sourceName) {
     const context = fullText && fullText.length > 500 ? fullText.substring(0, 5000) : title;
-    
-    const instruction = `Du bist News-Redakteur.
-    Analysiere diesen Text: "${context.replace(/"/g, "'").substring(0, 4000)}"
-    
-    Antworte NUR mit validem JSON.
-    ANWEISUNG:
-    1. Sprache: ZWINGEND DEUTSCH.
-    2. Titel: Sachlich, neutral (kein Clickbait).
-    3. Scoop: Sehr kurze Zusammenfassung (max 2 Sätze).
-    4. Bullets: Die 3 wichtigsten Fakten.
-
-    Format:
-    {
-      "newTitle": "Titel",
-      "scoop": "Zusammenfassung",
-      "bullets": ["Punkt 1", "Punkt 2", "Punkt 3"]
-    }`
-    
+    const instruction = `Du bist News-Redakteur. Analysiere: "${context.replace(/"/g, "'").substring(0, 4000)}". Antworte NUR JSON. Sprache: DEUTSCH. Titel: Neutral. Scoop: Max 2 Sätze. Bullets: 3 Fakten. Format: {"newTitle": "...", "scoop": "...", "bullets": ["..."]}`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
-
+    
     let retries = 2;
     while (retries > 0) {
         try {
             const response = await axios.get(url, { timeout: 45000 });
             let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
             try { const deepSeekObj = JSON.parse(rawText); if (deepSeekObj.content) rawText = deepSeekObj.content; } catch (e) { }
-            
             rawText = rawText.split("--- Support")[0].replace(/```json|```/g, "").trim();
             const firstOpen = rawText.indexOf('{');
             const lastClose = rawText.lastIndexOf('}');
             if (firstOpen !== -1 && lastClose !== -1) rawText = rawText.substring(firstOpen, lastClose + 1);
-
-            let data;
-            try { data = JSON.parse(rawText); } catch (e) { throw new Error("JSON Error"); }
+            let data = JSON.parse(rawText);
             if (!data.bullets) data.bullets = [];
-            
-            return { 
-                summary: data.scoop || title, 
-                newTitle: data.newTitle || title, 
-                bullets: data.bullets, 
-                tags: [sourceName, "News"] 
-            };
+            return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
         } catch (error) { await sleep(2000); retries--; }
     }
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// AI Clustering
 async function clusterBatchWithAI(batchArticles, batchIndex) {
     console.log(`📦 Batch ${batchIndex + 1}: KI sortiert ${batchArticles.length} Artikel...`);
     const listForAI = batchArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
-    const instruction = `Gruppiere Nachrichten zum EXAKT gleichen Ereignis. 
-    Antworte NUR JSON: [[ID, ID], [ID]]. 
-    Liste:\n${listForAI}`;
-    
+    const instruction = `Gruppiere gleiche Events. Antworte NUR JSON: [[ID, ID], [ID]]. Liste:\n${listForAI}`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
-
     try {
         const response = await axios.get(url, { timeout: 60000 });
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         try { const j = JSON.parse(rawText); if (j.content) rawText = j.content; } catch (e) {}
-        
         const arrayMatch = rawText.match(/\[\s*\[[\d\s,\[\]]*\]\s*\]/s);
         let groups = arrayMatch ? JSON.parse(arrayMatch[0]) : null;
         if (!Array.isArray(groups)) throw new Error("Kein Array");
-
         let localClusters = [];
         let usedIndices = new Set();
         groups.forEach(groupIndices => {
@@ -239,12 +155,7 @@ async function clusterBatchWithAI(batchArticles, batchIndex) {
             let parent = batchArticles[parentIndex];
             usedIndices.add(parentIndex);
             parent.related = [];
-            validIndices.forEach((idx, i) => {
-                if (i !== bestParentIndex && !usedIndices.has(idx)) {
-                    parent.related.push(batchArticles[idx]);
-                    usedIndices.add(idx);
-                }
-            });
+            validIndices.forEach((idx, i) => { if (i !== bestParentIndex && !usedIndices.has(idx)) { parent.related.push(batchArticles[idx]); usedIndices.add(idx); } });
             localClusters.push(parent);
         });
         batchArticles.forEach((item, index) => { if (!usedIndices.has(index)) { item.related = []; localClusters.push(item); } });
@@ -262,10 +173,8 @@ async function runClusteringPipeline(allArticles) {
             let matched = false;
             for (const existingCluster of finalClusters) {
                 if (isRelatedTopicAlgorithmic(existingCluster.title, newCluster.title)) {
-                    if (!existingCluster.img && newCluster.img) {
-                        newCluster.related.push(existingCluster, ...(existingCluster.related || []));
-                        finalClusters[finalClusters.indexOf(existingCluster)] = newCluster;
-                    } else { existingCluster.related.push(newCluster, ...(newCluster.related || [])); }
+                    if (!existingCluster.img && newCluster.img) { newCluster.related.push(existingCluster, ...(existingCluster.related || [])); finalClusters[finalClusters.indexOf(existingCluster)] = newCluster; } 
+                    else { existingCluster.related.push(newCluster, ...(newCluster.related || [])); }
                     matched = true; break;
                 }
             }
@@ -278,12 +187,10 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log("🚀 Start News-Bot v4.2 (Robust & 4 Days)...");
+    console.log(`🚀 Start News-Bot (Retention: ${MAX_DAYS} Tage, Limit: ${MAX_ITEMS})...`);
     
-    // SOURCES LADEN
     let sources = [];
-    try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
-    catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
+    try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
 
     let existingNews = loadExistingNews();
     existingNews = pruneNews(existingNews);
@@ -303,36 +210,36 @@ async function run() {
 
             for (const item of feed.items) {
                 if (added >= source.count) break;
-                // Lockerere Notbremse: Erst bei 8 echten Fehlern abbrechen
-                if (errorSkips >= 8) { console.log(`   🛑 Zu viele Fehler bei ${source.name}. Abbruch.`); break; }
+                if (errorSkips >= 8) { 
+                    logEvent(source.name, 'error', 'Too many errors, aborted.');
+                    console.log(`   🛑 Zu viele Fehler bei ${source.name}. Abbruch.`); 
+                    break; 
+                }
 
                 const exists = flatFeed.some(n => isSameArticle(n, item));
                 if (exists) { 
-                    // Cache Hit ist kein Fehler
-                    // console.log("   ⏩ Cache Hit");
+                    logEvent(source.name, 'cache', item.title);
                     continue; 
                 }
 
                 let fullText = "";
-
                 if (source.scrape !== false) {
                     process.stdout.write(`   🔍 Prüfe: ${item.title.substring(0, 30)}... `);
                     fullText = await fetchArticleText(item.link);
                     
-                    // QUALITÄTS-CHECK: Ist genug Text da?
                     if (fullText.length < 500) {
                         console.log(`❌ Zu kurz (${fullText.length}). Skip.`);
-                        errorSkips++;
-                        continue; 
+                        logEvent(source.name, 'content', `${item.title} (${fullText.length} chars)`);
+                        errorSkips++; continue; 
                     } else {
                         console.log(`✅ OK (${fullText.length} Zeichen).`);
                     }
                 } else {
-                    console.log(`   ⏩ Scrape deaktiviert für ${item.title.substring(0, 20)}...`);
                     fullText = (item.contentSnippet || item.content || "").substring(0, 5000);
                 }
 
                 const ai = await analyzeWithPollinations(item.title, fullText, source.name);
+                logEvent(source.name, 'added', `${item.title} (${fullText.length} chars)`);
                 
                 flatFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
@@ -350,24 +257,31 @@ async function run() {
                     related: []
                 });
                 added++;
-                errorSkips = 0; // Reset Fehler bei Erfolg
+                errorSkips = 0;
                 await sleep(4000); 
             }
-        } catch (e) { console.error(`   ❌ Error ${source.name}: ${e.message}`); }
+        } catch (e) { 
+            console.error(`   ❌ Error ${source.name}: ${e.message}`); 
+            logEvent(source.name, 'error', e.message);
+        }
     }
 
     flatFeed = pruneNews(flatFeed);
     flatFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     
-    // LIMIT AUF 600
-    if (flatFeed.length > MAX_ITEMS) {
-        console.log(`✂️ Cleanup: Behalte Top ${MAX_ITEMS}.`);
-        flatFeed = flatFeed.slice(0, MAX_ITEMS);
-    }
+    if (flatFeed.length > MAX_ITEMS) flatFeed = flatFeed.slice(0, MAX_ITEMS);
 
     const finalFeed = await runClusteringPipeline(flatFeed);
     
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
+    
+    // --- DEBUG LOG SPEICHERN ---
+    let debugLog = [];
+    try { if (fs.existsSync('debug.json')) debugLog = JSON.parse(fs.readFileSync('debug.json', 'utf8')); } catch (e) {}
+    debugLog.unshift(currentRunLog); // Neuester Log nach oben
+    if (debugLog.length > 20) debugLog = debugLog.slice(0, 20); // Max 20 Einträge
+    fs.writeFileSync('debug.json', JSON.stringify(debugLog, null, 2));
+
     console.log(`✅ Fertig! ${finalFeed.length} Cluster gespeichert.`);
 }
 
