@@ -4,117 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Smart Brief</title>
-    
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg: #0f0f10;
             --surface: #18181b;
+            --surface-variant: #202024;
             --accent: #3b82f6;
             --text: #f4f4f5;
             --text-muted: #a1a1aa;
         }
 
-        body {
-            background-color: var(--bg); color: var(--text);
-            font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px;
-        }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px; }
 
-        /* --- HEADER & PROGRESS --- */
-        header {
-            background: rgba(15, 15, 16, 0.9);
-            backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 50;
-            padding: 15px 20px;
-            border-bottom: 1px solid #27272a;
-        }
-
+        header { background: rgba(15, 15, 16, 0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 50; padding: 15px 20px; border-bottom: 1px solid #27272a; }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .brand { font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: 700; }
         .date { font-size: 0.8rem; color: var(--text-muted); }
+        .progress-container { background: #27272a; height: 4px; border-radius: 2px; overflow: hidden; margin-top: 5px; }
+        .progress-bar { background: var(--accent); height: 100%; width: 0%; transition: width 0.5s ease; }
 
-        /* Catch-Up Bar */
-        .progress-container {
-            background: #27272a; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px;
-        }
-        .progress-bar {
-            background: var(--accent); height: 100%; width: 0%;
-            transition: width 0.5s ease;
-        }
-        .progress-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; text-align: right; }
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 20px; }
 
-        /* --- GRID --- */
-        .container {
-            max-width: 800px; margin: 20px auto; padding: 0 15px;
-            display: flex; flex-direction: column; gap: 20px;
-        }
-
-        /* --- CARD --- */
-        .card {
-            background: var(--surface); border-radius: 12px; overflow: hidden;
-            border: 1px solid #27272a;
-            transition: transform 0.2s;
-        }
-        
-        .card-img {
-            width: 100%; height: 180px; object-fit: cover; background: #222;
-        }
-
+        /* Main Card */
+        .card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid #27272a; }
+        .card-img { width: 100%; height: 180px; object-fit: cover; background: #222; }
         .card-body { padding: 15px; }
+        .meta { display: flex; justify-content: space-between; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
+        .card-title { font-family: 'Merriweather', serif; font-size: 1.1rem; margin: 0 0 10px 0; line-height: 1.4; color: #fff; text-decoration: none; display: block; }
+        .scoop { font-size: 0.95rem; color: #e4e4e7; line-height: 1.5; margin-bottom: 15px; padding-left: 10px; border-left: 3px solid var(--accent); }
+        .bullets { list-style: none; padding: 0; margin: 0 0 15px 0; }
+        .bullets li { position: relative; padding-left: 20px; margin-bottom: 8px; font-size: 0.9rem; color: #d4d4d8; line-height: 1.4; }
+        .bullets li::before { content: "•"; color: var(--accent); font-weight: bold; position: absolute; left: 0; }
 
-        .meta {
-            display: flex; justify-content: space-between;
-            font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 8px;
-        }
+        .actions { padding: 10px 15px; background: #1c1c1f; border-top: 1px solid #27272a; display: flex; justify-content: space-between; align-items: center; }
+        .btn-link { color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
 
-        .card-title {
-            font-family: 'Merriweather', serif; font-size: 1.1rem; margin: 0 0 10px 0; line-height: 1.4;
+        /* Toggle Button for Variants */
+        .btn-toggle {
+            background: #27272a; color: #ccc; border: none; padding: 6px 12px; border-radius: 20px;
+            font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 5px;
         }
+        .btn-toggle:hover { background: #333; color: #fff; }
 
-        .scoop {
-            font-size: 0.95rem; color: #e4e4e7; line-height: 1.5; margin-bottom: 15px;
-            padding-left: 10px; border-left: 3px solid var(--accent);
-        }
+        /* Variants Container (Hidden by default) */
+        .variants-container { display: none; background: #121214; border-top: 1px solid #27272a; padding: 10px; animation: slideDown 0.3s ease; }
+        .variants-container.show { display: block; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Bullet Points List */
-        .bullets {
-            list-style: none; padding: 0; margin: 0 0 15px 0;
+        /* Sub-Card (Variant) */
+        .sub-card {
+            background: var(--surface-variant); border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid #333;
         }
-        .bullets li {
-            position: relative; padding-left: 20px; margin-bottom: 8px;
-            font-size: 0.9rem; color: #d4d4d8; line-height: 1.4;
-        }
-        .bullets li::before {
-            content: "•"; color: var(--accent); font-weight: bold;
-            position: absolute; left: 0;
-        }
-
-        .actions { border-top: 1px solid #27272a; padding: 10px 15px; background: #1c1c1f; }
-        .btn-link {
-            color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 600;
-            display: inline-block;
-        }
+        .sub-card:last-child { margin-bottom: 0; }
+        .sub-title { font-family: 'Merriweather', serif; font-size: 0.95rem; margin-bottom: 8px; color: #ddd; }
 
     </style>
 </head>
 <body>
-
     <header>
-        <div class="header-top">
-            <div class="brand">Daily Brief.</div>
-            <div class="date" id="current-date"></div>
-        </div>
-        <!-- Progress Bar -->
-        <div class="progress-container">
-            <div class="progress-bar" id="progress"></div>
-        </div>
-        <div class="progress-label" id="progress-text">Lade News...</div>
+        <div class="header-top"><div class="brand">Daily Brief.</div><div class="date" id="current-date"></div></div>
+        <div class="progress-container"><div class="progress-bar" id="progress"></div></div>
     </header>
 
     <div class="container" id="feed">
-        <p style="text-align:center; color:#666; margin-top:50px">Generiere Briefing...</p>
+        <p style="text-align:center; color:#666; margin-top:50px">Lade News...</p>
     </div>
 
     <script>
@@ -122,65 +77,69 @@
 
         fetch('news.json?t=' + Date.now())
             .then(r => r.json())
-            .then(data => {
-                renderFeed(data);
-                updateProgress(data.length);
-            })
-            .catch(e => document.getElementById('feed').innerHTML = '<p style="text-align:center">Fehler beim Laden.</p>');
-
-        function updateProgress(total) {
-            // Simulierter "Catch-Up": Wir tun so, als wären alle neu geladenen ungelesen
-            // In einer echten App würde man speichern, was man schon gescrollt hat.
-            const bar = document.getElementById('progress');
-            const text = document.getElementById('progress-text');
-            
-            // Animation
-            setTimeout(() => {
-                bar.style.width = '100%';
-                text.innerText = `${total} Updates heute`;
-            }, 500);
-        }
+            .then(data => { renderFeed(data); setTimeout(() => document.getElementById('progress').style.width = '100%', 500); })
+            .catch(e => document.getElementById('feed').innerHTML = '<p style="text-align:center">Ladefehler.</p>');
 
         function renderFeed(news) {
             const container = document.getElementById('feed');
             container.innerHTML = '';
+            if(news.length === 0) { container.innerHTML = '<p style="text-align:center">Keine News.</p>'; return; }
 
             news.forEach(item => {
                 const img = item.img || 'https://via.placeholder.com/600x300/222/555?text=News';
+                const bullets = (item.bullets||[]).map(b => `<li>${b}</li>`).join('');
                 
-                // Bullets generieren
-                let bulletsHtml = '';
-                if (item.bullets && Array.isArray(item.bullets)) {
-                    bulletsHtml = '<ul class="bullets">' + 
-                        item.bullets.map(b => `<li>${b}</li>`).join('') + 
-                        '</ul>';
+                // Varianten Handling
+                let variantsHtml = '';
+                let toggleBtn = '';
+                
+                if (item.related && item.related.length > 0) {
+                    const sources = item.related.map(r => r.source).join(', ');
+                    toggleBtn = `
+                        <button class="btn-toggle" onclick="toggleVariants('${item.id}')">
+                            <span>⬇ ${item.related.length} weitere Perspektiven (${sources})</span>
+                        </button>
+                    `;
+                    
+                    variantsHtml = `<div id="vars-${item.id}" class="variants-container">`;
+                    item.related.forEach(rel => {
+                        const relBullets = (rel.bullets||[]).map(b => `<li>${b}</li>`).join('');
+                        variantsHtml += `
+                            <div class="sub-card">
+                                <div class="meta"><span>${rel.source}</span><span>${new Date(rel.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>
+                                <div class="sub-title">${rel.title}</div>
+                                <div class="scoop" style="font-size:0.9rem; border-left-color:#666">${rel.text}</div>
+                                <ul class="bullets" style="margin-bottom:5px">${relBullets}</ul>
+                                <a href="${rel.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Zum Artikel →</a>
+                            </div>
+                        `;
+                    });
+                    variantsHtml += `</div>`;
                 }
 
                 const html = `
                     <div class="card">
                         <img src="${img}" class="card-img" onerror="this.style.display='none'">
                         <div class="card-body">
-                            <div class="meta">
-                                <span>${item.sourceCountry || ''} ${item.source}</span>
-                                <span>${new Date(item.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
-                            </div>
-                            
-                            <h3 class="card-title">${item.title}</h3>
-                            
-                            <!-- Der Scoop (Zusammenfassung) -->
+                            <div class="meta"><span>${item.sourceCountry||''} ${item.source}</span><span>${new Date(item.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>
+                            <a href="${item.link}" target="_blank" class="card-title">${item.title}</a>
                             <div class="scoop">${item.text}</div>
-                            
-                            <!-- Die 5 Fakten -->
-                            ${bulletsHtml}
+                            <ul class="bullets">${bullets}</ul>
                         </div>
-                        
+                        ${variantsHtml}
                         <div class="actions">
-                            <a href="${item.link}" target="_blank" class="btn-link">Originalartikel lesen →</a>
+                            <a href="${item.link}" target="_blank" class="btn-link">Original lesen →</a>
+                            ${toggleBtn}
                         </div>
                     </div>
                 `;
                 container.innerHTML += html;
             });
+        }
+
+        function toggleVariants(id) {
+            const el = document.getElementById('vars-' + id);
+            el.classList.toggle('show');
         }
     </script>
 </body>
