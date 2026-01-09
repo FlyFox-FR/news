@@ -1,13 +1,13 @@
 {
   "name": "news-grabber-gemini",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "News mit Google Gemini",
   "main": "grabber.js",
   "scripts": {
     "start": "node grabber.js"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.1.0",
+    "@google/generative-ai": "^0.21.0",
     "rss-parser": "^3.13.0"
   }
 }
