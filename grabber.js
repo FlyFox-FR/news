@@ -5,73 +5,19 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- NEU: INTELLIGENTER ÄHNLICHKEITS-CHECK ---
-function cleanAndStem(text) {
-    if (!text) return [];
-    
-    // Stoppwörter (erweitert)
-    const stopWords = ["und", "oder", "aber", "der", "die", "das", "ein", "eine", "einer", "den", "dem", "des", "mit", "von", "bei", "für", "auf", "im", "in", "ist", "sind", "war", "wird", "werden", "nach", "über", "wegen", "dass", "hat", "haben", "wie", "als", "auch", "noch", "doch", "aus", "all", "gegen"];
-
-    return text.toLowerCase()
-        .replace(/[^\w\säöüß]/g, ' ') // Sonderzeichen weg
-        .split(/\s+/) // In Wörter splitten
-        .filter(w => w.length > 2) // Min 3 Zeichen
-        .filter(w => !stopWords.includes(w)) // Stoppwörter raus
-        .map(w => {
-            // "Stemming Light": Einfache Endungen entfernen, um "Sturm" == "Stürme" zu erkennen
-            if (w.length > 5) return w.replace(/(en|em|ern|er|es|e)$/, "");
-            return w;
-        });
-}
-
-function getSimilarityScore(title1, title2) {
-    const set1 = cleanAndStem(title1);
-    const set2 = cleanAndStem(title2);
-
-    if (set1.length === 0 || set2.length === 0) return 0;
-
-    let matchWeight = 0;
-    let totalWeight = 0;
-
-    // Wir gewichten lange, seltene Wörter höher!
-    // "Iran" (4) zählt weniger als "Oreschnik" (9) oder "Bundestagswahl" (14).
-    
+// --- ALTER FALLBACK ALGORITHMUS (Falls KI versagt) ---
+function isRelatedTopicFallback(title1, title2) {
+    const clean = t => t.toLowerCase().replace(/[^\w\säöüß]/g, '').split(/\s+/).filter(w => w.length > 3);
+    const set1 = clean(title1);
+    const set2 = clean(title2);
+    let matchWeight = 0, totalWeight = 0;
     set1.forEach(w1 => {
-        const weight = w1.length * w1.length; // Quadratische Gewichtung: Länge ist Macht
-        totalWeight += weight;
-        
-        // Prüfen ob w1 in set2 enthalten ist (oder sehr ähnlich)
-        if (set2.some(w2 => w2 === w1 || (w1.length > 4 && w2.includes(w1)) || (w2.length > 4 && w1.includes(w2)))) {
-            matchWeight += weight * 2; // Match zählt für beide Seiten
-        }
+        const w = w1.length * w1.length;
+        totalWeight += w;
+        if (set2.some(w2 => w2.includes(w1) || w1.includes(w2))) matchWeight += w * 2;
     });
-    
-    set2.forEach(w2 => {
-        totalWeight += w2.length * w2.length;
-    });
-
-    // Dice Koeffizient Formel (angepasst auf Gewichtung)
-    // 2 * (Gewicht der Matches) / (Gesamtgewicht beider Sätze)
-    const score = matchWeight / totalWeight;
-    
-    return score;
-}
-
-// --- 1. DEDUPLIZIERUNG (Exakt gleiche Artikel verhindern) ---
-function isSameArticle(item1, item2) {
-    if (item1.link === item2.link) return true;
-    // Wenn Score extrem hoch (> 0.85), ist es quasi derselbe Titel
-    return getSimilarityScore(item1.originalTitle || item1.title, item2.title) > 0.85;
-}
-
-// --- 2. CLUSTERING (Themen gruppieren) ---
-function isRelatedTopic(title1, title2) {
-    const score = getSimilarityScore(title1, title2);
-    
-    // Schwellenwert: 0.35 hat sich als guter "Sweet Spot" erwiesen.
-    // Iran/Protest vs Iran/Militär hat einen Score von ca. 0.1 (nur "Iran" matcht, Rest nicht).
-    // Elli/Sturm vs Winter/Elli hat Score von ca. 0.5 (Elli + Sturm/Winter matcht).
-    return score > 0.35; 
+    set2.forEach(w2 => totalWeight += w2.length * w2.length);
+    return (matchWeight / totalWeight) > 0.35;
 }
 
 function loadExistingNews() {
@@ -81,94 +27,145 @@ function loadExistingNews() {
     return [];
 }
 
+// 1. TEXT ANALYSE (Wie bisher)
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
-
-    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
-    Antworte NUR mit validem JSON.
-    ANWEISUNG:
-    1. Sprache: ZWINGEND DEUTSCH.
-    2. Suche nach harten Fakten (Zahlen, Orte, Namen).
-    3. Schreibe 2-4 Bulletpoints.
-    
-    Format:
-    {
-      "newTitle": "Sachliche Überschrift",
-      "scoop": "Kernaussage in einem Satz.",
-      "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
-    }`;
-    
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}". Antworte mit JSON: { "newTitle": "Sachlich Deutsch", "scoop": "Kernaussage", "bullets": ["Fakt 1", "Fakt 2"] }`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
-    let retries = 3;
+    let retries = 2;
     while (retries > 0) {
         try {
             const response = await axios.get(url, { timeout: 35000 });
-            let rawText = response.data;
-            if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
-
-            rawText = rawText.split("--- Support")[0]; 
-            rawText = rawText.split("🌸 Ad")[0];
-            rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-
-            const firstOpen = rawText.indexOf('{');
-            const lastClose = rawText.lastIndexOf('}');
-            if (firstOpen !== -1 && lastClose !== -1) rawText = rawText.substring(firstOpen, lastClose + 1);
-
-            let data;
-            try { data = JSON.parse(rawText); } catch (e) { throw new Error("JSON Error"); }
+            let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
+            rawText = rawText.split("---")[0].replace(/```json|```/g, "").trim();
+            const first = rawText.indexOf('{'), last = rawText.lastIndexOf('}');
+            if (first !== -1 && last !== -1) rawText = rawText.substring(first, last + 1);
+            
+            let data = JSON.parse(rawText);
             if (!data.bullets) data.bullets = [];
-            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
-
             return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
-
         } catch (error) {
-            if (error.response?.status === 429) { await sleep(30000); retries--; continue; }
-            await sleep(5000); retries--;
+            await sleep(3000); retries--;
         }
     }
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-function clusterNews(allNews) {
-    console.log(`🧹 Starte Clustering für ${allNews.length} Artikel...`);
+// 2. AI CLUSTERING (Der neue "Konferenz-Tisch")
+async function groupNewsWithAI(flatFeed) {
+    console.log("🧠 KI sortiert jetzt die Themen...");
+
+    // Wir bauen eine sehr kurze Liste für die URL (um Platz zu sparen)
+    // Format: "0|TitelA| 1|TitelB| ..."
+    const inputList = flatFeed.map((item, index) => `${index}|${item.newTitle || item.title}`).join(" || ");
+    
+    // Wir schneiden ab, falls es zu lang für die URL wird (ca. 2000 Zeichen Puffer)
+    const safeInput = inputList.substring(0, 2500);
+
+    const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach exaktem Thema.
+    Input Format: "ID|Titel || ID|Titel..."
+    
+    Liste: "${safeInput}"
+    
+    Aufgabe: Gib ein JSON-Array von Arrays zurück. Jedes innere Array enthält die IDs, die zum SELBEN Ereignis gehören.
+    Beispiel Output: [[0, 2], [1], [3, 4]]
+    
+    WICHTIG:
+    1. Jede ID muss vorkommen.
+    2. Gruppiere nur, wenn es wirklich dasselbe Ereignis ist (z.B. "Sturm Elli" und "Unwetter im Norden").
+    4. Antworte NUR mit dem JSON.`;
+
+    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
+
+    try {
+        const response = await axios.get(url, { timeout: 45000 });
+        let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
+        // Cleaning
+        rawText = rawText.replace(/```json|```/g, "").trim();
+        const first = rawText.indexOf('['), last = rawText.lastIndexOf(']');
+        if (first !== -1 && last !== -1) rawText = rawText.substring(first, last + 1);
+
+        const groups = JSON.parse(rawText);
+        
+        // Validierung: Ist es wirklich ein Array von Arrays?
+        if (!Array.isArray(groups) || !Array.isArray(groups[0])) throw new Error("Format falsch");
+
+        console.log("🧠 KI-Gruppierung erfolgreich:", JSON.stringify(groups));
+        
+        // --- FEED NEU ZUSAMMENBAUEN ---
+        let clusteredFeed = [];
+        let usedIndices = new Set();
+
+        groups.forEach(groupIndices => {
+            // Filtern: Nur gültige Indizes
+            let validIndices = groupIndices.filter(i => flatFeed[i] !== undefined);
+            if (validIndices.length === 0) return;
+
+            // Der erste im Cluster ist der Parent (Hauptartikel)
+            let parent = flatFeed[validIndices[0]];
+            usedIndices.add(validIndices[0]);
+            parent.related = [];
+
+            // Die anderen sind Kinder
+            for (let i = 1; i < validIndices.length; i++) {
+                let childIndex = validIndices[i];
+                if (!usedIndices.has(childIndex)) {
+                    parent.related.push(flatFeed[childIndex]);
+                    usedIndices.add(childIndex);
+                }
+            }
+            clusteredFeed.push(parent);
+        });
+
+        // Falls die KI Artikel vergessen hat (sollte nicht passieren, aber sicher ist sicher)
+        flatFeed.forEach((item, index) => {
+            if (!usedIndices.has(index)) {
+                console.log(`⚠️ KI hat Item ${index} vergessen, füge manuell hinzu.`);
+                item.related = [];
+                clusteredFeed.push(item);
+            }
+        });
+
+        return clusteredFeed;
+
+    } catch (e) {
+        console.error("❌ KI-Clustering fehlgeschlagen:", e.message);
+        console.log("fallback auf manuelles Clustering...");
+        return manualClusterFallback(flatFeed);
+    }
+}
+
+// Fallback (dein alter Code), falls KI abstürzt
+function manualClusterFallback(allNews) {
     let clustered = [];
     let processedIds = new Set();
-
     allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     for (let i = 0; i < allNews.length; i++) {
         let item = allNews[i];
         if (processedIds.has(item.id)) continue;
-
         let group = [item];
         processedIds.add(item.id);
 
         for (let j = i + 1; j < allNews.length; j++) {
             let candidate = allNews[j];
             if (processedIds.has(candidate.id)) continue;
-
-            if (isRelatedTopic(item.originalTitle, candidate.originalTitle)) {
-                const score = getSimilarityScore(item.originalTitle, candidate.originalTitle);
-                console.log(`🔗 Cluster (Score ${score.toFixed(2)}): "${candidate.originalTitle}" -> "${item.originalTitle}"`);
+            if (isRelatedTopicFallback(item.originalTitle, candidate.originalTitle)) {
                 group.push(candidate);
                 processedIds.add(candidate.id);
             }
         }
-
         let parent = group[0];
         parent.related = [];
-        for (let k = 1; k < group.length; k++) {
-            parent.related.push(group[k]);
-            if (group[k].related) parent.related.push(...group[k].related);
-        }
+        for (let k = 1; k < group.length; k++) parent.related.push(group[k]);
         clustered.push(parent);
     }
     return clustered;
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Clean & Smart Cluster)...");
+    console.log("🚀 Starte News-Abruf (AI Cluster Edition)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -191,9 +188,8 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Deduplizierung (Exakter Check)
-                const existingIndex = flatFeed.findIndex(n => isSameArticle(n, item));
-                
+                // Deduplizierung (Exakt gleicher Link oder Titel)
+                const existingIndex = flatFeed.findIndex(n => n.link === item.link || n.originalTitle === item.title);
                 if (existingIndex !== -1) {
                     flatFeed[existingIndex].date = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString();
                     continue; 
@@ -203,10 +199,9 @@ async function run() {
                 const rawContent = item.contentSnippet || item.content || "";
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
                 
-                // KI-Bild Code wurde hier ENTFERNT (Wunsch gemäß)
                 let imgUrl = item.enclosure?.url || item.itunes?.image || null;
 
-                const newsItem = {
+                flatFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
                     sourceCountry: source.country || "🌍",
@@ -219,16 +214,19 @@ async function run() {
                     bullets: ai.bullets,
                     tags: ai.tags,
                     related: []
-                };
-                
-                flatFeed.push(newsItem);
-                await sleep(10000); 
+                });
+                await sleep(8000); // 8s Pause reicht, da wir am Ende eh nochmal Zeit für Cluster brauchen
             }
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
-    const finalFeed = clusterNews(flatFeed);
+    // --- HIER KOMMT DIE MAGIE ---
+    // Wir übergeben ALLES an die KI zum Sortieren
+    const finalFeed = await groupNewsWithAI(flatFeed);
     
+    // Sortieren (Neueste Cluster oben)
+    finalFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
+
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
     console.log(`✅ Fertig! ${finalFeed.length} Themen-Cluster.`);
 }
