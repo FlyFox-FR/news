@@ -153,49 +153,6 @@
     "content": "Sturmtief »Elli« braust über den Norden. Der Wetterdienst warnt vor Schneemassen und Glätte, es droht Chaos auf den Straßen. Unterwegs mit dem Winterdienst in Kiel und Sarstedt.",
     "related": [
       {
-        "id": "dgyaff61x",
-        "source": "rbb24",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
-        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
-        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
-        "img": null,
-        "date": "2026-01-09T16:15:07.000Z",
-        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
-        "bullets": [
-          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
-          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
-          "Behörden und Wetterdienste rufen zur Vorsicht auf"
-        ],
-        "tags": [
-          "rbb24",
-          "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "29oan9gc0",
-        "source": "Tagesschau",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief 'Elli' führt zu bundesweiten Zugausfällen",
-        "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
-        "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
-        "img": null,
-        "date": "2026-01-09T16:14:03.000Z",
-        "text": "Der Wintertief 'Elli' verursacht in Nord‑ und Ostdeutschland umfangreiche Zugverkehrsbeschränkungen, die der Deutschen Bahn zufolge bis auf Weiteres in Bayern und im Osten führend sein werden.",
-        "bullets": [
-          "Sturmtief 'Elli' zieht über Deutschland mit starkem Schneefall und Eis.",
-          "Zugverkehr im Norden Deutschlands bleibt laut Bahn bis auf Weiteres eingestellt.",
-          "Auch in Ostdeutschland werden Ausfälle erwartet.",
-          "Deutsche Bahn kündigt weitere Einschränkungen, insbesondere im Osten, an."
-        ],
-        "tags": [
-          "Tagesschau",
-          "News"
-        ],
-        "related": []
-      },
-      {
         "id": "qnynrj0kb",
         "source": "ZDF",
         "sourceCountry": "🇩🇪",
@@ -214,28 +171,48 @@
           "ZDF",
           "News"
         ],
-        "related": []
+        "related": [
+          {
+            "id": "78ui2nisc",
+            "source": "ZDF",
+            "sourceCountry": "🇩🇪",
+            "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
+            "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
+            "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+            "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+            "date": "2026-01-09T15:24:00.000Z",
+            "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
+            "bullets": [
+              "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
+              "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
+              "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
+            ],
+            "tags": [
+              "ZDF",
+              "News"
+            ]
+          }
+        ]
       },
       {
-        "id": "hgg8rejn6",
-        "source": "Tagesschau",
+        "id": "78ui2nisc",
+        "source": "ZDF",
         "sourceCountry": "🇩🇪",
-        "title": "Wintersturm Elli lässt Deutschland von Schnee und Glätte zurückhalten",
-        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
-        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
-        "img": null,
-        "date": "2026-01-09T13:03:55.000Z",
-        "text": "Der Sturm bringt heftige Schneefälle, starke Glätte und vermehrte Bahnausfälle, die den öffentlichen Verkehr, Schulen und den Straßenverkehr stark beeinträchtigen.",
+        "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
+        "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
+        "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+        "date": "2026-01-09T15:24:00.000Z",
+        "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
         "bullets": [
-          "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
-          "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
-          "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
+          "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
+          "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
+          "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
         ],
         "tags": [
-          "Tagesschau",
+          "ZDF",
           "News"
-        ],
-        "related": []
+        ]
       }
     ]
   },
@@ -458,6 +435,71 @@
     "related": []
   },
   {
+    "id": "yfhm7irox",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
+    "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
+    "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
+    "date": "2026-01-09T16:20:00.000Z",
+    "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
+    "bullets": [
+      "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
+      "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
+      "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "dgyaff61x",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
+        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
+        "img": null,
+        "date": "2026-01-09T16:15:07.000Z",
+        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
+        "bullets": [
+          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
+          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
+          "Behörden und Wetterdienste rufen zur Vorsicht auf"
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "29oan9gc0",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief 'Elli' führt zu bundesweiten Zugausfällen",
+        "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
+        "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+        "img": null,
+        "date": "2026-01-09T16:14:03.000Z",
+        "text": "Der Wintertief 'Elli' verursacht in Nord‑ und Ostdeutschland umfangreiche Zugverkehrsbeschränkungen, die der Deutschen Bahn zufolge bis auf Weiteres in Bayern und im Osten führend sein werden.",
+        "bullets": [
+          "Sturmtief 'Elli' zieht über Deutschland mit starkem Schneefall und Eis.",
+          "Zugverkehr im Norden Deutschlands bleibt laut Bahn bis auf Weiteres eingestellt.",
+          "Auch in Ostdeutschland werden Ausfälle erwartet.",
+          "Deutsche Bahn kündigt weitere Einschränkungen, insbesondere im Osten, an."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
     "id": "v8753cxny",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -646,7 +688,50 @@
           "Tagesschau",
           "News"
         ],
-        "related": []
+        "related": [
+          {
+            "id": "6gzk2aj79",
+            "source": "Tagesschau",
+            "sourceCountry": "🇩🇪",
+            "title": "EU prüft Freihandelsabkommen mit Mercosur-Staaten – Bauern warnen vor unfairem Wettbewerb",
+            "originalTitle": "Wie Bauern und Wirtschaft auf das Mercosur-Abkommen blicken",
+            "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/mercosur-abkommen-bauern-wirtschaft-100.html",
+            "img": null,
+            "date": "2026-01-09T13:20:30.000Z",
+            "text": "Der Abschluss des Freihandelsabkommens zwischen der EU und vier Mercosur-Staaten steht zur Umsetzung bereit und löst bei Politik, Wirtschaft und Landwirtschaft unterschiedliche Reaktionen aus.",
+            "bullets": [
+              "Freihandelsabkommen zwischen der EU und vier Mercosur-Staaten (Argentina, Brasilien, Paraguay, Uruguay) steht zur Umsetzung bereit.",
+              "Der Weg für den Abschluss des Abkommens ist frei – die Entscheidung liegt in Sicht.",
+              "Hoffnungen breiten sich in der deutschen Politik und bei der Wirtschaft aus, da der Handel erweitert werden soll.",
+              "Viele Bauern fürchten unfairen Wettbewerb, der durch das Abkommen entstehen könnte."
+            ],
+            "tags": [
+              "Tagesschau",
+              "News"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "6gzk2aj79",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "EU prüft Freihandelsabkommen mit Mercosur-Staaten – Bauern warnen vor unfairem Wettbewerb",
+        "originalTitle": "Wie Bauern und Wirtschaft auf das Mercosur-Abkommen blicken",
+        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/mercosur-abkommen-bauern-wirtschaft-100.html",
+        "img": null,
+        "date": "2026-01-09T13:20:30.000Z",
+        "text": "Der Abschluss des Freihandelsabkommens zwischen der EU und vier Mercosur-Staaten steht zur Umsetzung bereit und löst bei Politik, Wirtschaft und Landwirtschaft unterschiedliche Reaktionen aus.",
+        "bullets": [
+          "Freihandelsabkommen zwischen der EU und vier Mercosur-Staaten (Argentina, Brasilien, Paraguay, Uruguay) steht zur Umsetzung bereit.",
+          "Der Weg für den Abschluss des Abkommens ist frei – die Entscheidung liegt in Sicht.",
+          "Hoffnungen breiten sich in der deutschen Politik und bei der Wirtschaft aus, da der Handel erweitert werden soll.",
+          "Viele Bauern fürchten unfairen Wettbewerb, der durch das Abkommen entstehen könnte."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ]
       }
     ]
   },
@@ -710,27 +795,6 @@
         "related": []
       }
     ]
-  },
-  {
-    "id": "yfhm7irox",
-    "source": "Spiegel",
-    "sourceCountry": "🇩🇪",
-    "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
-    "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
-    "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
-    "date": "2026-01-09T16:20:00.000Z",
-    "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
-    "bullets": [
-      "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
-      "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
-      "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
-    ],
-    "tags": [
-      "Spiegel",
-      "News"
-    ],
-    "related": []
   },
   {
     "id": "t9tzpe4f4",
@@ -856,27 +920,6 @@
     ],
     "tags": [
       "rbb24",
-      "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "78ui2nisc",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
-    "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
-    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
-    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
-    "date": "2026-01-09T15:24:00.000Z",
-    "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
-    "bullets": [
-      "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
-      "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
-      "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
-    ],
-    "tags": [
-      "ZDF",
       "News"
     ],
     "related": []
@@ -1054,6 +1097,44 @@
     "related": []
   },
   {
+    "id": "83bu9dzj7",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+    "date": "2026-01-09T12:42:00.000Z",
+    "text": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "bullets": [],
+    "tags": [
+      "ZDF"
+    ],
+    "related": [
+      {
+        "id": "hgg8rejn6",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Wintersturm Elli lässt Deutschland von Schnee und Glätte zurückhalten",
+        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
+        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
+        "img": null,
+        "date": "2026-01-09T13:03:55.000Z",
+        "text": "Der Sturm bringt heftige Schneefälle, starke Glätte und vermehrte Bahnausfälle, die den öffentlichen Verkehr, Schulen und den Straßenverkehr stark beeinträchtigen.",
+        "bullets": [
+          "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
+          "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
+          "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
     "id": "jd6p5ry92",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
@@ -1176,28 +1257,6 @@
     "related": []
   },
   {
-    "id": "6gzk2aj79",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "EU prüft Freihandelsabkommen mit Mercosur-Staaten – Bauern warnen vor unfairem Wettbewerb",
-    "originalTitle": "Wie Bauern und Wirtschaft auf das Mercosur-Abkommen blicken",
-    "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/mercosur-abkommen-bauern-wirtschaft-100.html",
-    "img": null,
-    "date": "2026-01-09T13:20:30.000Z",
-    "text": "Der Abschluss des Freihandelsabkommens zwischen der EU und vier Mercosur-Staaten steht zur Umsetzung bereit und löst bei Politik, Wirtschaft und Landwirtschaft unterschiedliche Reaktionen aus.",
-    "bullets": [
-      "Freihandelsabkommen zwischen der EU und vier Mercosur-Staaten (Argentina, Brasilien, Paraguay, Uruguay) steht zur Umsetzung bereit.",
-      "Der Weg für den Abschluss des Abkommens ist frei – die Entscheidung liegt in Sicht.",
-      "Hoffnungen breiten sich in der deutschen Politik und bei der Wirtschaft aus, da der Handel erweitert werden soll.",
-      "Viele Bauern fürchten unfairen Wettbewerb, der durch das Abkommen entstehen könnte."
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ],
-    "related": []
-  },
-  {
     "id": "u7s267lz9",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -1237,22 +1296,6 @@
     "tags": [
       "ZDF",
       "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "83bu9dzj7",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
-    "date": "2026-01-09T12:42:00.000Z",
-    "text": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "bullets": [],
-    "tags": [
-      "ZDF"
     ],
     "related": []
   },
