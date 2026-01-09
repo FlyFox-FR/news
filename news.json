@@ -1,1 +1,176 @@
-
+[
+  {
+    "id": "6z5jj5tw8",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Protest in Minneapolis: ICE als Wirbelsturm in Minnesota",
+    "originalTitle": "Minneapolis, USA: Warum Widerstand gegen Trumps ICE so gefährlich ist",
+    "link": "https://www.spiegel.de/ausland/minneapolis-usa-warum-widerstand-gegen-trumps-ice-so-gefaehrlich-ist-a-9dc26c56-9e94-413e-935c-d5548f7fb2aa#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/d1de61ed-0575-4b2d-95f9-3eac47d46806_w520_r2.08_fpx70_fpy44.99.jpg",
+    "date": "2026-01-09T14:37:00.000Z",
+    "text": "Widerstand gegen ICE destabilisiert die Region und wird von der Trump-Regierung benutzt.",
+    "bullets": [
+      "Minneapolis, USA, ist der Schauplatz der Proteste.",
+      "Minnesota – der Bundesstaat, in dem die Frau erschossen wurde.",
+      "Am Mittwoch wurde einer Frau erschossen, was die Proteste ausgelöst hat.",
+      "ICE (Immigration and Customs Enforcement) wird als zunehmend brutal beschrieben."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "6t6uiucls",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Wintersturm Elli: Bahn- und Schulstopps im Norden",
+    "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
+    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+    "date": "2026-01-09T14:34:00.000Z",
+    "text": "Ein intensiver Wintersturm führt zur Einstellung des Fernverkehrs an der Nordschiene, massives Schulschließungshandeln und tödliche Unfälle.",
+    "bullets": [
+      "Deutsche Bahn stoppt den Fernverkehr im Norden.",
+      "Viele Regionen sehen einen Ausfall des Schulunterrichts.",
+      "Tödliche Unfälle entstehen durch den Wintersturm."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "dgsxxavn7",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief „Elli“: Schwerer Schneefall erwartet, Berlin & Brandenburg weniger betroffen",
+        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
+        "img": null,
+        "date": "2026-01-09T14:50:19.000Z",
+        "text": "Sturmtief Elli bringt heftige Schneefälle und starken Wind nach Deutschland, während Berlin und Brandenburg eher milde Auswirkungen erleben.",
+        "bullets": [
+          "Sturmtief ‚Elli‘ bringt starken Wind und viel Schnee nach Deutschland.",
+          "Behörden und Wetterdienste rufen zur Vorsicht auf.",
+          "Berlin und Brandenburg werden werden weniger stark getroffen als zunächst befürchtet.",
+          "Alle Entwicklungen werden im Liveticker verfolgt."
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "iwe04ii1v",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Eisige Welle 'Elli' bringt starken Schneefall und Eiseskälte in Deutschland",
+        "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+        "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+        "date": "2026-01-09T12:42:00.000Z",
+        "text": "Der Wetterdienst warnt vor starkem Schneefall, Eiseskälte und Glatteis in Teilen Deutschlands, begleitet von einem waghalsigen Sturmtief, das sich jedoch am Wochenende abschwächen wird.",
+        "bullets": [
+          "Starker Schneefall und Eiseskälte in Teilen Deutschlands",
+          "Gefahr von Glatteis trotz kühler Temperaturen",
+          "Sturmtief trägt zu hohen Winden bei",
+          "Das Sturmtief soll sich am Wochenende langsam auflösen"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "bffguthuc",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Verwaltungsgericht Berlin genehmigt Transport von mehr als 150 Castor‑Behältern aus Jülich nach Ahaus",
+    "originalTitle": "Atommülltransporte durch NRW dürfen stattfinden",
+    "link": "https://www.tagesschau.de/inland/regional/nordrheinwestfalen/atommuell-transporte-nrw-100.html",
+    "img": null,
+    "date": "2026-01-09T14:26:00.000Z",
+    "text": "Das Verwaltungsgericht Berlin hat den Eilantrag des BUND abgelehnt und damit den Transport von mehr als 150 hochradioaktiven Castor‑Behältern vom Zwischenlager Jülich nach Ahaus in Nordrhein-Westfalen zulassen.",
+    "bullets": [
+      "Mehr als 150 Castor‑Behälter mit hochradioaktivem Material sollen von Jülich nach Ahaus gebracht werden.",
+      "Das Verwaltungsgericht Berlin hat den Eilantrag des BUND abgelehnt.",
+      "Der Transport ist nun durch Nordrhein-Westfalen genehmigt.",
+      "Die Route verläßt das Zwischenlager in Jülich in Richtung Ahaus."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "23mdsl6m8",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "AfD-Motion zur Auflösung des Potsdamer Landtags abgelehnt",
+    "originalTitle": "Landtag lehnt Antrag auf Auflösung ab - BSW-Abgeordnete stimmen mit AfD",
+    "link": "https://www.rbb24.de/politik/beitrag/2026/01/brandenburg-landtag-afd-antrag-abwahl-gruhn-gescheitert.html",
+    "img": null,
+    "date": "2026-01-09T14:23:31.000Z",
+    "text": "Der Antrag der AfD auf Auflösung des Landtags wurde abgelehnt, wobei SPD- und CDU-Fraktionen gegen und BSW-Abgeordnete dafür gestimmt haben.",
+    "bullets": [
+      "AfD hat einen Antrag auf Auflösung des Potsdamer Landtags gestellt",
+      "SPD- und CDU-Fraktionen haben geschlossen dagegen gestimmt",
+      "BSW-Abgeordnete haben den AfD-Antrag unterstützt",
+      "Das Geschehen betrifft den Potsdamer Landtag, Sitz des Landtags von Brandenburg"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "mtm379ln1",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Mercosur‑EU‑Abkommen: Nach 25 Jahren Verhandlungen endlich die Basis für Freihandel",
+    "originalTitle": "Warum Mercosur trotz aller Skepsis beschlossen werden konnte",
+    "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/faq-mercosur-100.html",
+    "img": null,
+    "date": "2026-01-09T14:00:09.000Z",
+    "text": "Das 25‑jährigen Mercosur‑Freihandelsabkommen mit der EU wird nach langen Verhandlungen billigt.",
+    "bullets": [
+      "Mehr als 25 Jahre Verhandlungen führten zur Unterzeichnung des Abkommens zwischen der EU und Mercosur.",
+      "Der Vertrag eröffnet neue Handelswege zwischen den Mitgliedsstaaten von Mercosur (Argentinien, Brasilien, Paraguay, Uruguay) und europäischen Ländern.",
+      "Befürworter betonen die Förderung von Investitionen, während Gegner Bedenken hinsichtlich Arbeitsbedingungen äußern."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "f2ephqvmm",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Bundesliga-Spiel und Bahnverkehr lahm – St. Pauli vs. RB Leipzig abgesagt",
+    "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
+    "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
+    "date": "2026-01-09T07:58:00.000Z",
+    "text": "Sturmtief 'Elli' lässt Bundesliga-Termin fallen und erschwert Bahnreisen in Norddeutschland",
+    "bullets": [
+      "Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
+      "Sturmtief Elli belemmert Profifußball",
+      "Bahnverkehr in Norddeutschland stark beeinträchtigt"
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  }
+]
