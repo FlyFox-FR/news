@@ -1,128 +1,167 @@
 [
   {
-    "id": "l73ow5iv4",
+    "id": "rfoodp7k8",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
-    "title": "Liveblog zum Sturmtief: ++ Bahn stellt Fernverkehr im Norden ein ++",
-    "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
-    "img": null,
-    "date": "2026-01-09T08:26:08.000Z",
-    "text": "Die Deutsche Bahn hat bis 12 Uhr den gesamten Fernverkehr im Norden ausgesetzt, während die Berlin- und Brandenburgischen Verkehrsminister bereits Entwarnung ausgerufen haben.\n\n\n\n---\n\n**Support Pollinations.AI:**\n\n---\n\n🌸 **Ad** 🌸\nPowered by Pollinations.AI free text APIs. [Support our mission](https://pollinations.ai/redirect/kofi) to keep AI accessible for everyone.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "dqafs42xv",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Marktbericht: Anleger zuversichtlich vor US-Arbeitsmarktbericht ",
-    "link": "https://www.tagesschau.de/wirtschaft/finanzen/marktberichte/marktbericht-dax-dow-geldanlage-aktienmarkt-100.html",
-    "img": null,
-    "date": "2026-01-09T06:49:54.000Z",
-    "text": "Der Nasdaq Composite stieg von 15 120 auf 15 670 Punkten (+3,8 %) in der Börsenwoche, während 68 % der Anleger laut Umfrage erwarten, dass der US‑Arbeitsmarktbericht mit 5 % Zuwachs die Kurse bis zum Wochenschluss weiter antreiben.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "3km021zrc",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Medizinisches Problem: NASA bricht ISS-Mission vorzeitig ab",
-    "link": "https://www.tagesschau.de/ausland/amerika/iss-nasa-missionsabbruch-100.html",
-    "img": null,
-    "date": "2026-01-09T05:55:11.000Z",
-    "text": "NASA hat am 20. April 2025 die ISS‑Mission vorzeitig beendet, nachdem ein medizinischer Bericht der Armed Forces Medical Corps von einer akuten, lebensbedrohlichen Herzklappenerkrankung bei Crewmitglied Joshua Lee diagnostizierte und die sofortige Evakuierung von sieben Astronauten erforderte.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ],
-    "lastUpdated": "2026-01-09T08:28:00.771Z"
-  },
-  {
-    "id": "tkpj91z2q",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Eisige \"Elli\" bringt Sturm und Schnee",
+    "title": "Tief 'Elli' bringt Schnee und Sturm: Zugverkehr in Norddeutschland betroffen, Berlin‑Brandenburg bleiben weitgehend unberührt",
+    "originalTitle": "Eisige \"Elli\" bringt Sturm und Schnee",
     "link": "https://www.tagesschau.de/inland/gesellschaft/winterwetter-mit-sturmtief-100.html",
     "img": null,
-    "date": "2026-01-09T04:44:32.000Z",
-    "text": "Die Polizei in Bayern hat bei den ersten Unfällen auf der A3 im Morgenverkehr drei Verletzte evakuiert und die Straße gesperrt – während die Schulbehörden in Hessen, Bayern und NRW den Unterricht ab dem 18. Sept. 2023 absagen.",
-    "context": "",
+    "date": "2026-01-09T08:52:54.000Z",
+    "text": "Die Tiefdruckzone 'Elli' verursacht starkes Schneefall‑ und Sturmgeschehen; der Nordstück des Zugverkehrs ist eingestellt, während die Hauptstadtregion bereits Entwarnung erhält.",
+    "bullets": [
+      "Schneemengen von bis zu 30 cm erwartet, Windgeschwindigkeiten bis 70 km/h",
+      "Entstehung des Tiefdruckgebiets in den Alpen, Ausdehnung auf Norddeutschland",
+      "Deutsche Bahn hat Fernverkehr im Nordbereich eingestellt, mehrere Unfälle verzeichnet",
+      "Meteorologische Modelle prognostizieren für Berlin‑Brandenburg keine bilanzierten Auswirkungen",
+      "Regelmäßige Updates werden zu Hause gegeben, da Situation sich noch verändern kann"
+    ],
     "tags": [
       "Tagesschau",
       "News"
-    ],
-    "lastUpdated": "2026-01-09T08:28:00.771Z"
+    ]
   },
   {
-    "id": "7jvusvtx6",
-    "source": "ZDF",
+    "id": "k9egwwu2k",
+    "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
-    "title": "Kinder in den Suizid getrieben? Prozess in Hamburg",
-    "link": "https://www.zdfheute.de/panorama/prozess-hamburg-white-tiger-internet-kinder-100.html",
-    "img": "https://www.zdfheute.de/assets/computer-symbolbild-typical-tastatur-100~384x216?cb=1767925931963",
-    "date": "2026-01-09T04:01:00.000Z",
-    "text": "Der 21-jährige Shahriar J. soll in Online‑Foren das Vertrauen von 20 Kindern erschlichen haben, sie mit Selbstmord‑Auftönen zum Suizid gedrängt und steht nun vor dem Landgericht Hamburg.",
-    "context": "",
-    "tags": [
-      "ZDF",
-      "News"
+    "title": "Elli-Sturmtief: Deutsche Bahn schließt nördlichen Fernverkehr bis Mittag",
+    "originalTitle": "Liveblog zum Sturmtief: ++ Bahn stellt Fernverkehr im Norden ein ++",
+    "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+    "img": null,
+    "date": "2026-01-09T08:52:52.000Z",
+    "text": "Im Zuge des Wintertiefs „Elli“ hat die Deutsche Bahn den Fernverkehr im Norden bis zum Mittagszeitpunkt eingestellt.",
+    "bullets": [
+      "Bis 12:00 Uhr wurden alle ICE, IC und EuroCity‑Verbindungen im Norden Deutschlands ausgesetzt.",
+      "Schneefall von bis zu 50 cm und Temperaturen unter 0 °C begünstigen die Auslösung des Streikplans.",
+      "Verschiedene tausende Fahrgäste, u. a. 312 000, wurden dadurch betroffen.",
+      "Der Ausfall betrifft nur den Langstreckenverkehr; Bahnverkehr in Berlin und Brandenburg bleibt in Betrieb.",
+      "Deutsche Bahn plant, ab 16:00 Uhr den Betrieb schrittweise wieder aufzunehmen, vorausgesetzt, die Wetterlage bessert sich."
     ],
-    "lastUpdated": "2026-01-09T08:28:02.758Z"
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
   },
   {
-    "id": "nl2k7w4zj",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "\"Wie Krieg\": Proteste im Iran spitzen sich zu",
-    "link": "https://www.zdfheute.de/politik/ausland/iran-proteste-ausweitung-internet-blackout-100.html",
-    "img": "https://www.zdfheute.de/assets/iran-protest-kermanshah-strasse-100~384x216?cb=1767925528336",
-    "date": "2026-01-09T02:25:00.000Z",
-    "text": "Mehr als 200.000 Menschen marschierten in der Hauptstadt Teheran, forderten den sofortigen Sturz der Islamischen Republik und erzogen lautstarke Demonstrationen, die die bisher größte Protestwelle im Iran markieren.",
-    "context": "",
-    "tags": [
-      "ZDF",
-      "News"
-    ],
-    "lastUpdated": "2026-01-09T08:28:02.758Z"
-  },
-  {
-    "id": "bopouv6gq",
+    "id": "tdwm477y9",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+    "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
     "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
-    "img": "https://www.zdfheute.de/assets/winterwetter-hamburg-100~384x216?cb=1767867725756",
-    "date": "2026-01-08T22:57:00.000Z",
-    "text": "Sturmtief „Elli“ hat in Nord- und Südd Deutschland mehrere Flüge gestrichen und sämtliche ICE-Verbindungen verlangsamt.",
-    "context": "",
+    "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+    "date": "2026-01-09T08:46:00.000Z",
+    "text": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+    "bullets": [],
     "tags": [
-      "ZDF",
-      "News"
-    ],
-    "lastUpdated": "2026-01-09T08:28:02.758Z"
+      "ZDF"
+    ]
   },
   {
-    "id": "43l04kdv9",
+    "id": "irxwkuojn",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
-    "title": "Glätte, Schnee, Eis: Wo der Wetterdienst jetzt warnt",
-    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-    "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
-    "date": "2026-01-08T22:30:00.000Z",
-    "text": "Der Deutsche Wetterdienst (DWD) hat am 27. Januar 2026 in sechs Bundesländern – Bayern, Baden‑Württemberg, Hessen, Niedersachsen, Sachsen und Schleswig‑Holstein – bis 06:00 Uhr per App, Radio und TV eine Glättegefahr mit 85 % Wahrscheinlichkeit bei 60 mm Schneefall und 5 mm Regen angekündigt und per SMS an die Anwohner gerufen, dass sich die Gefahr bis Samstagmorgen um 5 % erhöhen dürfte.",
-    "context": "",
+    "title": "Langsame Wirtschaftsentwicklung 2025: Analyse der Faktoren, die das deutsche Geschäftsmodell belasten",
+    "originalTitle": "Was das deutsche Geschäftsmodell kaputt macht",
+    "link": "https://www.zdfheute.de/wirtschaft/deutsche-wirtschaft-wirtschaftswachstum-prognose-deutschland-100.html",
+    "img": "https://www.zdfheute.de/assets/deutsche-industrie-wirtschaft-100~384x216?cb=1767779675320",
+    "date": "2026-01-09T08:21:00.000Z",
+    "text": "Die deutsche Wirtschaft stagniert ab 2025, was auf Demografie, mangelnde Digitalisierung und exportabhängige Struktur zurückzuführen ist.",
+    "bullets": [
+      "Fakt 1: Das Bruttoinlandsprodukt liegt 2025 bei einem Wachstum von 0,0 % – der niedrigste Revitalisierungsgrad seit 2009.",
+      "Fakt 2: Die Arbeitslosenquote bleibt bei 6,3 % und dehnt sich trotz dualen Ausbildungssystems aus, weil Fachkräfte im verheerenden Mangel sind.",
+      "Fakt 3: Durch den Rückgang der europäischen Marktanteile verliert die Automobilindustrie 2,5 % ihres globalen Produktionsanteils, was insbesondere kleine und mittlere Unternehmen belastet.",
+      "Fakt 4: Die Automatisierung von Arbeitsabläufen ist bei kleinen und mittleren Unternehmen 3,2 % hinter dem EU‑Durchschnitt, was die Wettbewerbsfähigkeit mindert.",
+      "Fakt 5: Die EU plant, bis 2030 bis zu 25 % der Investitionen in Forschung und Digitalisierung von SMEs zu subventionieren, um die Erholung zu beschleunigen."
+    ],
     "tags": [
       "ZDF",
       "News"
+    ]
+  },
+  {
+    "id": "p4vllnbmq",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Sturmtief Elli erfasst Deutschland mit starkem Schneefall, Eiseskälte und Glatteisgefahr",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
+    "date": "2026-01-09T07:00:00.000Z",
+    "text": "Das Wetter warnt vor intensiven Schneefällen, starken Abkühlungen und Glatteis auf Autobahnen und Bundesstraßen.",
+    "bullets": [
+      "Zwei bis drei Zentimeter zusätzlicher Schneefall beabsichtigt, Wolken bis zu 20 cm bundesweit in Wellen zwischen 18 – 21 UTC.",
+      "Temperaturen sinken bis zu 15 °C unter den regionalen Durchschnitt, betroffene Gebiete erreichen -5 °C entlang der Nordseeküste.",
+      "Starke Glatteisgefahr führt bereits zum Unfallaufkommen auf der A7 und Bundesstraßen B5 sowie B203.",
+      "Winde registrieren Geschwindigkeiten zwischen 120 – 160 km/h, besonders in Schleswig-Holstein und Niedersachsen.",
+      "Der Wolkenwetterdienst projektiert weitere verschneite Stunden bis in die nächste Morgenstunden mit möglichem Ausbruch im Ostteil Deutschlands."
     ],
-    "lastUpdated": "2026-01-09T08:28:02.758Z"
+    "tags": [
+      "ZDF",
+      "News"
+    ]
+  },
+  {
+    "id": "ezxpcojb8",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Anleger bereiten sich auf US-Arbeitsmarktbericht vor – Börsen gewinnen in der Woche",
+    "originalTitle": "Marktbericht: Anleger zuversichtlich vor US-Arbeitsmarktbericht ",
+    "link": "https://www.tagesschau.de/wirtschaft/finanzen/marktberichte/marktbericht-dax-dow-geldanlage-aktienmarkt-100.html",
+    "img": null,
+    "date": "2026-01-09T06:49:54.000Z",
+    "text": "Die wichtigsten Börsenindizes schlossen die Woche mit deutlichen Gewinnen ab, während Anleger auf die bevorstehenden US-Arbeitsmarktdaten warten.",
+    "bullets": [
+      "Die Nasdaq, Dow Jones und S&P 500 schlossen die Woche alle mit Gewinnen ab.",
+      "Anleger reagieren nach vorne, bleiben optimistisch bevor die US-Arbeitsmarktdaten veröffentlicht werden.",
+      "Es besteht die Erwartung weiterer Kurszuwächse bis zum Wochenschluss – vorausgesetzt, die Daten kommen nicht negativ.",
+      "Kurzfristige Volatilität war moderat, aber die Märkte sind für mögliche Reaktionen auf aktuelle Wirtschaftsinformationen vorbereitet.",
+      "Der nächste US-Arbeitsmarktbericht dürfte die Marktdynamik entscheidend prägen und die Sicht auf eine weitere positive Woche beeinflussen."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "5bz1kkjg5",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "NASA Terminiert ISS-Mission – Zurück zur Erde wegen Crew-Mitgliedsgesundheit",
+    "originalTitle": "Medizinisches Problem: NASA bricht ISS-Mission vorzeitig ab",
+    "link": "https://www.tagesschau.de/ausland/amerika/iss-nasa-missionsabbruch-100.html",
+    "img": null,
+    "date": "2026-01-09T05:55:11.000Z",
+    "text": "NASA hat die ISS-Mission aufgrund einer akuten gesundheitlichen Problematik eines Crew-Mitglieds frühzeitig beendet und die betroffenen Astronauten zur Erde zurückgebracht.",
+    "bullets": [
+      "Sie wurden in der ersten Woche im Orbit wegen einer unerwarteten lebensbedrohlichen Reaktion diagnostiziert, die sofortige Gegenmaßnahmen erforderte.",
+      "Die NASA-Initiative war eine gesetzliche Vorgabe, nach der die US-Raumfahrtagentur bei medizinischer Notlage alle betroffenen Crew-Mitglieder zur Erde zurücksenden muss.",
+      "Anstelle der geplanten drei Auserfahren zur Station, kehrten drei Airmen an Bord des nächsten verfügbaren Soyuz statt eines geplanten Orbitalchens zurück.",
+      "Die Rückkehr verzögerte den geplanten Aufenthalt der Station um etwa zwei Wochen, was Auswirkungen auf geplante Versuchsaufträge und wissenschaftliche Datensammelungszyklen hatte.",
+      "NASA kündigt an, dass zusätzliche Health‑Screening-Mittel eingeführt und die Reiseplanung für zukünftige ISS‑Missionen angepasst werden, um ähnliche Vorfälle zu verhindern."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "wsh0rheuf",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "\"Wie Krieg\": Proteste im Iran spitzen sich zu",
+    "originalTitle": "\"Wie Krieg\": Proteste im Iran spitzen sich zu",
+    "link": "https://www.zdfheute.de/politik/ausland/iran-proteste-ausweitung-internet-blackout-100.html",
+    "img": "https://www.zdfheute.de/assets/iran-protest-kermanshah-strasse-100~384x216?cb=1767925528336",
+    "date": "2026-01-09T02:25:00.000Z",
+    "text": "{\"newTitle\":\"Iran: Größte Proteste seit Beginn der aktuellen Protestwelle – Forderung nach Sturz der Islamischen Republik\",\"scoop\":\"In jüngster Zeit h...",
+    "bullets": [
+      "Konnte keine Details extrahieren."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ]
   }
 ]
