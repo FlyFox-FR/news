@@ -3,96 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Smart Brief</title>
+    <title>Nachrichten</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg: #0f0f10;
             --surface: #18181b;
-            --surface-variant: #27272a;
+            --surface-variant: #202024;
             --accent: #3b82f6;
-            --accent-soft: rgba(59, 130, 246, 0.15);
             --text: #f4f4f5;
             --text-muted: #a1a1aa;
             --border: #27272a;
-            --header-bg: rgba(15, 15, 16, 0.98);
+            --danger: #ef4444;
+            --success: #22c55e;
+            --highlight: rgba(255, 215, 0, 0.25);
+            --header-bg: rgba(15, 15, 16, 0.95);
         }
 
-        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 80px; }
-
-        /* --- SKELETON ANIMATION --- */
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.8; } 100% { opacity: 0.5; } }
-        .skeleton { background: var(--surface-variant); border-radius: 8px; animation: pulse 1.5s infinite ease-in-out; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
 
         /* --- HEADER --- */
-        header { background: var(--header-bg); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
-        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
-        .brand { font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); }
-        .header-right { display: flex; gap: 8px; }
-        
-        .sort-btn { 
-            background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); 
-            padding: 7px 14px; border-radius: 25px; cursor: pointer; font-size: 0.75rem; font-weight: 600;
-            display: flex; align-items: center; gap: 6px; transition: 0.2s;
+        header {
+            background: var(--header-bg); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 50;
+            border-bottom: 1px solid var(--border);
         }
-        .sort-btn.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-btn { background: transparent; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; padding: 0; }
+        .brand { font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px; }
+        
+        /* Sortier-Buttons Neu */
+        .header-right { display: flex; gap: 6px; }
+        .sort-btn { 
+            background: var(--surface-variant); 
+            border: 1px solid var(--border); 
+            color: var(--text-muted); 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .sort-btn.active { 
+            background: rgba(59, 130, 246, 0.15); 
+            color: var(--accent); 
+            border-color: var(--accent); 
+        }
+
+        .filter-status {
+            padding: 0 15px 8px 15px;
+            display: none;
+            gap: 8px;
+            align-items: center;
+        }
+        .filter-status.active { display: flex; }
+        .chip-active { background: var(--accent); color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.7rem; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+        .search-container { padding: 0 15px 10px 15px; }
+        .search-box { background: var(--surface); border: 1px solid var(--border); padding: 10px 14px; border-radius: 10px; color: var(--text); font-size: 0.9rem; width: 100%; box-sizing: border-box; }
 
         /* --- SIDEBAR --- */
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(4px); }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--surface); z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--border); overflow-y: auto; }
+
+        .sidebar {
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+            background: var(--surface); z-index: 100; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 1px solid var(--border); display: flex; flex-direction: column;
+        }
         .sidebar.active { left: 0; }
-        .sidebar-title { padding: 20px; font-family: 'Merriweather', serif; font-size: 1.2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .sidebar-title { padding: 20px; font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
-        /* Stats & Sources */
-        .sidebar-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px 20px; }
-        .stat-box { background: var(--bg); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
-        .stat-val { display: block; font-size: 1.2rem; font-weight: bold; color: var(--accent); }
-        .stat-lbl { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        /* Stats & Sources in Sidebar */
+        .sidebar-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px 20px; border-bottom: 1px solid var(--border); }
+        .stat-box { background: var(--bg); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
+        .stat-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--accent); }
+        .stat-lbl { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; }
 
-        .sources-list { padding: 10px 20px; display: flex; flex-wrap: wrap; gap: 8px; }
-        .source-chip { background: var(--bg); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; color: var(--text-muted); }
+        .sidebar-label { padding: 15px 20px 5px; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; }
+        .sources-list { padding: 10px 20px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .source-chip { background: var(--surface-variant); border: 1px solid var(--border); padding: 4px 10px; border-radius: 15px; font-size: 0.75rem; cursor: pointer; color: var(--text-muted); }
         .source-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* --- CARDS --- */
-        .container { max-width: 800px; margin: 15px auto; padding: 0 12px; display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--surface); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        .card-img { width: 100%; height: 220px; object-fit: cover; }
-        .card-body { padding: 20px; }
-        .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; align-items: center; }
-        .card-title { font-family: 'Merriweather', serif; font-size: 1.2rem; color: #fff; text-decoration: none; display: block; line-height: 1.4; margin-bottom: 12px; }
-        .scoop { font-size: 1rem; color: #e4e4e7; line-height: 1.5; margin-bottom: 15px; padding-left: 14px; border-left: 3px solid var(--accent); }
+        .nav-item { padding: 14px 20px; color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .nav-item.active { color: var(--accent); background: rgba(59, 130, 246, 0.1); border-right: 3px solid var(--accent); }
+
+        /* --- CONTENT CARDS --- */
+        .container { max-width: 800px; margin: 15px auto; padding: 0 12px; display: flex; flex-direction: column; gap: 16px; }
+        .card { background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s; }
+        .card-img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 18px; }
+        .meta { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
+        .reading-time { color: var(--accent); opacity: 0.8; }
+        .card-title { font-family: 'Merriweather', serif; font-size: 1.15rem; margin-bottom: 10px; color: #fff; text-decoration: none; display: block; line-height: 1.4; }
+        .scoop { font-size: 0.95rem; color: #e4e4e7; line-height: 1.5; margin-bottom: 15px; padding-left: 12px; border-left: 3px solid var(--accent); }
         .bullets { list-style: none; padding: 0; margin: 0; }
-        .bullets li { position: relative; padding-left: 20px; margin-bottom: 8px; font-size: 0.9rem; color: #d4d4d8; }
-        .bullets li::before { content: "•"; color: var(--accent); position: absolute; left: 0; font-weight: bold; }
+        .bullets li { position: relative; padding-left: 18px; margin-bottom: 8px; font-size: 0.9rem; color: #d4d4d8; line-height: 1.4; }
+        .bullets li::before { content: "→"; color: var(--accent); position: absolute; left: 0; font-weight: bold; }
 
-        /* --- BUTTONS & ACTIONS --- */
-        .actions { padding: 14px 20px; background: rgba(255,255,255,0.02); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .btn-link { color: var(--accent); text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; }
-        
-        /* XY QUELLEN BUTTON OPTIMIERT */
-        .btn-toggle { 
-            background: var(--accent-soft); color: var(--accent); 
-            border: 1px solid rgba(59, 130, 246, 0.3); 
-            padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s;
-        }
-        .btn-toggle:hover { background: var(--accent); color: white; }
-        .btn-toggle .icon { transition: transform 0.3s; font-size: 1rem; }
-        .btn-toggle.active .icon { transform: rotate(180deg); }
+        .btn-save { position: absolute; top: 12px; right: 12px; z-index: 10; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); border: none; width: 36px; height: 36px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 1.2rem; }
+        .btn-save.saved { color: #fbbf24; background: rgba(251, 191, 36, 0.2); }
 
-        .variants-container { display: none; background: #121214; padding: 20px; border-top: 1px solid var(--border); }
-        
-        .btn-save { position: absolute; top: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 1.2rem; }
-        .btn-save.saved { color: #fbbf24; background: rgba(251, 191, 36, 0.2); border-color: #fbbf24; }
+        .actions { padding: 12px 18px; background: rgba(255,255,255,0.02); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .btn-link { color: var(--accent); text-decoration: none; font-size: 0.8rem; font-weight: 700; }
+        .btn-share { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
 
-        #back-to-top { position: fixed; bottom: 25px; right: 25px; background: var(--accent); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; display: none; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); z-index: 100; }
+        /* Variants */
+        .btn-toggle { background: var(--surface-variant); color: #ccc; border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
+        .variants-container { display: none; background: #121214; padding: 15px; border-top: 1px solid var(--border); }
+        .variants-container.show { display: block; }
 
-        /* SEARCH BAR */
-        .search-container { padding: 0 15px 12px; }
-        .search-box { background: var(--surface); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; color: var(--text); width: 100%; box-sizing: border-box; font-size: 0.95rem; }
-        .search-box:focus { border-color: var(--accent); outline: none; }
+        /* Floating Back to Top */
+        #back-to-top { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: white; width: 45px; height: 45px; border-radius: 50%; border: none; display: none; align-items: center; justify-content: center; font-size: 1.2rem; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5); cursor: pointer; }
+
+        /* Modal etc wie gehabt... */
+        #save-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; display: none; justify-content: center; align-items: center; padding: 20px; }
+        #save-modal.active { display: flex; }
+        .modal-content { background: var(--surface); border-radius: 20px; width: 100%; max-width: 320px; overflow: hidden; }
+        .modal-btn { width: 100%; padding: 18px; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-size: 1rem; cursor: pointer; }
 
     </style>
 </head>
@@ -102,35 +136,41 @@
 
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-title">Smart Brief <button onclick="toggleMenu()" style="background:none; border:none; color:var(--text-muted); font-size:1.5rem">✕</button></div>
+        <div class="sidebar-title">Nachrichten <button onclick="toggleMenu()" style="background:none; border:none; color:var(--text-muted); font-size:1.5rem">✕</button></div>
         
         <div class="sidebar-stats">
-            <div class="stat-box"><span class="stat-val" id="stat-articles">-</span><span class="stat-lbl">Artikel</span></div>
-            <div class="stat-box"><span class="stat-val" id="stat-clusters">-</span><span class="stat-lbl">Themen</span></div>
+            <div class="stat-box"><span class="stat-val" id="stat-articles">0</span><span class="stat-lbl">Artikel</span></div>
+            <div class="stat-box"><span class="stat-val" id="stat-clusters">0</span><span class="stat-lbl">Themen</span></div>
         </div>
 
-        <div class="nav-item active" id="nav-feed" onclick="switchTab('feed')"><span>🗞️</span> News Feed</div>
-        <div class="nav-item" id="nav-saved" onclick="switchTab('saved')"><span>🔖</span> Gemerkt</div>
+        <div class="nav-item active" id="nav-feed" onclick="switchTab('feed')"><span>🔥</span> Aktueller Feed</div>
+        <div class="nav-item" id="nav-saved" onclick="switchTab('saved')"><span>🔖</span> Gespeicherte News</div>
 
-        <div style="padding:15px 20px 5px; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:bold">Quellen</div>
+        <div class="sidebar-label">Quellen filtern</div>
         <div class="sources-list" id="sources-list"></div>
         
         <div style="margin-top:auto; padding: 20px; border-top: 1px solid var(--border);">
-            <button class="stat-box" style="width:100%; cursor:pointer; font-size:0.8rem; color:var(--text-muted)" onclick="triggerUpdate()" id="update-btn">🔄 Update erzwingen</button>
-            <div id="config-status" style="text-align:center; font-size:0.6rem; margin-top:10px; color:var(--text-muted)">Verbindung prüfen...</div>
+            <button class="modal-btn" style="border:1px solid var(--border); border-radius:10px; font-size:0.8rem" onclick="triggerUpdate()" id="update-btn">
+                🔄 Update erzwingen
+            </button>
+            <div id="config-status" style="text-align:center; font-size:0.6rem; margin-top:10px; color:var(--text-muted)">Check...</div>
         </div>
     </div>
 
     <header>
         <div class="header-main">
-            <div class="header-left" style="display:flex; align-items:center; gap:15px;">
-                <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer">☰</button>
-                <div class="brand">Smart Brief</div>
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleMenu()">☰</button>
+                <div class="brand">Nachrichten</div>
             </div>
-            <div class="header-right">
+            <div class="header-right" id="sort-controls">
                 <button class="sort-btn active" id="btn-time" onclick="setSort('time')">🕒 Neueste</button>
                 <button class="sort-btn" id="btn-trend" onclick="setSort('trend')">🔥 Trends</button>
             </div>
+        </div>
+        <div class="filter-status" id="filter-status">
+            <span style="font-size:0.7rem; color:var(--text-muted)">Filter:</span>
+            <div class="chip-active" onclick="filterBySource(null)"><span id="active-source-name">Quelle</span> ✕</div>
         </div>
         <div class="search-container">
             <input type="text" id="search" class="search-box" placeholder="Feed durchsuchen..." oninput="render()">
@@ -138,9 +178,18 @@
     </header>
 
     <div class="container" id="feed">
-        <!-- Skeleton Loader beim Start -->
-        <div class="card"><div class="skeleton" style="height:200px"></div><div class="card-body"><div class="skeleton" style="height:20px; width:40%; margin-bottom:15px"></div><div class="skeleton" style="height:30px; margin-bottom:15px"></div><div class="skeleton" style="height:60px"></div></div></div>
-        <div class="card"><div class="skeleton" style="height:200px"></div><div class="card-body"><div class="skeleton" style="height:20px; width:40%; margin-bottom:15px"></div><div class="skeleton" style="height:30px; margin-bottom:15px"></div><div class="skeleton" style="height:60px"></div></div></div>
+        <p style="text-align:center; color:var(--text-muted); margin-top:50px">Nachrichten werden geladen...</p>
+    </div>
+
+    <!-- MODAL -->
+    <div id="save-modal">
+        <div class="modal-content">
+            <div style="padding:20px; text-align:center; font-weight:bold; border-bottom:1px solid var(--border)">Merken für...</div>
+            <button class="modal-btn" onclick="confirmSave(24 * 60 * 60 * 1000)">24 Stunden</button>
+            <button class="modal-btn" onclick="confirmSave(7 * 24 * 60 * 60 * 1000)">1 Woche</button>
+            <button class="modal-btn" onclick="confirmSave(null)">Dauerhaft</button>
+            <button class="modal-btn" style="color:var(--text-muted)" onclick="closeModal()">Abbrechen</button>
+        </div>
     </div>
 
     <script>
@@ -149,31 +198,26 @@
         let currentTab = 'feed';
         let currentSort = 'time';
         let selectedSource = null;
+        let itemToSaveId = null;
         let repoConfig = null;
 
-        // Relative Zeitangabe (UX Feature)
-        function timeAgo(date) {
-            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-            let interval = seconds / 31536000;
-            if (interval > 1) return Math.floor(interval) + " J.";
-            interval = seconds / 2592000;
-            if (interval > 1) return Math.floor(interval) + " Mon.";
-            interval = seconds / 86400;
-            if (interval > 1) return Math.floor(interval) + " Tg.";
-            interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + " Std.";
-            interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + " Min.";
-            return "Gerade eben";
-        }
+        // Init
+        fetch('config.json?t=' + Date.now()).then(r => r.json()).then(c => { repoConfig = c; checkConfig(); });
+        loadSavedItems();
+        fetchData();
 
-        async function fetchData() {
-            try {
-                const r = await fetch('news.json?t=' + Date.now());
-                allNewsData = await r.json();
-                updateSidebarExtras();
-                render();
-            } catch(e) { console.error("Ladefehler"); }
+        window.onscroll = function() {
+            document.getElementById('back-to-top').style.display = window.pageYOffset > 400 ? 'flex' : 'none';
+        };
+
+        function fetchData() {
+            fetch('news.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    allNewsData = data;
+                    updateSidebarExtras();
+                    render();
+                });
         }
 
         function updateSidebarExtras() {
@@ -196,10 +240,49 @@
         }
 
         function filterBySource(s) {
-            selectedSource = (selectedSource === s) ? null : s;
+            selectedSource = s;
+            const status = document.getElementById('filter-status');
+            if(s) {
+                status.classList.add('active');
+                document.getElementById('active-source-name').innerText = s;
+            } else {
+                status.classList.remove('active');
+            }
             updateSidebarExtras();
             render();
             if(window.innerWidth < 900) toggleMenu();
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        function switchTab(t) {
+            currentTab = t;
+            document.getElementById('nav-feed').classList.toggle('active', t === 'feed');
+            document.getElementById('nav-saved').classList.toggle('active', t === 'saved');
+            toggleMenu();
+            render();
+        }
+
+        function setSort(s) {
+            currentSort = s;
+            document.getElementById('btn-time').classList.toggle('active', s === 'time');
+            document.getElementById('btn-trend').classList.toggle('active', s === 'trend');
+            render();
+        }
+
+        function calculateReadingTime(item) {
+            const text = (item.text || "") + (item.bullets?.join(" ") || "");
+            const words = text.split(/\s+/).length;
+            const mins = Math.ceil(words / 150);
+            return mins + " Min. Lesezeit";
+        }
+
+        function copyLink(link) {
+            navigator.clipboard.writeText(link);
+            alert("Link kopiert!");
         }
 
         function render() {
@@ -208,6 +291,7 @@
             container.innerHTML = '';
 
             let data = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+
             if(selectedSource) {
                 data = data.filter(i => i.source === selectedSource || i.related?.some(r => r.source === selectedSource));
             }
@@ -219,43 +303,41 @@
                 data = data.filter(i => i.title.toLowerCase().includes(search) || i.text.toLowerCase().includes(search));
             }
 
-            if(!data.length) {
+            if(data.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--text-muted)">Keine Artikel gefunden.</div>`;
                 return;
             }
 
             data.forEach(item => {
                 const isSaved = savedNews.some(s => s.news.id === item.id);
-                const relTime = timeAgo(item.date);
+                const time = new Date(item.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 
                 container.innerHTML += `
-                    <div class="card">
-                        <button class="btn-save ${isSaved ? 'saved' : ''}" onclick="toggleSave('${item.id}')">${isSaved ? '★' : '☆'}</button>
+                    <div class="card" style="position:relative">
+                        <button class="btn-save ${isSaved ? 'saved' : ''}" onclick="openSaveMenu('${item.id}', event)">${isSaved ? '★' : '☆'}</button>
                         ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
                         <div class="card-body">
                             <div class="meta">
-                                <span>${item.sourceCountry} ${item.source} • <b>${relTime}</b></span>
-                                <span style="color:var(--accent)">1 Min.</span>
+                                <span>${item.sourceCountry} ${item.source} • ${time}</span>
+                                <span class="reading-time">${calculateReadingTime(item)}</span>
                             </div>
                             <a href="${item.link}" target="_blank" class="card-title">${item.title}</a>
                             <div class="scoop">${item.text}</div>
                             <ul class="bullets">${(item.bullets||[]).map(b => `<li>${b}</li>`).join('')}</ul>
                         </div>
                         <div class="actions">
-                            <a href="${item.link}" target="_blank" class="btn-link">VOLLTEXT LESEN →</a>
-                            <div style="display:flex; gap:8px;">
-                                <button class="btn-share" onclick="copyLink('${item.link}')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem">🔗</button>
-                                ${item.related?.length ? `<button class="btn-toggle" onclick="toggleVars('${item.id}', this)">
-                                    <span class="icon">📚</span> ${item.related.length} Quellen <span class="icon" style="font-size:0.6rem">▼</span>
-                                </button>` : ''}
+                            <a href="${item.link}" target="_blank" class="btn-link">ARTIKEL ÖFFNEN →</a>
+                            <div style="display:flex; gap:10px; align-items:center">
+                                <button class="btn-share" onclick="copyLink('${item.link}')" title="Link kopieren">🔗</button>
+                                ${item.related?.length ? `<button class="btn-toggle" onclick="toggleVars('${item.id}')">${item.related.length} Quellen</button>` : ''}
                             </div>
                         </div>
                         <div id="vars-${item.id}" class="variants-container">
                             ${(item.related||[]).map(r => `
                                 <div style="margin-bottom:15px; border-bottom:1px solid #222; padding-bottom:10px">
-                                    <div class="meta"><span>${r.source}</span><span>${timeAgo(r.date)}</span></div>
-                                    <div style="font-weight:600; font-size:0.9rem; margin-bottom:8px">${r.title}</div>
-                                    <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.7rem">ARTIKEL ÖFFNEN</a>
+                                    <div class="meta"><span>${r.source}</span></div>
+                                    <div style="font-weight:bold; font-size:0.9rem; margin-bottom:5px">${r.title}</div>
+                                    <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.7rem">ZUM ARTIKEL</a>
                                 </div>
                             `).join('')}
                         </div>
@@ -264,47 +346,53 @@
             });
         }
 
-        function toggleVars(id, btn) {
+        function toggleVars(id) {
             const el = document.getElementById('vars-' + id);
-            const isOpen = el.style.display === 'block';
-            el.style.display = isOpen ? 'none' : 'block';
-            btn.classList.toggle('active', !isOpen);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Standard Funktionen
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
-        function setSort(s) { currentSort = s; document.getElementById('btn-time').classList.toggle('active', s === 'time'); document.getElementById('btn-trend').classList.toggle('active', s === 'trend'); render(); }
-        function switchTab(t) { currentTab = t; document.getElementById('nav-feed').classList.toggle('active', t === 'feed'); document.getElementById('nav-saved').classList.toggle('active', t === 'saved'); toggleMenu(); render(); }
-        function copyLink(l) { navigator.clipboard.writeText(l); alert("Link kopiert!"); }
-        
-        function toggleSave(id) {
-            const idx = savedNews.findIndex(s => s.news.id === id);
-            if(idx > -1) savedNews.splice(idx, 1);
-            else savedNews.push({ news: allNewsData.find(n => n.id === id), savedAt: Date.now() });
+        // --- Die restlichen Funktionen (openSaveMenu, confirmSave, triggerUpdate, checkConfig) ---
+        // Bleiben identisch zu deinem vorherigen Skript, damit die Logik erhalten bleibt.
+        function openSaveMenu(id, e) {
+            e.stopPropagation();
+            if(savedNews.some(s => s.news.id === id)) {
+                savedNews = savedNews.filter(s => s.news.id !== id);
+                localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+                render();
+                return;
+            }
+            itemToSaveId = id;
+            document.getElementById('save-modal').classList.add('active');
+        }
+        function closeModal() { document.getElementById('save-modal').classList.remove('active'); }
+        function confirmSave(dur) {
+            const news = allNewsData.find(n => n.id === itemToSaveId);
+            savedNews.push({ news, expiresAt: dur ? Date.now() + dur : null });
             localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+            closeModal();
             render();
         }
-
         function loadSavedItems() {
             const raw = localStorage.getItem('my_saved_news');
-            if(raw) savedNews = JSON.parse(raw);
+            if(raw) savedNews = JSON.parse(raw).filter(s => !s.expiresAt || s.expiresAt > Date.now());
         }
-
-        // Start
-        loadSavedItems();
-        fetchData();
-        window.onscroll = () => { document.getElementById('back-to-top').style.display = window.pageYOffset > 500 ? 'flex' : 'none'; };
-        
+        function checkConfig() {
+            const status = document.getElementById('config-status');
+            if(!repoConfig) return;
+            status.innerText = localStorage.getItem('gh_token') ? "Bereit ✅" : "Token fehlt 🔑";
+        }
         async function triggerUpdate() {
-            const t = localStorage.getItem('gh_token') || prompt("GitHub Token:");
+            let t = localStorage.getItem('gh_token') || prompt("GitHub Token:");
             if(!t) return; localStorage.setItem('gh_token', t);
+            const btn = document.getElementById('update-btn');
+            btn.innerText = "⏳ Lädt...";
             const res = await fetch(`https://api.github.com/repos/${repoConfig.repository}/actions/workflows/update.yml/dispatches`, {
                 method: 'POST', headers: {'Authorization': `Bearer ${t}`}, body: JSON.stringify({ref:'main'})
             });
-            if(res.ok) alert("Update gestartet! In 2 Min. neu laden.");
+            if(res.ok) { alert("Update gestartet!"); btn.innerText = "✅ Gestartet"; }
+            else { alert("Fehler!"); btn.innerText = "❌ Fehler"; }
+            setTimeout(() => btn.innerText = "🔄 Update erzwingen", 3000);
         }
-        fetch('config.json').then(r => r.json()).then(c => { repoConfig = c; document.getElementById('config-status').innerText = "System online ✅"; });
-
     </script>
 </body>
 </html>
