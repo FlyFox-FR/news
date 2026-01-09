@@ -13,42 +13,54 @@ function loadExistingNews() {
 }
 
 async function analyzeWithPollinations(title, content, sourceName) {
-    // Sicherheit: Text kürzen
-    const safeContent = (content || "").substring(0, 1000).replace(/<[^>]*>/g, "");
+    // Text kürzen
+    const safeContent = (content || "").substring(0, 800).replace(/<[^>]*>/g, "");
 
-    // Der Prompt muss teil der URL sein
-    const instruction = `Du bist News-Redakteur. Fasse diesen Text in einem einzigen deutschen Satz zusammen: "${title} - ${safeContent}"`;
-    
-    // URL Encoding ist wichtig!
-    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai`;
+    const instruction = `Du bist Redakteur. Fasse diesen Text in einem einzigen deutschen Satz zusammen: "${title} - ${safeContent}"`;
+    // Seed verhindert Caching-Probleme
+    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
-    try {
-        // Einfacher GET Request. Wie eine Webseite öffnen.
-        const response = await axios.get(url, { timeout: 10000 });
-        
-        let summary = response.data; // Der Text kommt direkt zurück
-        
-        // Aufräumen
-        if (typeof summary !== 'string') summary = JSON.stringify(summary);
-        summary = summary.trim().replace(/^["']|["']$/g, '');
+    let retries = 3;
+    while (retries > 0) {
+        try {
+            // Timeout auf 30 Sekunden erhöht (Pollinations ist manchmal langsam)
+            const response = await axios.get(url, { timeout: 30000 });
+            
+            let summary = response.data;
+            if (typeof summary !== 'string') summary = JSON.stringify(summary);
+            summary = summary.trim().replace(/^["']|["']$/g, '');
 
-        if (summary.length < 5) throw new Error("Zu kurz");
+            if (summary.length < 5) throw new Error("Zu kurz");
 
-        return { 
-            summary: summary, 
-            context: "", 
-            tags: [sourceName, "News"] 
-        };
+            return { 
+                summary: summary, 
+                context: "", 
+                tags: [sourceName, "News"] 
+            };
 
-    } catch (error) {
-        console.error(`⚠️ Fehler bei "${title.substring(0, 15)}...":`, error.message);
-        // Fallback
-        return { summary: title, context: "", tags: [sourceName] };
+        } catch (error) {
+            const status = error.response?.status;
+            
+            // FEHLER 429 = RATE LIMIT (ZU SCHNELL)
+            if (status === 429) {
+                console.log(`🛑 Zu schnell für Pollinations! Kühle 30 Sekunden ab...`);
+                await sleep(30000); // 30 Sekunden warten
+                retries--;
+                continue; // Neuer Versuch
+            }
+
+            console.error(`⚠️ Fehler: ${error.message}. Warte kurz...`);
+            await sleep(5000);
+            retries--;
+        }
     }
+
+    // Fallback
+    return { summary: title, context: "", tags: [sourceName] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Pollinations No-Key)...");
+    console.log("🚀 Starte News-Abruf (Slow Mode für Stabilität)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -66,7 +78,7 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Cache Check
+                // Cache nutzen
                 if (cached && cached.text && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue;
@@ -90,8 +102,9 @@ async function run() {
                     tags: ai.tags
                 });
                 
-                // Kurze Pause, um den Server nicht zu ärgern
-                await sleep(2000); 
+                // WICHTIG: 10 Sekunden Pause zwischen JEDER Nachricht
+                // Das verhindert den 429 Fehler zuverlässig.
+                await sleep(10000); 
             }
         } catch (e) { console.error(`❌ Fehler ${source.name}:`, e.message); }
     }
