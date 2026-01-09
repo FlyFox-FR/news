@@ -1,1 +1,175 @@
-
+[
+  {
+    "id": "ohfth8055",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Elli: Schneefall, Eiseskälte und Glatteisgefahr – Sturmtief löst sich im Wochenende",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+    "date": "2026-01-09T11:06:00.000Z",
+    "text": "Der Wetterdienst warnt vor dem eisigen Sturm 'Elli', der viel Schnee, starke Kälte und Glatteis in Teilen Deutschlands bringt und bis zum Wochenende langsam auflöst.",
+    "bullets": [
+      "Elli bringt viel Schnee",
+      "Erzeugt Eiseskälte in Teilen Deutschlands",
+      "Glatteisgefahr besteht",
+      "Das Sturmtief löst sich am Wochenende langsam auf"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "1yvg6oevx",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "EU-Staaten beschließen Freihandelsabkommen mit Mercosur",
+    "originalTitle": "EU-Länder stimmen Mercosur-Freihandelsabkommen zu",
+    "link": "https://www.tagesschau.de/wirtschaft/mercosur-abkommen-eu-102.html",
+    "img": null,
+    "date": "2026-01-09T11:02:09.000Z",
+    "text": "Die EU hat einer Freihandelsvereinbarung mit Brasilien, Argentinien, Uruguay und Paraguay zugestimmt.",
+    "bullets": [
+      "27 EU-Länder haben die Sitzung abgehalten",
+      "Sitzung der Vertreter der EU-Länder fand statt",
+      "Notwendige Mehrheit wurde erreicht",
+      "Abkommen betrifft die Mercosur-Staaten Brasilien, Argentinien, Uruguay und Paraguay"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "ldi1ehk3r",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Bahn stoppt Fernverkehr im Norden: Wintersturm 'Elli' sorgt für Schneefall und Schulschließungen",
+    "originalTitle": "\"Elli\" bringt Schnee: Bahn stoppt Fernverkehr im Norden",
+    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+    "date": "2026-01-09T10:56:00.000Z",
+    "text": "Wintersturm 'Elli' führt zu Schneefall, der den Fernverkehr der Deutschen Bahn im Norden lahmlegt und Schulunterricht in vielen Regionen ausfallen lässt.",
+    "bullets": [
+      "Wintersturm 'Elli' bringt Schnee und verursacht bundesweit schwierige Bedingungen.",
+      "Deutsche Bahn hat den Fernverkehr im Norden komplett gestoppt.",
+      "In vielen Regionen fällt Schulunterricht aus."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "eikzev5ko",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief 'Elli' verunsichert Bahn- und Flugverkehr",
+        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+        "date": "2026-01-09T08:46:00.000Z",
+        "text": "Sturmtief 'Elli' verursacht in Nord- und Süddeutschland Flugstreichungen und verlangsamte ICE‑Verbindungen.",
+        "bullets": [
+          "Sturmtief 'Elli' führt zu Störungen im Bahn‑ und Flugverkehr im Norden und Süden Deutschlands.",
+          "Mehrere Flüge wurden gestrichen.",
+          "ICE‑Verbindungen mussten verlangsamt werden."
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "2p5sjvbxp",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Südafrikas Marineübung mit Russland, Iran und China: intensive Kritik\n",
+    "originalTitle": "Südafrikas brisantes Manöver mit Russland, Iran, China",
+    "link": "https://www.tagesschau.de/ausland/afrika/marinemanoever-suedafrika-100.html",
+    "img": null,
+    "date": "2026-01-09T10:42:15.000Z",
+    "text": "Südafrika führt eine gemeinsame Marineübung mit Russland, Iran und China durch, was im Inland stark kritisiert wird und potenzielle außenpolitische Konsequenzen mit sich bringt.",
+    "bullets": [
+      "Südafrika richtet gemeinsam mit Russland, China und Iran eine Marineübung aus.",
+      "Die Übung löst große Kritik im Land aus.",
+      "Sie könnte weitreichende außenpolitische Konsequenzen für Südafrika haben."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "t1nmhsik9",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Iran: Proteste mit Barrikaden, brennenden Fahrzeugen – ZDF-Korrespondentin berichtet von großer Angst",
+        "originalTitle": "ZDF-Korrespondentin im Iran: \"Angst hier im Land sehr groß\"",
+        "link": "https://www.zdfheute.de/politik/ausland/iran-proteste-demonstranten-angst-polizeigewalt-gaa-100.html",
+        "img": "https://www.zdfheute.de/assets/gaa-iran-100~384x216?cb=1767950586149",
+        "date": "2026-01-09T10:26:00.000Z",
+        "text": "Demonstranten setzen ihre Proteste fort, während zugleich große Angst vor Polizeigewalt besteht.",
+        "bullets": [
+          "Im Iran wurden Barrikaden errichtet und Fahrzeuge entzündet, um Proteste sichtbar zu machen.",
+          "Die ZDF-Korrespondentin Gaa berichtet, dass die Angst im Land sehr groß ist.",
+          "Trotz der Wut der Demonstranten dominieren Besorgnis und Furcht vor möglicher Polizeigewalt."
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "dkzj7tndo",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Exportdaten schwächen den Aktienmarkt, US-Arbeitsmarktdaten zögern Anleger",
+    "originalTitle": "Marktbericht: Schwache Exportdaten dämpfen Kauflust",
+    "link": "https://www.tagesschau.de/wirtschaft/finanzen/marktberichte/marktbericht-dax-dow-geldanlage-aktienmarkt-100.html",
+    "img": null,
+    "date": "2026-01-09T10:05:24.000Z",
+    "text": "Schwache Exportzahlen und anstehende US-Arbeitsmarktdaten bremsen die bisher positive Marktstimmung.",
+    "bullets": [
+      "Schwache Exportdaten dämpfen die Kauflust in der Wirtschaft.",
+      "Der Aktienmarkt verzeichnet am Wochenende einen leichten Abschwung.",
+      "Uneinheitliche Konjunkturdaten senden unsichere Signale.",
+      "In den USA stehen kommende Daten zum Arbeitsmarkt an, die die Anlegerzurückhaltung verstärken."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "hkxsqkow1",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Portland: Zwei Verletzte bei Kontrolle durch US‑Grenzbehörde",
+    "originalTitle": "Portland: Zwei Verletzte bei Kontrolle durch US-Grenzbehörde",
+    "link": "https://www.tagesschau.de/ausland/amerika/zwei-verletzte-nach-ice-kontrolle-in-portland-100.html",
+    "img": null,
+    "date": "2026-01-09T10:04:26.000Z",
+    "text": "Nach tödlichen Schüssen in Minneapolis kommentierte ein Bundespolizist in Portland, indem er bei einer Kontrolle zwei Menschen verletzte.",
+    "bullets": [
+      "Tödliche Schüsse bei Einsatz der US‑Einwanderungsbehörde in Minneapolis lösten Proteste in mehreren Städten aus.",
+      "In Portland verursachte ein Bundespolizist bei einer Kontrolle zwei Verletzte.",
+      "Die beiden Verletzten waren Gegenstand der polizeilichen Kontrolle durch die US‑Grenzbehörde."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  }
+]
