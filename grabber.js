@@ -13,76 +13,66 @@ function loadExistingNews() {
 }
 
 async function analyzeWithPollinations(title, content, sourceName) {
-    // Input bereinigen
-    const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
+    // Input kürzen (Platz lassen für die lange Antwort)
+    const safeContent = (content || "").substring(0, 1200).replace(/<[^>]*>/g, "");
 
-    // --- DER "DETAIL-JÄGER" PROMPT ---
-    const instruction = `Du bist ein investigativer News-Redakteur.
-    Analysiere diesen Input: "${title} - ${safeContent}"
+    // --- DER JSON-PROMPT ---
+    // Wir fordern striktes JSON, damit wir die Daten im Frontend sauber anzeigen können.
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
     
-    Aufgabe: Erstelle ein JSON-Objekt auf DEUTSCH.
-    
-    ANWEISUNG:
-    1. Suche aggressiv nach Details: Zahlen, Orte, Namen, Uhrzeiten, Geldbeträge.
-    2. Wenn im Text "48 Stunden" oder "3000 Menschen" steht, MUSS das in die Bullets.
-    3. Sprache: ZWINGEND DEUTSCH (auch wenn der Input Englisch ist).
-    4. Versuche immer 3 bis 4 Bulletpoints zu finden.
-    5. Sei präzise, aber nicht langweilig.
-    
+    Antworte NUR mit validem JSON (kein Markdown, kein Text davor/danach).
     Format:
     {
-      "newTitle": "Knackige, informative Headline",
-      "scoop": "Der wichtigste Satz (Was ist passiert?).",
+      "newTitle": "Sachliche, neutrale Überschrift (Anti-Clickbait)",
+      "scoop": "Ein Satz, was der Kern der Nachricht ist.",
       "bullets": [
-        "Detail mit Zahl/Fakt 1",
-        "Detail mit Name/Ort 2",
-        "Hintergrund/Kontext 3"
+        "Fakt 1 mit Zahlen/Daten",
+        "Fakt 2 (Hintergrund)",
+        "Fakt 3 (Konsequenz)",
+        "Fakt 4 (Detail)",
+        "Fakt 5 (Ausblick)"
       ]
     }`;
     
-    // Seed für Variation
-    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
+    // Wir nutzen einen random Seed, damit er nicht cached
+    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
     let retries = 3;
     while (retries > 0) {
         try {
-            // Timeout erhöht für bessere Ergebnisse
-            const response = await axios.get(url, { timeout: 35000 });
+            const response = await axios.get(url, { timeout: 40000 }); // Längeres Timeout für mehr Text
             
             let rawText = response.data;
             if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
 
-            // --- REPARATUR & CLEANING ---
-            // Ad-Blocker
+            // --- AD-BLOCKER & CLEANING ---
+            // Wir schneiden alles ab, was nach Werbung aussieht
             rawText = rawText.split("--- Support")[0]; 
-            
-            // JSON ausschneiden
-            const firstOpen = rawText.indexOf('{');
-            const lastClose = rawText.lastIndexOf('}');
-            
-            if (firstOpen !== -1 && lastClose !== -1) {
-                rawText = rawText.substring(firstOpen, lastClose + 1);
-            }
+            rawText = rawText.split("🌸 Ad")[0];
+            // Markdown Code-Blöcke entfernen, falls die KI welche macht
+            rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
 
+            // JSON Parsen
             let data;
             try {
                 data = JSON.parse(rawText);
             } catch (jsonError) {
-                // Fallback: Manchmal hilft ein simpler Regex Fix
-                console.log("⚠️ JSON Reparatur Versuch...");
-                throw new Error("Invalid JSON");
+                // Fallback, falls KI kein valides JSON liefert
+                console.log("⚠️ KI hat kein JSON geliefert, nutze Text-Fallback.");
+                data = {
+                    newTitle: title,
+                    scoop: rawText.substring(0, 150) + "...",
+                    bullets: ["Konnte keine Details extrahieren."]
+                };
             }
 
             // Validierung
-            if (!data.bullets || !Array.isArray(data.bullets)) data.bullets = [];
-            
-            // Aufzählungszeichen entfernen
-            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
+            if (!data.bullets || data.bullets.length === 0) throw new Error("Keine Bullets");
 
             return { 
-                summary: data.scoop || title, 
-                newTitle: data.newTitle || title, 
-                bullets: data.bullets,   
+                summary: data.scoop, 
+                newTitle: data.newTitle, // Die neue sachliche Überschrift
+                bullets: data.bullets,   // Die 5 Fakten
                 tags: [sourceName, "News"] 
             };
 
@@ -102,11 +92,12 @@ async function analyzeWithPollinations(title, content, sourceName) {
         }
     }
 
+    // Harter Fallback
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Detail Hunter)...");
+    console.log("🚀 Starte News-Abruf (Smart Brief Edition)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -127,14 +118,13 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Cache nutzen? Nur wenn Bullets da sind.
-                // ACHTUNG: Ich habe den Cache-Check etwas gelockert, damit er englische Texte neu generiert (Deutsch-Zwang)
-                if (cached && cached.bullets && cached.bullets.length > 1 && cached.text !== cached.title) {
+                // Cache nutzen, wenn valide UND wenn wir schon Bullets haben (neues Format)
+                if (cached && cached.bullets && cached.bullets.length > 0) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue; 
                 }
 
-                console.log(`🤖 Analysiere: ${item.title.substring(0, 40)}...`);
+                console.log(`🤖 Generiere Smart-Brief: ${item.title.substring(0, 30)}...`);
                 
                 const rawContent = item.contentSnippet || item.content || "";
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
@@ -143,18 +133,18 @@ async function run() {
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
                     sourceCountry: source.country || "🌍",
-                    title: ai.newTitle,
-                    originalTitle: item.title,
+                    title: ai.newTitle || item.title, // Wir nutzen den KI-Titel!
+                    originalTitle: item.title,        // Backup
                     link: item.link,
                     img: item.enclosure?.url || item.itunes?.image || null,
                     date: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
                     text: ai.summary,
-                    bullets: ai.bullets,
+                    bullets: ai.bullets, // Das ist neu!
                     tags: ai.tags
                 });
                 
-                // 10 Sekunden Pause für Stabilität
-                await sleep(10000); 
+                // 12 Sekunden Pause (etwas länger, da Antwort größer ist)
+                await sleep(12000); 
             }
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
