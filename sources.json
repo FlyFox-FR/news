@@ -2,25 +2,25 @@
   {
     "name": "Tagesschau",
     "url": "https://www.tagesschau.de/xml/rss2/",
-    "count": 5,
+    "count": 2,
     "country": "🇩🇪"
   },
   {
     "name": "ZDF",
     "url": "https://www.zdf.de/rss/zdf/nachrichten",
-    "count": 5,
+    "count": 2,
     "country": "🇩🇪"
   },
   {
     "name": "Spiegel",
     "url": "https://www.spiegel.de/index.rss",
-    "count": 5,
+    "count": 2,
     "country": "🇩🇪"
   },
     {
     "name": "rbb24",
     "url": "https://www.rbb24.de/index.xml/feed=rss.xml",
-    "count": 5,
+    "count": 2,
     "country": "🇩🇪"
   }
 ]
