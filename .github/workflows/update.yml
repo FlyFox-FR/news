@@ -37,7 +37,7 @@ jobs:
       run: |
         git config --global user.name 'NewsBot'
         git config --global user.email 'bot@noreply.github.com'
-        # Alle geänderten Dateien (news.json, config.json, debug_cluster_response.txt) hinzufügen
-        git add news.json config.json debug_cluster_response.txt
-        git commit -m "Update News, Config & Pruning" || echo "Keine Änderungen"
+        # HIER WURDE debug.json HINZUGEFÜGT:
+        git add news.json config.json debug.json
+        git commit -m "Update News, Config, Debug & Pruning" || echo "Keine Änderungen"
         git push
