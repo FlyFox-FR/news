@@ -1,5 +1,26 @@
 [
   {
+    "id": "arisjj25m",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Kurden–Armee-Konflikt in Aleppo: 13 Monate nach Assads Sturz",
+    "originalTitle": "Darum kämpfen in Syrien Kurden und Armee gegeneinander",
+    "link": "https://www.tagesschau.de/ausland/asien/syrien-kaempfe-hintergrund-100.html",
+    "img": null,
+    "date": "2026-01-09T15:49:03.000Z",
+    "text": "Drei Monate nach dem Sturz von Bashar al‑Assad gerät die zweitgrößte Stadt Syriens erneut in Kämpfe zwischen kurdischen Milizen und der syrischen Armee, wobei die Türkei als bedeutender Einflussfaktor agiert.",
+    "bullets": [
+      "In Aleppo, Syriens zweitgrößter Stadt, wird 13 Monate nach dem Staatssturz wieder Schusswechsel zwischen kurdischen und staatlichen Truppen ausgelöst.",
+      "Die Hauptparteien sind die kurdischen Milizen (verzählt als kurdisches Gebiet) und die syrische Armee.",
+      "Die Türkei unterstützt die kurdischen Reihen, agiert dabei aber gleichzeitig als strategischer Verbündeter der syrischen Regierung und beeinflusst so die Konfliktentwicklung."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "2vo3baa2e",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -62,6 +83,47 @@
     ],
     "related": [
       {
+        "id": "dgyaff61x",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
+        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
+        "img": null,
+        "date": "2026-01-09T15:33:18.000Z",
+        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
+        "bullets": [
+          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
+          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
+          "Behörden und Wetterdienste rufen zur Vorsicht auf"
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "yfhm7irox",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
+        "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
+        "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
+        "date": "2026-01-09T15:31:00.000Z",
+        "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
+        "bullets": [
+          "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
+          "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
+          "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ]
+      },
+      {
         "id": "78ui2nisc",
         "source": "ZDF",
         "sourceCountry": "🇩🇪",
@@ -82,65 +144,22 @@
         ]
       },
       {
-        "id": "hgg8rejn6",
-        "source": "Tagesschau",
+        "id": "a89lw1t3u",
+        "source": "Spiegel",
         "sourceCountry": "🇩🇪",
-        "title": "Wintersturm Elli lässt Deutschland von Schnee und Glätte zurückhalten",
-        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
-        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
-        "img": null,
-        "date": "2026-01-09T13:03:55.000Z",
-        "text": "Der Sturm bringt heftige Schneefälle, starke Glätte und vermehrte Bahnausfälle, die den öffentlichen Verkehr, Schulen und den Straßenverkehr stark beeinträchtigen.",
+        "title": "Wetter: Schnee, Sturm und Glätte – Ist der Winter in Deutschland wirklich außergewöhnlich?",
+        "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
+        "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
+        "date": "2026-01-08T19:56:00.000Z",
+        "text": "Der Beitrag erörtert, ob der aktuelle Winter mit Schnee, Sturm und Glätte in Deutschland kälter und verschneit ist als üblich, und beleuchtet die regionale Wahrnehmung.",
         "bullets": [
-          "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
-          "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
-          "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
+          "Der Artikel beschreibt ungewöhnliche Wetterbedingungen – Schnee, Sturm und Glätte.",
+          "Er stellt die Frage, ob der aktuelle Winter in Deutschland tatsächlich kälter und verschneiter ist als üblich.",
+          "Der Fokus liegt auf der regionalen Wahrnehmung und der Erkundung, wie diese Wetterlage wirkt."
         ],
         "tags": [
-          "Tagesschau",
-          "News"
-        ],
-        "related": []
-      }
-    ]
-  },
-  {
-    "id": "yfhm7irox",
-    "source": "Spiegel",
-    "sourceCountry": "🇩🇪",
-    "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
-    "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
-    "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
-    "date": "2026-01-09T15:31:00.000Z",
-    "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
-    "bullets": [
-      "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
-      "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
-      "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
-    ],
-    "tags": [
-      "Spiegel",
-      "News"
-    ],
-    "related": [
-      {
-        "id": "dgyaff61x",
-        "source": "rbb24",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
-        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
-        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
-        "img": null,
-        "date": "2026-01-09T15:13:00.000Z",
-        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
-        "bullets": [
-          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
-          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
-          "Behörden und Wetterdienste rufen zur Vorsicht auf"
-        ],
-        "tags": [
-          "rbb24",
+          "Spiegel",
           "News"
         ],
         "related": []
@@ -256,6 +275,27 @@
     ]
   },
   {
+    "id": "w1fgfb910",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Kurzdarstellung von Schlagzeilen in Echtzeit",
+    "originalTitle": "Schlagzeilen",
+    "link": "https://www.zdfheute.de/newsticker/schlagzeilen-100.html",
+    "img": "https://www.zdfheute.de/assets/zdfheute-keyvisual-100~384x216?cb=1695027601231",
+    "date": "2026-01-09T15:07:00.000Z",
+    "text": "Der Ticker bietet einen schnellen Überblick über aktuelle Ereignisse in kompakter Form.",
+    "bullets": [
+      "Mehrere Schlagzeilen werden in einem übersichtlichen Ticker-Layout präsentiert.",
+      "Die Inhalte konzentrieren sich ausschließlich auf die wesentlichsten Fakten.",
+      "Der Format eignet sich besonders für Leser, die sich rasch über das aktuelle Geschehen informieren wollen."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "ogxvkgq55",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -269,6 +309,27 @@
       "Minneapolis liegt im Bundesstaat Minnesota, USA.",
       "Die US‑Einwanderungsbehörde ICE wird im Text als brutaler und enthemter beschrieben.",
       "Der Protest entsteht nach dem Totschlag einer Frau am Mittwoch und könnte von der Trump‑Regierung instrumentalisiert werden."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "qzvgn6if3",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Iran: Dutzende getötet, Regime forciert harte Strafen",
+    "originalTitle": "Iran – Tote bei Protestwelle: Teheran droht Demonstranten mit »entschlossen und maximalen« Strafen",
+    "link": "https://www.spiegel.de/ausland/iran-tote-bei-protestwelle-praesident-ruft-sicherheitskraefte-zur-zurueckhaltung-auf-a-b19559a2-546b-405c-b5b4-3963c6a6cf74#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/ee6334be-3bcb-42ea-a874-70fa3b9657ea_w520_r2.08_fpx49.95_fpy44.99.jpg",
+    "date": "2026-01-09T14:31:00.000Z",
+    "text": "Bei einer Protestwelle in Iran sind bereits Dutzende Demonstranten getötet, während das Regime droht, „entschlossene und maximale“ Strafen zu verhängen.",
+    "bullets": [
+      "Dutzende Demonstranten wurden bei der aktuellen Protestwelle getötet",
+      "Das Teheraner Regime kündigt harte, entschlossene und maximale Strafen an",
+      "Die Proteste stellen einen neuen Belastungstest für die iranische Politik dar"
     ],
     "tags": [
       "Spiegel",
@@ -385,23 +446,39 @@
     "related": []
   },
   {
-    "id": "14nfyskmn",
-    "source": "Tagesschau",
+    "id": "1hko5l5t4",
+    "source": "rbb24",
     "sourceCountry": "🇩🇪",
-    "title": "Mercosur-Freihandelsabkommen mit der EU: Nach über 25 Jahren Verhandlungen",
-    "originalTitle": "Warum Mercosur trotz aller Skepsis beschlossen werden konnte",
-    "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/faq-mercosur-100.html",
+    "title": "Stromausfall im Berliner Südwesten: Kritik am Krisenmanagement",
+    "originalTitle": "Nach Stromausfall: Deutliche Kritik am Berliner Krisenmanagement",
+    "link": "https://www.rbb24.de/politik/beitrag/2026/01/berlin-stromausfall-kritik-grossschadenslage-spaet-ausgerufen.html",
     "img": null,
-    "date": "2026-01-09T14:00:09.000Z",
-    "text": "Mehr als 25 Jahre der Verhandlungen führen nun zum Abschluss des Mercosur‑Freihandelsabkommens mit der EU.",
+    "date": "2026-01-09T14:09:44.000Z",
+    "text": "Der Ausfall im Berliner Südwesten wurde schneller behoben als erwartet, jedoch erregte die erst 1,5 Tage nach Beginn anerkannte Großschadenslage starkes Missfallen gegenüber dem Senat.",
     "bullets": [
-      "Mehr als 25 Jahre wurden für die Ausarbeitung des Abkommens zwischen Mercosur und der EU verhandelt.",
-      "Das Abkommen ist ein Freihandelskonzept zwischen Mercosur und der EU.",
-      "Plan ist, den Handel zwischen den Mercosur‑Ländern und der EU zu intensivieren."
+      "Der großflächige Stromausfall betraf den Berliner Südwesten.",
+      "Die Wiederherstellung erfolgte schneller als ursprünglich prognostiziert.",
+      "Die Einstufung der Situation als Großschadenslage erfolgte erst 1,5 Tage nach Beginn des Ausfalls."
     ],
     "tags": [
-      "Tagesschau",
+      "rbb24",
       "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "aqyhmdtyk",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
+    "originalTitle": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/berlin-sumatra-tiger-nachwuchs-tierpark-artenschutz.html",
+    "img": null,
+    "date": "2026-01-09T13:53:09.000Z",
+    "text": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
+    "bullets": [],
+    "tags": [
+      "rbb24"
     ],
     "related": []
   },
@@ -426,6 +503,28 @@
     "related": []
   },
   {
+    "id": "q4j5xm7z8",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Proteste im Iran erreichen neue Ausmaße",
+    "originalTitle": "Proteste gegen Regime im Iran: Eskalationen im ganzen Land",
+    "link": "https://www.tagesschau.de/ausland/asien/iran-proteste-eskalation-100.html",
+    "img": null,
+    "date": "2026-01-09T12:47:11.000Z",
+    "text": "Iranische Demonstranten setzen Feuer, bauen Barrikaden und veranlassen teilweise Flugsperren, während der Arabische Frühling erneut in Erinnerung ruft.",
+    "bullets": [
+      "Demonstranten entzünden Feuer und errichten Barrikaden",
+      "Flüge in bzw. aus dem Iran werden teilweise gestrichen",
+      "Eskalationen geschehen im gesamten Land",
+      "Vergleich mit der Geschichte des Arabischen Frühlings wird gezogen"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "83bu9dzj7",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
@@ -438,6 +537,49 @@
     "bullets": [],
     "tags": [
       "ZDF"
+    ],
+    "related": [
+      {
+        "id": "hgg8rejn6",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Wintersturm Elli lässt Deutschland von Schnee und Glätte zurückhalten",
+        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
+        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
+        "img": null,
+        "date": "2026-01-09T13:03:55.000Z",
+        "text": "Der Sturm bringt heftige Schneefälle, starke Glätte und vermehrte Bahnausfälle, die den öffentlichen Verkehr, Schulen und den Straßenverkehr stark beeinträchtigen.",
+        "bullets": [
+          "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
+          "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
+          "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "bzvrg5oah",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Hershey Bears werfen Zehntausende Teddybären auf das Spielfeld",
+    "originalTitle": "Kuscheltier-Regen auf Eishockey-Feld",
+    "link": "https://www.zdfheute.de/video/heute-nachrichten/eishockey-spendeaktion-usa-teddybaeren-video-100.html",
+    "img": "https://www.zdfheute.de/assets/eishockey-teddybaren-usa-100~384x216?cb=1767962182911",
+    "date": "2026-01-09T12:36:00.000Z",
+    "text": "Fans der Hershey Bears warfen im Spiel Zehntausende von Teddybären auf das Eis, die später an wohltätige Organisationen verteilt wurden.",
+    "bullets": [
+      "Zehntausende Kuscheltiere wurden von Fans auf das Eishockeyfeld geworfen",
+      "Das Ereignis fand im Stadion der Hershey Bears in Pennsylvania statt",
+      "Die gesammelten Teddybären wurden an wohltätige Organisationen gespendet"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
     ],
     "related": []
   },
@@ -461,6 +603,26 @@
       "News"
     ],
     "related": [
+      {
+        "id": "14nfyskmn",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Mercosur-Freihandelsabkommen mit der EU: Nach über 25 Jahren Verhandlungen",
+        "originalTitle": "Warum Mercosur trotz aller Skepsis beschlossen werden konnte",
+        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/faq-mercosur-100.html",
+        "img": null,
+        "date": "2026-01-09T14:00:09.000Z",
+        "text": "Mehr als 25 Jahre der Verhandlungen führen nun zum Abschluss des Mercosur‑Freihandelsabkommens mit der EU.",
+        "bullets": [
+          "Mehr als 25 Jahre wurden für die Ausarbeitung des Abkommens zwischen Mercosur und der EU verhandelt.",
+          "Das Abkommen ist ein Freihandelskonzept zwischen Mercosur und der EU.",
+          "Plan ist, den Handel zwischen den Mercosur‑Ländern und der EU zu intensivieren."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ]
+      },
       {
         "id": "6gzk2aj79",
         "source": "Tagesschau",
@@ -486,19 +648,20 @@
     ]
   },
   {
-    "id": "a89lw1t3u",
+    "id": "diwqyq6or",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
-    "title": "Wetter: Schnee, Sturm und Glätte – Ist der Winter in Deutschland wirklich außergewöhnlich?",
-    "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
-    "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
-    "date": "2026-01-08T19:56:00.000Z",
-    "text": "Der Beitrag erörtert, ob der aktuelle Winter mit Schnee, Sturm und Glätte in Deutschland kälter und verschneit ist als üblich, und beleuchtet die regionale Wahrnehmung.",
+    "title": "Marco Rubio: ein präziser Blick auf die politische Anpassungsfähigkeit eines US-Senators",
+    "originalTitle": "Marco Rubio: Wie Donald Trumps Außenminister die Kunst des politischen Chamäleons perfektionierte",
+    "link": "https://www.spiegel.de/ausland/marco-rubio-wie-donald-trumps-aussenminister-die-kunst-des-politischen-chamaeleons-perfektionierte-a-df7da145-60bd-4f98-8290-4e2b3c8e0002#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/c88492f6-1689-438d-b6ca-58ac8c24c5a8_w520_r2.08_fpx53_fpy38.jpg",
+    "date": "2026-01-09T10:25:00.000Z",
+    "text": "Rubio, seit 2009 Senator aus Florida, hat diverse Führungspositionen angetreten, ähnlich wie Henry Kissinger mit mehreren gleichzeitigen Ämtern.",
     "bullets": [
-      "Der Artikel beschreibt ungewöhnliche Wetterbedingungen – Schnee, Sturm und Glätte.",
-      "Er stellt die Frage, ob der aktuelle Winter in Deutschland tatsächlich kälter und verschneiter ist als üblich.",
-      "Der Fokus liegt auf der regionalen Wahrnehmung und der Erkundung, wie diese Wetterlage wirkt."
+      "Rubio ist seit 2009 US-Senator für Florida, hat dabei wiederholt die Wahl geschlagen.",
+      "Er diente von 2013 bis 2015 Vorsitzender des Senate Budget Committee und war seit 2005 Mitglied des Senate Foreign Relations Committee.",
+      "Vor seiner Senatorentätigkeit war er von 2001 bis 2005 US Attorney für den Southern District of Florida.",
+      "Während der Trump‑Administration unterstützte Rubio die Wiederwahlkampagne 2016 und verzeichnete Kooperationsversuche mit Trumps Außenpolitik."
     ],
     "tags": [
       "Spiegel",
