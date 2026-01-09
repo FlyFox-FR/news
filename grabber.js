@@ -13,66 +13,72 @@ function loadExistingNews() {
 }
 
 async function analyzeWithPollinations(title, content, sourceName) {
-    // Input kürzen (Platz lassen für die lange Antwort)
-    const safeContent = (content || "").substring(0, 1200).replace(/<[^>]*>/g, "");
+    // Input bereinigen
+    const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
-    // --- DER JSON-PROMPT ---
-    // Wir fordern striktes JSON, damit wir die Daten im Frontend sauber anzeigen können.
-    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+    // --- DER "TRUTH & FACTS" PROMPT ---
+    const instruction = `Du bist ein strenger Fakten-Checker für Nachrichten.
+    Analysiere diesen Text: "${title} - ${safeContent}"
     
-    Antworte NUR mit validem JSON (kein Markdown, kein Text davor/danach).
+    Aufgabe: Erstelle ein JSON-Objekt.
+    
+    STRENGE REGELN (WICHTIG):
+    1. Nutze AUSSCHLIESSLICH Informationen, die im Input-Text stehen. Erfinde KEINE Zahlen, Namen oder Gründe dazu!
+    2. Wenn der Text kurz ist, erstelle nur 2 Bulletpoints. Wenn er lang ist, maximal 4.
+    3. Keine Nummerierung in den Texten (nicht "1.", nicht "Fakt:").
+    4. newTitle: Sachlich, kurz, kein Clickbait.
+    
     Format:
     {
-      "newTitle": "Sachliche, neutrale Überschrift (Anti-Clickbait)",
-      "scoop": "Ein Satz, was der Kern der Nachricht ist.",
+      "newTitle": "Die neue Überschrift",
+      "scoop": "Die Kernaussage in einem Satz.",
       "bullets": [
-        "Fakt 1 mit Zahlen/Daten",
-        "Fakt 2 (Hintergrund)",
-        "Fakt 3 (Konsequenz)",
-        "Fakt 4 (Detail)",
-        "Fakt 5 (Ausblick)"
+        "Detail 1",
+        "Detail 2",
+        "Detail 3"
       ]
     }`;
     
-    // Wir nutzen einen random Seed, damit er nicht cached
-    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
+    // Seed für Determinismus
+    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     let retries = 3;
     while (retries > 0) {
         try {
-            const response = await axios.get(url, { timeout: 40000 }); // Längeres Timeout für mehr Text
+            const response = await axios.get(url, { timeout: 40000 });
             
             let rawText = response.data;
             if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
 
-            // --- AD-BLOCKER & CLEANING ---
-            // Wir schneiden alles ab, was nach Werbung aussieht
-            rawText = rawText.split("--- Support")[0]; 
-            rawText = rawText.split("🌸 Ad")[0];
-            // Markdown Code-Blöcke entfernen, falls die KI welche macht
-            rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+            // --- REPARATUR-KIT ---
+            // 1. Alles vor der ersten Klammer { und nach der letzten } wegwerfen
+            const firstOpen = rawText.indexOf('{');
+            const lastClose = rawText.lastIndexOf('}');
+            
+            if (firstOpen !== -1 && lastClose !== -1) {
+                rawText = rawText.substring(firstOpen, lastClose + 1);
+            }
 
-            // JSON Parsen
+            // 2. JSON Parsen
             let data;
             try {
                 data = JSON.parse(rawText);
             } catch (jsonError) {
-                // Fallback, falls KI kein valides JSON liefert
-                console.log("⚠️ KI hat kein JSON geliefert, nutze Text-Fallback.");
-                data = {
-                    newTitle: title,
-                    scoop: rawText.substring(0, 150) + "...",
-                    bullets: ["Konnte keine Details extrahieren."]
-                };
+                console.log("⚠️ JSON kaputt, versuche Reparatur...");
+                // Manchmal fehlen Anführungszeichen, aber wir nutzen dann lieber den Fallback
+                throw new Error("Invalid JSON");
             }
 
-            // Validierung
-            if (!data.bullets || data.bullets.length === 0) throw new Error("Keine Bullets");
+            // 3. Inhalt prüfen & putzen
+            if (!data.bullets || !Array.isArray(data.bullets)) data.bullets = [];
+            
+            // "Fakt 1:" oder "- " am Anfang entfernen
+            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*)\s*/i, "").trim());
 
             return { 
-                summary: data.scoop, 
-                newTitle: data.newTitle, // Die neue sachliche Überschrift
-                bullets: data.bullets,   // Die 5 Fakten
+                summary: data.scoop || title, 
+                newTitle: data.newTitle || title, 
+                bullets: data.bullets,   
                 tags: [sourceName, "News"] 
             };
 
@@ -92,12 +98,12 @@ async function analyzeWithPollinations(title, content, sourceName) {
         }
     }
 
-    // Harter Fallback
+    // Fallback: Wenn alles scheitert
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Smart Brief Edition)...");
+    console.log("🚀 Starte News-Abruf (Truth Mode)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -118,13 +124,13 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Cache nutzen, wenn valide UND wenn wir schon Bullets haben (neues Format)
-                if (cached && cached.bullets && cached.bullets.length > 0) {
+                // Cache nutzen: Nur wenn Bullets da sind UND der Text nicht der Titel ist
+                if (cached && cached.bullets && cached.bullets.length > 0 && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue; 
                 }
 
-                console.log(`🤖 Generiere Smart-Brief: ${item.title.substring(0, 30)}...`);
+                console.log(`🤖 Analysiere: ${item.title.substring(0, 40)}...`);
                 
                 const rawContent = item.contentSnippet || item.content || "";
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
@@ -133,18 +139,18 @@ async function run() {
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
                     sourceCountry: source.country || "🌍",
-                    title: ai.newTitle || item.title, // Wir nutzen den KI-Titel!
-                    originalTitle: item.title,        // Backup
+                    title: ai.newTitle,
+                    originalTitle: item.title,
                     link: item.link,
                     img: item.enclosure?.url || item.itunes?.image || null,
                     date: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
                     text: ai.summary,
-                    bullets: ai.bullets, // Das ist neu!
+                    bullets: ai.bullets,
                     tags: ai.tags
                 });
                 
-                // 12 Sekunden Pause (etwas länger, da Antwort größer ist)
-                await sleep(12000); 
+                // 10 Sekunden Pause beibehalten
+                await sleep(10000); 
             }
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
