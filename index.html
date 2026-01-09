@@ -16,57 +16,37 @@
             --text-muted: #a1a1aa;
             --border: #27272a;
             --danger: #ef4444;
+            --success: #22c55e;
             --highlight: rgba(255, 215, 0, 0.25);
             --header-bg: rgba(15, 15, 16, 0.95);
         }
 
         body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
 
-        /* --- SLIM HEADER --- */
+        /* --- HEADER --- */
         header {
             background: var(--header-bg); backdrop-filter: blur(10px);
             position: sticky; top: 0; z-index: 50;
             border-bottom: 1px solid var(--border);
         }
-
-        .header-main {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 15px;
-        }
-
+        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
-        .menu-btn {
-            background: transparent; border: none; color: var(--text); font-size: 1.5rem;
-            cursor: pointer; padding: 0; line-height: 1;
-        }
+        .menu-btn { background: transparent; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1; }
         .brand { font-family: 'Merriweather', serif; font-size: 1.1rem; font-weight: 700; }
-
-        /* Compact Sort Icons */
+        
         .header-right { display: flex; gap: 8px; }
-        .icon-btn {
-            background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
-            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s; font-size: 1rem;
-        }
+        .icon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 1rem; }
         .icon-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* Slim Search Bar */
         .search-container { padding: 0 15px 10px 15px; }
-        .search-box {
-            background: var(--surface); border: 1px solid var(--border); padding: 8px 12px;
-            border-radius: 8px; color: var(--text); font-size: 0.85rem; width: 100%; box-sizing: border-box;
-        }
+        .search-box { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text); font-size: 0.85rem; width: 100%; box-sizing: border-box; }
         .search-box:focus { outline: none; border-color: var(--accent); }
 
         .progress-container { background: var(--border); height: 3px; width: 100%; }
         .progress-bar { background: var(--accent); height: 100%; width: 0%; transition: width 0.5s ease; }
 
-        /* --- SIDEBAR MENU --- */
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s; backdrop-filter: blur(2px);
-        }
+        /* --- SIDEBAR --- */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(2px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
 
         .sidebar {
@@ -77,28 +57,32 @@
         }
         .sidebar.active { left: 0; }
 
-        .sidebar-title {
-            padding: 0 20px 20px 20px; font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: bold;
-            border-bottom: 1px solid var(--border); margin-bottom: 10px; display: flex; justify-content: space-between;
-        }
+        .sidebar-title { padding: 0 20px 20px 20px; font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid var(--border); margin-bottom: 10px; display: flex; justify-content: space-between; }
         .sidebar-close { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
 
-        .nav-item {
-            padding: 15px 20px; color: var(--text-muted); text-decoration: none; font-size: 1rem; font-weight: 500;
-            display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s;
-        }
+        .nav-item { padding: 15px 20px; color: var(--text-muted); text-decoration: none; font-size: 1rem; font-weight: 500; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; }
         .nav-item:hover { background: var(--surface-variant); color: var(--text); }
         .nav-item.active { color: var(--accent); border-left: 3px solid var(--accent); background: rgba(59, 130, 246, 0.1); }
 
+        /* Admin Section in Sidebar */
+        .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); background: #121214; }
+        .admin-btn {
+            background: #27272a; color: #ccc; border: 1px solid var(--border); width: 100%; padding: 10px;
+            border-radius: 8px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.2s;
+        }
+        .admin-btn:hover { background: #333; color: white; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
+        .status-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
+        .status-dot.success { background: var(--success); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
         /* --- CONTENT --- */
         .container { max-width: 800px; margin: 15px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 15px; }
-
-        /* Highlighting */
         .highlight { background-color: var(--highlight); color: #fff; border-radius: 2px; padding: 0 1px; }
 
-        /* Card Styles */
         .card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); position: relative; }
-        .card-img { width: 100%; height: 160px; object-fit: cover; background: #222; } /* Etwas kleiner */
+        .card-img { width: 100%; height: 160px; object-fit: cover; background: #222; }
         .card-body { padding: 15px; }
         .meta { display: flex; justify-content: space-between; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
         .card-title { font-family: 'Merriweather', serif; font-size: 1.05rem; margin: 0 0 8px 0; line-height: 1.4; color: #fff; text-decoration: none; display: block; }
@@ -107,21 +91,12 @@
         .bullets li { position: relative; padding-left: 15px; margin-bottom: 6px; font-size: 0.85rem; color: #d4d4d8; line-height: 1.4; }
         .bullets li::before { content: "•"; color: var(--accent); font-weight: bold; position: absolute; left: 0; }
 
-        .btn-save {
-            position: absolute; top: 10px; right: 10px; z-index: 10;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: none;
-            width: 32px; height: 32px; border-radius: 50%; color: #fff; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1rem;
-        }
+        .btn-save { position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: none; width: 32px; height: 32px; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
         .btn-save.saved { background: var(--accent); }
 
         .actions { padding: 8px 15px; background: #1c1c1f; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .btn-link { color: var(--accent); text-decoration: none; font-size: 0.8rem; font-weight: 600; }
-        
-        .btn-toggle {
-            background: #27272a; color: #ccc; border: none; padding: 4px 10px; border-radius: 20px;
-            font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 5px;
-        }
+        .btn-toggle { background: #27272a; color: #ccc; border: none; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
         .variants-container { display: none; background: var(--surface-variant); border-top: 1px solid var(--border); padding: 10px; }
         .variants-container.show { display: block; }
@@ -130,7 +105,6 @@
         .sub-bullets li { padding-left: 12px; margin-bottom: 4px; font-size: 0.8rem; color: #ccc; list-style:none; position:relative; }
         .sub-bullets li::before { content: "•"; color: #666; position: absolute; left: 0; }
 
-        /* Modals */
         #save-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; display: none; justify-content: center; align-items: center; padding: 20px; }
         #save-modal.active { display: flex; }
         .modal-content { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 320px; }
@@ -153,8 +127,16 @@
         <div class="nav-item" id="nav-saved" onclick="switchTab('saved')">
             <span>🔖</span> Gemerkt
         </div>
-        <div style="margin-top:auto; padding: 20px; font-size:0.7rem; color:#666;">
-            AI News Grabber v1.0
+        
+        <!-- ADMIN BEREICH -->
+        <div class="sidebar-footer">
+            <button class="admin-btn" onclick="triggerUpdate()" id="update-btn">
+                <div class="status-dot" id="update-dot"></div>
+                <span>Update Starten</span>
+            </button>
+            <div style="text-align:center; margin-top:10px; font-size:0.65rem; color:#555;">
+                Config: <span id="config-status">Check...</span>
+            </div>
         </div>
     </div>
 
@@ -171,25 +153,20 @@
         </div>
     </div>
 
-    <!-- SLIM HEADER -->
     <header>
         <div class="header-main">
             <div class="header-left">
                 <button class="menu-btn" onclick="toggleMenu()">☰</button>
                 <div class="brand">Daily Brief.</div>
             </div>
-            
-            <!-- Sort Icons (nur sichtbar in Feed) -->
             <div class="header-right" id="sort-controls">
                 <button class="icon-btn active" id="btn-time" onclick="setSort('time')" title="Neueste">🕒</button>
                 <button class="icon-btn" id="btn-trend" onclick="setSort('trend')" title="Top Themen">🔥</button>
             </div>
         </div>
-        
         <div class="search-container">
             <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="render()">
         </div>
-
         <div class="progress-container"><div class="progress-bar" id="progress"></div></div>
     </header>
 
@@ -198,6 +175,11 @@
     </div>
 
     <script>
+        // --- KONFIGURATION (HIER ÄNDERN!) ---
+        const REPO_OWNER = 'DEIN_GITHUB_USERNAME'; // z.B. 'MaxMustermann'
+        const REPO_NAME = 'DEIN_REPO_NAME';       // z.B. 'news-flash'
+        // ------------------------------------
+
         let allNewsData = [];
         let savedNews = [];
         let currentTab = 'feed';
@@ -207,6 +189,83 @@
         // Init
         loadSavedItems();
         fetchData();
+        checkConfig();
+
+        function checkConfig() {
+            const hasToken = localStorage.getItem('gh_token');
+            const statusEl = document.getElementById('config-status');
+            if (REPO_OWNER === 'DEIN_GITHUB_USERNAME') {
+                statusEl.innerText = "⚠️ Repo-Name fehlt im Code!";
+                statusEl.style.color = "red";
+            } else if (!hasToken) {
+                statusEl.innerText = "Key fehlt (Klick Button)";
+            } else {
+                statusEl.innerText = "Bereit ✅";
+            }
+        }
+
+        // --- ADMIN UPDATE FUNCTION ---
+        async function triggerUpdate() {
+            let token = localStorage.getItem('gh_token');
+            
+            // 1. Token abfragen falls nicht da
+            if (!token) {
+                token = prompt("Bitte GitHub Token eingeben (wird lokal gespeichert):");
+                if (token) {
+                    localStorage.setItem('gh_token', token);
+                    checkConfig();
+                } else {
+                    return;
+                }
+            }
+
+            const btn = document.getElementById('update-btn');
+            const dot = document.getElementById('update-dot');
+            const label = btn.querySelector('span');
+
+            // 2. UI auf Loading setzen
+            dot.className = 'status-dot loading';
+            label.innerText = 'Starte Workflow...';
+            btn.disabled = true;
+
+            try {
+                // 3. GitHub API Request
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/update.yml/dispatches`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({ ref: 'main' })
+                });
+
+                if (response.ok) {
+                    dot.className = 'status-dot success';
+                    label.innerText = 'Gestartet! (Warte 5min)';
+                    alert("Update erfolgreich angestoßen! In ca. 5 Minuten neu laden.");
+                } else {
+                    throw new Error(`Fehler: ${response.status}`);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Fehler: " + e.message + "\nPrüfe Token & Repo-Namen.");
+                dot.className = 'status-dot'; // Reset
+                label.innerText = 'Fehler - Retry';
+                // Bei 401 (Unauthorized) Token löschen, war wohl falsch
+                if (e.message.includes('401')) localStorage.removeItem('gh_token');
+            } finally {
+                btn.disabled = false;
+                // Nach 3 Sekunden Reset
+                setTimeout(() => {
+                    if (dot.classList.contains('success')) {
+                        label.innerText = 'Update Starten';
+                        dot.className = 'status-dot';
+                    }
+                }, 5000);
+            }
+        }
 
         function fetchData() {
             fetch('news.json?t=' + Date.now())
@@ -219,7 +278,7 @@
                 .catch(e => document.getElementById('feed').innerHTML = '<p style="text-align:center">Ladefehler.</p>');
         }
 
-        // --- MENU LOGIC ---
+        // --- MENU & UI LOGIC ---
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebar-overlay').classList.toggle('active');
@@ -227,33 +286,21 @@
 
         function switchTab(tab) {
             currentTab = tab;
-            toggleMenu(); // Menü schließen
-            
-            // Active States im Menü
+            toggleMenu();
             document.getElementById('nav-feed').classList.toggle('active', tab === 'feed');
             document.getElementById('nav-saved').classList.toggle('active', tab === 'saved');
-            
-            // Sortier-Icons ausblenden im Saved Tab
-            document.getElementById('sort-controls').style.opacity = tab === 'feed' ? '1' : '0';
-            document.getElementById('sort-controls').style.pointerEvents = tab === 'feed' ? 'auto' : 'none';
-            
+            document.getElementById('sort-controls').style.display = tab === 'feed' ? 'flex' : 'none';
             document.getElementById('search').value = '';
             render();
         }
 
-        // --- CORE LOGIC (wie gehabt) ---
         function loadSavedItems() {
             const raw = localStorage.getItem('my_saved_news');
             if (!raw) return;
             let items = JSON.parse(raw);
             const now = Date.now();
-            savedNews = items.filter(item => {
-                if (item.expiresAt === null) return true;
-                return item.expiresAt > now;
-            });
-            if (savedNews.length !== items.length) {
-                localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
-            }
+            savedNews = items.filter(item => item.expiresAt === null || item.expiresAt > now);
+            if (savedNews.length !== items.length) localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
         }
 
         function openSaveMenu(id, event) {
@@ -277,20 +324,14 @@
             if (!itemToSaveId) return;
             const article = allNewsData.find(n => n.id === itemToSaveId);
             if (article) {
-                savedNews.push({
-                    news: article,
-                    savedAt: Date.now(),
-                    expiresAt: duration ? Date.now() + duration : null
-                });
+                savedNews.push({ news: article, savedAt: Date.now(), expiresAt: duration ? Date.now() + duration : null });
                 localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
             }
             closeModal();
             render();
         }
 
-        function isSaved(id) {
-            return savedNews.some(i => i.news.id === id);
-        }
+        function isSaved(id) { return savedNews.some(i => i.news.id === id); }
 
         function highlightText(text, term) {
             if (!term || !text) return text;
@@ -312,14 +353,10 @@
             container.innerHTML = '';
 
             let dataToRender = [];
-            
             if (currentTab === 'feed') {
                 dataToRender = [...allNewsData];
-                if (currentSort === 'time') {
-                    dataToRender.sort((a, b) => new Date(b.date) - new Date(a.date));
-                } else {
-                    dataToRender.sort((a, b) => (b.related?.length || 0) - (a.related?.length || 0));
-                }
+                if (currentSort === 'time') dataToRender.sort((a, b) => new Date(b.date) - new Date(a.date));
+                else dataToRender.sort((a, b) => (b.related?.length || 0) - (a.related?.length || 0));
             } else {
                 dataToRender = [...savedNews].sort((a, b) => b.savedAt - a.savedAt).map(i => i.news);
             }
@@ -333,31 +370,23 @@
                 });
             }
 
-            if(dataToRender.length === 0) { 
-                container.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">Nichts gefunden.</p>'; return; 
-            }
+            if(dataToRender.length === 0) { container.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">Nichts gefunden.</p>'; return; }
 
             dataToRender.forEach(item => {
                 let savedInfo = '';
                 const savedObj = savedNews.find(s => s.news.id === item.id);
-                
                 if (currentTab === 'saved' && savedObj) {
                     if (savedObj.expiresAt) {
                         const daysLeft = Math.ceil((savedObj.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
                         savedInfo = `<span class="saved-info">Löscht sich in ${daysLeft} Tagen</span>`;
-                    } else {
-                        savedInfo = `<span class="saved-info">Für immer gespeichert</span>`;
-                    }
+                    } else { savedInfo = `<span class="saved-info">Für immer gespeichert</span>`; }
                 }
 
                 let displayTitle = highlightText(item.title, searchTerm);
                 let displayText = highlightText(item.text, searchTerm);
-                
                 let bulletsHtml = '';
                 if (item.bullets && Array.isArray(item.bullets)) {
-                    bulletsHtml = '<ul class="bullets">' + 
-                        item.bullets.map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('') + 
-                        '</ul>';
+                    bulletsHtml = '<ul class="bullets">' + item.bullets.map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('') + '</ul>';
                 }
 
                 const img = item.img || 'https://via.placeholder.com/600x300/222/555?text=News';
@@ -374,33 +403,24 @@
                                 <div class="meta"><span>${rel.source}</span><span>${new Date(rel.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>
                                 <div class="sub-title">${highlightText(rel.title, searchTerm)}</div>
                                 <div class="scoop" style="font-size:0.9rem; border-left-color:#666">${highlightText(rel.text, searchTerm)}</div>
-                                <ul class="sub-bullets" style="margin:5px 0">${(rel.bullets||[]).map(b=>`<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
+                                <ul class="sub-bullets">${(rel.bullets||[]).map(b=>`<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
                                 <a href="${rel.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Zum Artikel →</a>
-                            </div>`).join('') + 
-                        `</div>`;
+                            </div>`).join('') + `</div>`;
                 }
 
                 const html = `
                     <div class="card">
-                        <button class="btn-save ${savedClass}" onclick="openSaveMenu('${item.id}', event)">
-                            ${savedClass ? '★' : '☆'}
-                        </button>
+                        <button class="btn-save ${savedClass}" onclick="openSaveMenu('${item.id}', event)">${savedClass ? '★' : '☆'}</button>
                         <img src="${img}" class="card-img" onerror="this.style.display='none'">
                         <div class="card-body">
-                            <div class="meta">
-                                <span>${item.sourceCountry||''} ${item.source}</span>
-                                <span>${new Date(item.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
-                            </div>
+                            <div class="meta"><span>${item.sourceCountry||''} ${item.source}</span><span>${new Date(item.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>
                             <a href="${item.link}" target="_blank" class="card-title">${displayTitle}</a>
                             <div class="scoop">${displayText}</div>
                             ${savedInfo}
                             ${bulletsHtml}
                         </div>
                         ${variantsHtml}
-                        <div class="actions">
-                            <a href="${item.link}" target="_blank" class="btn-link">Artikel lesen →</a>
-                            ${toggleBtn}
-                        </div>
+                        <div class="actions"><a href="${item.link}" target="_blank" class="btn-link">Artikel lesen →</a>${toggleBtn}</div>
                     </div>
                 `;
                 container.innerHTML += html;
