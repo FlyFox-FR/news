@@ -1,4 +1,4 @@
-name: Update News Final
+name: Update News NoKey
 
 on:
   schedule:
@@ -26,9 +26,7 @@ jobs:
       run: npm install
 
     - name: Run Grabber
-      env:
-        # ZURÜCK ZU HUGGING FACE!
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      # KEINE SECRETS MEHR NÖTIG!
       run: node grabber.js
 
     - name: Commit and Push changes
