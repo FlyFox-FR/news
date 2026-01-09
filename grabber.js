@@ -12,7 +12,7 @@ function loadExistingNews() {
     return [];
 }
 
-// --- 1. DIE INHALTS-ANALYSE (Dein Prompt) ---
+// 1. INHALTS-ANALYSE (Dein bewährter Prompt)
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
@@ -42,7 +42,6 @@ async function analyzeWithPollinations(title, content, sourceName) {
             let rawText = response.data;
             if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
 
-            // Cleaning
             rawText = rawText.split("--- Support")[0]; 
             rawText = rawText.split("🌸 Ad")[0];
             rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -66,16 +65,14 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- 2. KI GRUPPIERUNG (Der "Konferenz-Tisch") ---
+// 2. AI CLUSTERING & BILD-SORTIERUNG
 async function clusterWithAI(articles) {
     if (articles.length === 0) return [];
     
     console.log(`🧠 KI sortiert ${articles.length} Artikel...`);
 
-    // Wir bauen eine Liste nur aus IDs und Titeln für die KI
     const listForAI = articles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
     
-    // Prompt: Wir wollen nur eine Liste von ID-Gruppen zurück.
     const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
     
     Liste:
@@ -103,24 +100,46 @@ async function clusterWithAI(articles) {
 
         const groups = JSON.parse(rawText);
         
-        if (!Array.isArray(groups)) throw new Error("Kein Array");
+        if (!Array.isArray(groups) || !Array.isArray(groups[0])) throw new Error("Kein Array");
 
-        // --- FEED NEU BAUEN ---
+        console.log("🧠 KI-Gruppierung erfolgreich:", JSON.stringify(groups));
+        
         let clusteredFeed = [];
         let usedIndices = new Set();
 
         groups.forEach(groupIndices => {
-            // Filtern auf gültige Indizes
+            // Indizes validieren
             let validIndices = groupIndices.filter(i => articles[i] !== undefined);
             if (validIndices.length === 0) return;
 
-            // Der erste ist der "Chef" des Stapels
-            let parent = articles[validIndices[0]];
-            usedIndices.add(validIndices[0]);
+            // --- NEU: BILD-PRIORITÄT ALGORITHMUS ---
+            // Wir suchen im Cluster den besten Kandidaten für die Hauptkarte (den mit Bild)
+            
+            let bestParentIndex = 0; // Standard: Der erste (meistens der neueste)
+            
+            // Suche: Gibt es einen Artikel mit Bild?
+            for (let k = 0; k < validIndices.length; k++) {
+                const articleIndex = validIndices[k];
+                const article = articles[articleIndex];
+                
+                // Wenn wir ein Bild finden, wird das sofort der neue Chef
+                if (article.img) {
+                    bestParentIndex = k;
+                    break; // Gefunden, Suche beenden
+                }
+            }
+
+            // Den "besten" Artikel als Parent setzen
+            let parentRealIndex = validIndices[bestParentIndex];
+            let parent = articles[parentRealIndex];
+            usedIndices.add(parentRealIndex);
+            
             parent.related = [];
 
-            // Die anderen kommen in den Stapel
-            for (let i = 1; i < validIndices.length; i++) {
+            // Alle anderen als "Kinder" hinzufügen
+            for (let i = 0; i < validIndices.length; i++) {
+                if (i === bestParentIndex) continue; // Parent nicht nochmal hinzufügen
+
                 let childIndex = validIndices[i];
                 if (!usedIndices.has(childIndex)) {
                     parent.related.push(articles[childIndex]);
@@ -141,14 +160,13 @@ async function clusterWithAI(articles) {
         return clusteredFeed;
 
     } catch (e) {
-        console.error("❌ KI-Clustering fehlgeschlagen (Fallback auf flache Liste):", e.message);
-        // Im Notfall geben wir einfach die flache Liste zurück (ungruppiert), besser als Absturz
-        return articles;
+        console.error("❌ KI-Clustering fehlgeschlagen (Fallback):", e.message);
+        return articles; // Fallback: Einfach alles anzeigen
     }
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (AI Sorting)...");
+    console.log("🚀 Starte News-Abruf (Image Priority)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -156,7 +174,7 @@ async function run() {
 
     const existingNews = loadExistingNews();
     
-    // 1. Alles flachklopfen (Cluster auflösen für Neu-Sortierung)
+    // 1. Alles flachklopfen
     let flatFeed = [];
     existingNews.forEach(item => {
         let cleanItem = { ...item };
@@ -173,7 +191,7 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Deduplizierung: Link Check
+                // Deduplizierung
                 const existingIndex = flatFeed.findIndex(n => n.link === item.link);
                 if (existingIndex !== -1) {
                     flatFeed[existingIndex].date = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString();
@@ -183,7 +201,6 @@ async function run() {
                 console.log(`🤖 Analysiere: ${item.title.substring(0, 30)}...`);
                 const rawContent = item.contentSnippet || item.content || "";
                 
-                // DEINE LOGIK
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
                 
                 let imgUrl = item.enclosure?.url || item.itunes?.image || null;
@@ -207,7 +224,7 @@ async function run() {
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
-    // 3. AM ENDE: Die KI sortieren lassen
+    // 3. Sortieren mit Bild-Priorität
     const finalFeed = await clusterWithAI(flatFeed);
     
     // Neueste Cluster nach oben
