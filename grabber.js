@@ -1,4 +1,3 @@
-
 const Parser = require('rss-parser');
 const axios = require('axios');
 const fs = require('fs');
@@ -6,10 +5,23 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- HELPER: TEXT BEREINIGUNG ---
-function cleanString(str) {
-    if (!str) return "";
-    return str.replace(/\s+/g, ' ').trim();
+// --- HELPER: HTML ENTITIES DECODIEREN ---
+function decodeEntities(text) {
+    if (!text) return "";
+    return text
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&szlig;/g, 'ß')
+        .replace(/&auml;/g, 'ä')
+        .replace(/&ouml;/g, 'ö')
+        .replace(/&uuml;/g, 'ü')
+        .replace(/&Auml;/g, 'Ä')
+        .replace(/&Ouml;/g, 'Ö')
+        .replace(/&Uuml;/g, 'Ü')
+        .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
 }
 
 // --- HELPER: HTML TAGS ENTFERNEN ---
@@ -17,7 +29,7 @@ function stripTags(html) {
     return html.replace(/<[^>]+>/g, "").trim();
 }
 
-// --- CORE: INTELLIGENTER SCRAPER V4 (Controlled) ---
+// --- CORE: PRÄZISER SCRAPER ---
 async function fetchArticleText(url) {
     try {
         const { data } = await axios.get(url, { 
@@ -29,82 +41,59 @@ async function fetchArticleText(url) {
 
         let html = data;
 
-        // 1. Technischen Müll entfernen
-        // (Hier fliegen nur technische Elemente raus, keine Inhalte)
-        const junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption'];
+        const junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption', 'style'];
         junkTags.forEach(tag => {
             const regex = new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi');
             html = html.replace(regex, '');
         });
 
-        // 2. Strategie A: Hauptcontainer suchen
-        const containerRegex = /<article[^>]*>([\s\S]*?)<\/article>/i;
-        const mainRegex = /<main[^>]*>([\s\S]*?)<\/main>/i;
-        
-        let match = html.match(containerRegex) || html.match(mainRegex);
-        let contentScope = match ? match[1] : html;
+        const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+        if (!containerMatch) return ""; 
 
-        // 3. Strategie B: Absätze extrahieren
+        let contentScope = containerMatch[1];
         let paragraphs = extractParagraphs(contentScope);
-
-        // 4. Fallback: Wenn < 800 Zeichen, scanne ganze Seite (z.B. bei Videoseiten)
-        let totalLength = paragraphs.join(" ").length;
-        if (totalLength < 800) {
-            console.log(`      ⚠️ Wenig Text im Container (${totalLength}). Scanne ganze Seite...`);
-            paragraphs = extractParagraphs(html);
-        }
-
         let fullText = paragraphs.join('\n\n');
         
-        // 5. Hard Limit (15k Zeichen), damit JSON nicht explodiert
+        fullText = decodeEntities(fullText);
         if (fullText.length > 15000) fullText = fullText.substring(0, 15000);
         
         return fullText;
-
-    } catch (e) {
-        console.log(`⚠️ Skip Text für ${url}: ${e.message}`);
-        return "";
-    }
+    } catch (e) { return ""; }
 }
 
-// Zieht saubere P-Tags
 function extractParagraphs(htmlContent) {
     const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
     let paragraphs = [];
     let match;
-
     while ((match = pRegex.exec(htmlContent)) !== null) {
         let rawText = match[1];
         let cleanText = stripTags(rawText);
-
-        if (isValidParagraph(cleanText)) {
-            paragraphs.push(cleanText);
-        }
+        if (isValidParagraph(cleanText)) paragraphs.push(cleanText);
     }
     return paragraphs;
 }
 
-// Filtert NUR technischen Müll (Keine Inhaltszensur mehr!)
 function isValidParagraph(text) {
     text = text.trim();
-    if (text.length < 50) return false; // Zu kurz (oft Menüpunkte)
-    
+    if (text.length < 50) return false; 
     const lower = text.toLowerCase();
-
-    // Technische Blacklist (Navi, Footer, Cookies)
     const blacklist = [
         "alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", 
         "melden sie sich an", "newsletter", "anzeige", "datenschutz", 
         "impressum", "quelle:", "bild:", "foto:", "video:", 
-        "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang"
+        "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang",
+        "copyright", "©"
     ];
-
     if (blacklist.some(bad => lower.includes(bad))) return false;
-    
     return true;
 }
 
-// Prüft auf Duplikate
+// --- UTILS ---
+function cleanString(str) {
+    if (!str) return "";
+    return str.replace(/\s+/g, ' ').trim();
+}
+
 function isSameArticle(item1, item2) {
     if (item1.link === item2.link) return true;
     const t1 = cleanString(item1.originalTitle || item1.title).toLowerCase();
@@ -112,7 +101,6 @@ function isSameArticle(item1, item2) {
     return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 10);
 }
 
-// --- PRUNING ---
 function pruneNews(newsArray) {
     const now = new Date();
     const einTagInMs = 24 * 60 * 60 * 1000; 
@@ -125,7 +113,6 @@ function pruneNews(newsArray) {
     return filtered;
 }
 
-// Clustering Helper
 function isRelatedTopicAlgorithmic(title1, title2) {
     const clean1 = cleanString(title1).toLowerCase();
     const clean2 = cleanString(title2).toLowerCase();
@@ -146,7 +133,6 @@ function loadExistingNews() {
     return [];
 }
 
-// 1. INHALTS-ANALYSE
 async function analyzeWithPollinations(title, fullText, sourceName) {
     const context = fullText && fullText.length > 500 ? fullText.substring(0, 5000) : title;
     
@@ -196,7 +182,6 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// 2. KI CLUSTERING
 async function clusterBatchWithAI(batchArticles, batchIndex) {
     console.log(`📦 Batch ${batchIndex + 1}: KI sortiert ${batchArticles.length} Artikel...`);
     const listForAI = batchArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
@@ -239,7 +224,6 @@ async function clusterBatchWithAI(batchArticles, batchIndex) {
     } catch (e) { return batchArticles.map(a => { a.related = []; return a; }); }
 }
 
-// --- MAIN ---
 async function runClusteringPipeline(allArticles) {
     const BATCH_SIZE = 15;
     let finalClusters = [];
@@ -264,10 +248,10 @@ async function runClusteringPipeline(allArticles) {
     return finalClusters;
 }
 
+// --- MAIN LOOP ---
 async function run() {
-    console.log("🚀 Start News-Bot v3.3 (Source Control)...");
+    console.log("🚀 Start News-Bot v4.0 (Overlay Ready)...");
     
-    // SOURCES LADEN
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
     catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -283,31 +267,29 @@ async function run() {
 
     for (const source of sources) {
         try {
-            console.log(`\n📡 ${source.name} (Scrape: ${source.scrape !== false ? '✅' : '🚫'})...`);
+            console.log(`\n📡 ${source.name} (Ziel: ${source.count})...`);
             const feed = await parser.parseURL(source.url);
             let added = 0;
+            let skipped = 0;
 
             for (const item of feed.items) {
                 if (added >= source.count) break;
+                if (skipped >= 5) { console.log(`   🛑 Zu viele Skips bei ${source.name}.`); break; }
+
                 const exists = flatFeed.some(n => isSameArticle(n, item));
-                if (exists) continue;
+                if (exists) { skipped++; continue; }
 
                 let fullText = "";
-
-                // CHECK: SOLL DIESE QUELLE GESCOUTET WERDEN?
-                // Standard ist TRUE, wenn nicht explizit false gesetzt
                 if (source.scrape !== false) {
-                    console.log(`   📄 Lade Text: ${item.title.substring(0, 40)}...`);
+                    process.stdout.write(`   🔍 Prüfe: ${item.title.substring(0, 30)}... `);
                     fullText = await fetchArticleText(item.link);
-                    console.log(`      ✅ ${fullText.length} Zeichen (Clean).`);
+                    if (fullText.length < 500) { console.log(`❌ Zu kurz.`); skipped++; continue; } 
+                    else { console.log(`✅ OK (${fullText.length}).`); }
                 } else {
-                    console.log(`   ⏩ Scrape deaktiviert für ${item.title.substring(0, 20)}...`);
-                    // Fallback auf RSS Content wenn Scrape aus ist
                     fullText = (item.contentSnippet || item.content || "").substring(0, 5000);
                 }
 
                 const ai = await analyzeWithPollinations(item.title, fullText, source.name);
-                
                 flatFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
@@ -324,6 +306,7 @@ async function run() {
                     related: []
                 });
                 added++;
+                skipped = 0;
                 await sleep(4000); 
             }
         } catch (e) { console.error(`   ❌ Error ${source.name}: ${e.message}`); }
@@ -331,10 +314,14 @@ async function run() {
 
     flatFeed = pruneNews(flatFeed);
     flatFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-    if (flatFeed.length > 60) flatFeed = flatFeed.slice(0, 60);
+    
+    // LIMIT AUF 120 ERHÖHT
+    if (flatFeed.length > 120) {
+        console.log(`✂️ Cleanup: Behalte Top 120.`);
+        flatFeed = flatFeed.slice(0, 120);
+    }
 
     const finalFeed = await runClusteringPipeline(flatFeed);
-    
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
     console.log(`✅ Fertig! ${finalFeed.length} Cluster gespeichert.`);
 }
