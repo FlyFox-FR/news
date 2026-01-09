@@ -1,5 +1,47 @@
 [
   {
+    "id": "1jcy50dfu",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Bahn sperrt Zugverkehr bei Sturmtief 'Elli' in Norden und Osten Deutschlands",
+    "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
+    "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+    "img": null,
+    "date": "2026-01-09T12:22:31.000Z",
+    "text": "Das Wintertief 'Elli' führt bei der Deutschen Bahn zu umfassenden Zug-Ausfällen in Nord- und Ostdeutschland.",
+    "bullets": [
+      "Sturmtief 'Elli' zieht über Deutschland und bringt viel Schnee und Eis.",
+      "Zugverkehr im Norden Deutschlands bleibt laut Bahn bis auf Weiteres eingestellt.",
+      "Auch im Ostdeutschland seien Ausfälle zu erwarten."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "9y19sn3z2",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Veränderungen des Winters im Norden Deutschlands",
+    "originalTitle": "Wie sich der Winter in Deutschland verändert hat",
+    "link": "https://www.tagesschau.de/wissen/klima/unwetter-schnee-norddeutschland-klima-schneetage-100.html",
+    "img": null,
+    "date": "2026-01-09T12:16:45.000Z",
+    "text": "Der angekündigte Schneefall in Norddeutschland bringt starkes Windverhalten und Unwetterwarnungen für mehrere Regionen.",
+    "bullets": [
+      "Schneefall im Norden Deutschlands unter starkem Wind.",
+      "Mehrere Regionen erhalten Unwetterwarnungen.",
+      "Autor des Artikels: Ingo Bertram."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "9bbjmpdvx",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
@@ -18,31 +60,28 @@
     "tags": [
       "Tagesschau",
       "News"
-    ],
-    "related": [
-      {
-        "id": "tq5fcujnt",
-        "source": "ZDF",
-        "sourceCountry": "🇩🇪",
-        "title": "EU-Staaten ratifizieren Mercosur-Freihandelsabkommen",
-        "originalTitle": "EU-Staaten stimmen für Mercosur-Abkommen - darum geht es",
-        "link": "https://www.zdfheute.de/politik/ausland/mercosur-abstimmung-eu-freihandel-abkommen-100.html",
-        "img": "https://www.zdfheute.de/assets/proteste-mercosur-abkommen-paris-100~384x216?cb=1767949192498",
-        "date": "2026-01-09T11:08:00.000Z",
-        "text": "Die EU-Staaten haben dem Abschluss des Mercosur-Freihandelsabkommens mit südamerikanischen Ländern zugestimmt, wodurch der Handel zwischen beiden Regionen ausgebaut wird.",
-        "bullets": [
-          "EU-Staaten haben das Freihandelsabkommen mit Mercosur zugestimmt",
-          "Das Abkommen betrifft südamerikanische Länder",
-          "Ziel ist die Ausweitung des Handels zwischen EU und Mercosur",
-          "Das Abkommen schafft neue Marktchancen für beide Seiten"
-        ],
-        "tags": [
-          "ZDF",
-          "News"
-        ],
-        "related": []
-      }
     ]
+  },
+  {
+    "id": "uug203fes",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Sturmtief Elli erschüttert Bahn- und Flugverkehr in Deutschland",
+    "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+    "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+    "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+    "date": "2026-01-09T12:00:00.000Z",
+    "text": "Die Sturmtief 'Elli' führt in Nord- und Süddeutschland zu Flugstreichungen und verlangsamten ICE-Verbindungen.",
+    "bullets": [
+      "Sturmtief 'Elli' verursacht Unwetterbedingungen in Nord- und Süddeutschland",
+      "Mehrere Flüge werden gestrichen",
+      "ICE-Verbindungen müssen verlangsamt werden"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
   },
   {
     "id": "qtb36k597",
@@ -61,6 +100,48 @@
     ],
     "tags": [
       "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "tq5fcujnt",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "EU-Staaten ratifizieren Mercosur-Freihandelsabkommen",
+    "originalTitle": "EU-Staaten stimmen für Mercosur-Abkommen - darum geht es",
+    "link": "https://www.zdfheute.de/politik/ausland/mercosur-abstimmung-eu-freihandel-abkommen-100.html",
+    "img": "https://www.zdfheute.de/assets/proteste-mercosur-abkommen-paris-100~384x216?cb=1767949192498",
+    "date": "2026-01-09T11:08:00.000Z",
+    "text": "Die EU-Staaten haben dem Abschluss des Mercosur-Freihandelsabkommens mit südamerikanischen Ländern zugestimmt, wodurch der Handel zwischen beiden Regionen ausgebaut wird.",
+    "bullets": [
+      "EU-Staaten haben das Freihandelsabkommen mit Mercosur zugestimmt",
+      "Das Abkommen betrifft südamerikanische Länder",
+      "Ziel ist die Ausweitung des Handels zwischen EU und Mercosur",
+      "Das Abkommen schafft neue Marktchancen für beide Seiten"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "wm12mnmyb",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Elli trifft Deutschland mit starkem Schneefall und Glatteis",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+    "date": "2026-01-09T11:06:00.000Z",
+    "text": "Der Wetterdienst warnt vor heftigen Schneefällen und Glatteis durch 'Elli', die Teile Deutschlands trifft.",
+    "bullets": [
+      "Elli bringt viel Schnee und Eiseskälte in Teile Deutschlands",
+      "Glatteis­gefahr besteht mit dem Sturm",
+      "Das Sturmtief soll sich am Wochenende langsam auflösen"
+    ],
+    "tags": [
+      "ZDF",
       "News"
     ],
     "related": []
@@ -83,50 +164,6 @@
     "tags": [
       "ZDF",
       "News"
-    ],
-    "related": [
-      {
-        "id": "wm12mnmyb",
-        "source": "ZDF",
-        "sourceCountry": "🇩🇪",
-        "title": "Elli trifft Deutschland mit starkem Schneefall und Glatteis",
-        "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-        "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
-        "date": "2026-01-09T11:06:00.000Z",
-        "text": "Der Wetterdienst warnt vor heftigen Schneefällen und Glatteis durch 'Elli', die Teile Deutschlands trifft.",
-        "bullets": [
-          "Elli bringt viel Schnee und Eiseskälte in Teile Deutschlands",
-          "Glatteis­gefahr besteht mit dem Sturm",
-          "Das Sturmtief soll sich am Wochenende langsam auflösen"
-        ],
-        "tags": [
-          "ZDF",
-          "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "uug203fes",
-        "source": "ZDF",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief Elli erschüttert Bahn- und Flugverkehr in Deutschland",
-        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
-        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
-        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
-        "date": "2026-01-09T12:00:00.000Z",
-        "text": "Die Sturmtief 'Elli' führt in Nord- und Süddeutschland zu Flugstreichungen und verlangsamten ICE-Verbindungen.",
-        "bullets": [
-          "Sturmtief 'Elli' verursacht Unwetterbedingungen in Nord- und Süddeutschland",
-          "Mehrere Flüge werden gestrichen",
-          "ICE-Verbindungen müssen verlangsamt werden"
-        ],
-        "tags": [
-          "ZDF",
-          "News"
-        ],
-        "related": []
-      }
     ]
   },
   {
@@ -148,8 +185,7 @@
     "tags": [
       "Tagesschau",
       "News"
-    ],
-    "related": []
+    ]
   },
   {
     "id": "v49yzctfi",
@@ -170,7 +206,6 @@
     "tags": [
       "Tagesschau",
       "News"
-    ],
-    "related": []
+    ]
   }
 ]
