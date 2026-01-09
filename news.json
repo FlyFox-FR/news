@@ -1,1 +1,173 @@
-
+[
+  {
+    "id": "ozyojyjij",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Müllberg stürzt auf Philippinen, eine Frau ums Leben",
+    "originalTitle": "Tote und Vermisste nach Einsturz von Müllberg auf den Philippinen",
+    "link": "https://www.tagesschau.de/ausland/asien/philippinen-muellberg-unglueck-100.html",
+    "img": null,
+    "date": "2026-01-09T11:55:45.000Z",
+    "text": "Ein bei starkem Regen eingestürzter Müllberg auf einer Deponie in den Philippinen hat mindestens eine Frau verunglückt und die Suche nach weiteren Vermissten anhält.",
+    "bullets": [
+      "Einsturz eines Müllbergs auf einer Deponie in den Philippinen durch heftigen Regen.",
+      "Mindestens eine Frau wurde bei dem Vorfall getötet.",
+      "Die Suche nach vermissten Personen dauert weiter an."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "mfqmf15xm",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "EU-Staaten geben Mehrheit grünes Licht für Mercosur-Freihandelsabkommen",
+    "originalTitle": "EU-Staaten stimmen für Mercosur-Abkommen - darum geht es",
+    "link": "https://www.zdfheute.de/politik/ausland/mercosur-abstimmung-eu-freihandel-abkommen-100.html",
+    "img": "https://www.zdfheute.de/assets/proteste-mercosur-abkommen-paris-100~384x216?cb=1767949192498",
+    "date": "2026-01-09T11:08:00.000Z",
+    "text": "Nach 25 Jahren intensiver Verhandlungen haben EU-Staaten ein Freihandelsabkommen mit den Mercosur‑Ländern verabschiedet.",
+    "bullets": [
+      "25 Jahre dauerte die Verhandlung der Abkommen",
+      "Mehrheit der EU‑Staaten stimmte für das Mercosur‑Freihandelsabkommen",
+      "Das Abkommen gilt zwischen der EU und den südamerikanischen Mercosur‑Ländern"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "jiotogx23",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "EU-Redaktion: Freihandelsabkommen mit Mercosur",
+        "originalTitle": "EU-Länder stimmen Mercosur-Freihandelsabkommen zu",
+        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/mercosur-abkommen-eu-102.html",
+        "img": null,
+        "date": "2026-01-09T12:14:12.000Z",
+        "text": "Die EU-Länder haben dem Freihandelsabkommen mit Brasilien, Argentinien, Uruguay und Paraguay zugestimmt.",
+        "bullets": [
+          "Die EU-Länder haben die nötige Mehrheit erreicht",
+          "Das Abkommen betrifft Brasilien, Argentinien, Uruguay und Paraguay",
+          "Verhandlungen haben über ein Jahrzehnt gedauert"
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "bs9fgavn9",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Bahn stoppt Fernverkehr im Norden wegen Wintersturm Elli",
+    "originalTitle": "\"Elli\" bringt Schnee: Bahn stoppt Fernverkehr im Norden",
+    "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+    "date": "2026-01-09T10:56:00.000Z",
+    "text": "Der Wintersturm \"Elli\" führt zum Ausfall von Fernverkehr und Schulunterricht in vielen Regionen Norddeutschlands.",
+    "bullets": [
+      "Deutsche Bahn legt den Fernverkehr im Norden ab",
+      "Viele Schulregionen  sehen Unterrichtsausfall",
+      "Wintersturm \"Elli\" sorgt bundesweit für schwierige Bedingungen"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "ivuud7rxx",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief \"Elli\" führt zu Zugverkehrseinschränkungen in Deutschland",
+        "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
+        "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+        "img": null,
+        "date": "2026-01-09T12:22:31.000Z",
+        "text": "Wintertief \"Elli\" verursacht im Norden und Osten Deutschlands Ausfälle und Fahrplanänderungen bei der Deutschen Bahn.",
+        "bullets": [
+          "Das Sturmtief \"Elli\" zieht über Deutschland und bringt starkes Schneefall und Eis",
+          "Der Zugverkehr im Norden Deutschlands ist laut der Bahn bis auf Weiteres eingestellt",
+          "Auch im Osten Deutschlands werden weitere Ausfälle des Bahnverkehrs erwartet"
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "6vzgd0l5u",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Winter in Deutschland: Schneefall im Norden trotz starkem Wind",
+        "originalTitle": "Wie sich der Winter in Deutschland verändert hat",
+        "link": "https://www.tagesschau.de/wissen/klima/unwetter-schnee-norddeutschland-klima-schneetage-100.html",
+        "img": null,
+        "date": "2026-01-09T12:16:45.000Z",
+        "text": "Der angekündigte Schneefall hat bereits im Norden Deutschlands Einzug gehalten und für einige Gebiete Unwetterwarnungen ausgelöst.",
+        "bullets": [
+          "Schneefall im Norden Deutschlands",
+          "Starker Wind trägt zum Regen bei",
+          "Unwetterwarnungen gelten für bestimmte Regionen",
+          "Artikel von Ingo Bertram"
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "pxvunxqb4",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief 'Elli' bringt starken Schneefall und extreme Kälte in Teilen Deutschlands",
+        "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+        "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+        "date": "2026-01-09T11:06:00.000Z",
+        "text": "'Elli' sorgt für viel Schnee, Eiseskälte und Glatteisgefahr, während sich das Tief am Wochenende allmählich auflockert.",
+        "bullets": [
+          "Schnee: hohe Niederschlagsmengen in betroffenen Regionen",
+          "Eiseskälte: Temperaturen unter -5 °C möglich",
+          "Glatteis: Gefahrenzone auf Gehwegen und Fahrbahnen"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "wad2rjbo6",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief 'Elli' verursacht Verzögerungen und Stornierungen im deutschen Verkehrsnetz",
+        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+        "date": "2026-01-09T12:00:00.000Z",
+        "text": "Sturmtief 'Elli' bringt Bahn- und Flugpläne ins Wanken",
+        "bullets": [
+          "Das Unwetter betrifft Deutschland",
+          "Mehrere Flüge wurden gestrichen",
+          "ICE-Verbindungen mussten verlangsamt werden"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  }
+]
