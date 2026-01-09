@@ -1,6 +1,20 @@
 [
   {
-    "id": "x0gqhvuzz",
+    "id": "vbepsx44h",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Amthor: Wegner \"erschüttert Glaubwürdigkeit\"",
+    "link": "https://www.zdfheute.de/politik/deutschland/lanz-cdu-amthor-koalition-100.html",
+    "img": "https://www.zdfheute.de/assets/lanz-amthor-cdu-100~384x216?cb=1767916888404",
+    "date": "2026-01-08T23:51:00.000Z",
+    "text": "Amthor: Wegner \"erschüttert Glaubwürdigkeit\"",
+    "context": "",
+    "tags": [
+      "ZDF"
+    ]
+  },
+  {
+    "id": "21khyd81h",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
@@ -14,7 +28,7 @@
     ]
   },
   {
-    "id": "vcxhv85i4",
+    "id": "i5zxxhzgy",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Glätte, Schnee, Eis: Wo der Wetterdienst jetzt warnt",
@@ -28,7 +42,7 @@
     ]
   },
   {
-    "id": "kyukjk9gr",
+    "id": "ruktohkl2",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Venezuela will viele Gefangene freilassen",
@@ -42,7 +56,7 @@
     ]
   },
   {
-    "id": "ehjr45m3r",
+    "id": "p5jnku9x2",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Wegen anhaltender Proteste: Iran verhängt Internetsperre",
@@ -56,7 +70,7 @@
     ]
   },
   {
-    "id": "vwfj3vumv",
+    "id": "sfdl1re9z",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Russische Angriffe legen Stromversorgung in Südukraine lahm",
@@ -70,21 +84,7 @@
     ]
   },
   {
-    "id": "aatxdzeyk",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Tennis im Blackout - Berlins Bürgermeister in der Kritik",
-    "link": "https://www.zdfheute.de/politik/deutschland/wegner-buergermeister-berlin-kritik-umgang-stromausfall-100.html",
-    "img": "https://www.zdfheute.de/assets/kai-wegner-128~384x216?cb=1767892081704",
-    "date": "2026-01-08T19:19:00.000Z",
-    "text": "Tennis im Blackout - Berlins Bürgermeister in der Kritik",
-    "context": "",
-    "tags": [
-      "ZDF"
-    ]
-  },
-  {
-    "id": "187lveeog",
+    "id": "vj9uck2af",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Was Trumps Plan einer \"Traum-Armee\" bedeutet",
@@ -98,7 +98,7 @@
     ]
   },
   {
-    "id": "delde3j90",
+    "id": "lsx8blw74",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Abschluss von Klausurtagung: Was die CSU jetzt durchsetzen will",
