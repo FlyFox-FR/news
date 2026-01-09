@@ -42,42 +42,19 @@
     ],
     "related": [
       {
-        "id": "dgsxxavn7",
-        "source": "rbb24",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief „Elli“: Schwerer Schneefall erwartet, Berlin & Brandenburg weniger betroffen",
-        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
-        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
-        "img": null,
-        "date": "2026-01-09T14:50:19.000Z",
-        "text": "Sturmtief Elli bringt heftige Schneefälle und starken Wind nach Deutschland, während Berlin und Brandenburg eher milde Auswirkungen erleben.",
-        "bullets": [
-          "Sturmtief ‚Elli‘ bringt starken Wind und viel Schnee nach Deutschland.",
-          "Behörden und Wetterdienste rufen zur Vorsicht auf.",
-          "Berlin und Brandenburg werden werden weniger stark getroffen als zunächst befürchtet.",
-          "Alle Entwicklungen werden im Liveticker verfolgt."
-        ],
-        "tags": [
-          "rbb24",
-          "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "iwe04ii1v",
+        "id": "9j36q17cn",
         "source": "ZDF",
         "sourceCountry": "🇩🇪",
-        "title": "Eisige Welle 'Elli' bringt starken Schneefall und Eiseskälte in Deutschland",
-        "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-        "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
-        "date": "2026-01-09T12:42:00.000Z",
-        "text": "Der Wetterdienst warnt vor starkem Schneefall, Eiseskälte und Glatteis in Teilen Deutschlands, begleitet von einem waghalsigen Sturmtief, das sich jedoch am Wochenende abschwächen wird.",
+        "title": "Sturmtief 'Elli' stört Bahn- und Flugverkehr",
+        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+        "date": "2026-01-09T12:00:00.000Z",
+        "text": "Sturmtief 'Elli' führt zu Flugstreichungen und verlangsamten ICE-Verbindungen im Norden und Süden Deutschlands.",
         "bullets": [
-          "Starker Schneefall und Eiseskälte in Teilen Deutschlands",
-          "Gefahr von Glatteis trotz kühler Temperaturen",
-          "Sturmtief trägt zu hohen Winden bei",
-          "Das Sturmtief soll sich am Wochenende langsam auflösen"
+          "Das Unwetter hat im Norden und Süden Deutschlands zu erheblichen Verkehrsbehinderungen geführt.",
+          "Zahlreiche Flüge wurden gestrichen und ICE-Verbindungen mussten heruntergefahren.",
+          "Reisende werden gebeten, alternative Transportmöglichkeiten zu prüfen."
         ],
         "tags": [
           "ZDF",
@@ -110,6 +87,28 @@
     "related": []
   },
   {
+    "id": "rwf34ehl3",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Merz, Wegner und Haseloff im Fokus eines turbulenten Jahres",
+    "originalTitle": "Das Jahr der Wahrheit für Friedrich Merz",
+    "link": "https://www.zdfheute.de/politik/deutschland/merz-cdu-wahljahr-analyse-100.html",
+    "img": "https://www.zdfheute.de/assets/friedrich-merz-766~384x216?cb=1767948677799",
+    "date": "2026-01-09T14:24:00.000Z",
+    "text": "Das Jahr 2026 gilt im CDU-Innenpolitischen Kontext als turbulent, geprägt von Führungswechseln und einer abgesagten Vorstandssitzung.",
+    "bullets": [
+      "Friedrich Merz steht im Mittelpunkt der Diskussion.",
+      "Kai Wegner gerät in Berlin in eine politische Verwicklung.",
+      "Rainer Haseloff tritt als CDU-Generalsekretär ab.",
+      "Die Bundesvorstands-Klausur der CDU wird abgesagt."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "23mdsl6m8",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -124,6 +123,49 @@
       "SPD- und CDU-Fraktionen haben geschlossen dagegen gestimmt",
       "BSW-Abgeordnete haben den AfD-Antrag unterstützt",
       "Das Geschehen betrifft den Potsdamer Landtag, Sitz des Landtags von Brandenburg"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "japcnqqqm",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Füchse Berlin sichern Transfer‑Coup mit Dika Mem",
+    "originalTitle": "Transfer-Coup perfekt: Füchse Berlin holen Weltklasse-Spieler Dika Mem",
+    "link": "https://www.rbb24.de/sport/beitrag/2026/01/fuechse-berlin-neuzugang-handball-dika-mem-barcelona.html",
+    "img": null,
+    "date": "2026-01-09T14:18:54.000Z",
+    "text": "Die Füchse Berlin legen den Transfer des Weltklasse‑Spielers Dika Mem offiziell fest.",
+    "bullets": [
+      "Füchse Berlin – die Berliner Basketballmannschaft",
+      "Dika Mem – weltklasse Basketballspieler, Ziel des Transfers",
+      "Transfer‑Coup – Hinweis auf die erfolgreiche Verhandlung des Spielertrades"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "4x50fa3kb",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Übung offenbart Lücken im Potsdamer Katastrophenschutz",
+    "originalTitle": "Übung offenbart Lücken im Potsdamer Katastrophenschutz",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/potsdam-katastrophenschutz-auswertung-uebung-technik-zentrum-verbesserung.html",
+    "img": null,
+    "date": "2026-01-09T14:15:21.000Z",
+    "text": "Eine jüngste Katastrophenschutzübung in Potsdam hat schwerwiegende Schwachstellen im regionalen Einsatzplan aufgedeckt.",
+    "bullets": [
+      "Potsdam (Stadt)",
+      "Katastrophenschutzübung (regionaler Einsatzplan)",
+      "Aufgedeckte Schwachstellen in der Ausrüstungs- und Kommunikationsinfrastruktur",
+      "Bewertung der Reaktionszeiten während der Übung"
     ],
     "tags": [
       "rbb24",
@@ -153,6 +195,92 @@
     "related": []
   },
   {
+    "id": "3arxswn82",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Autoindustrie als Konjunkturtreiber",
+    "originalTitle": "Industrieproduktion - Rettet die Autoindustrie die Konjunktur?",
+    "link": "https://www.tagesschau.de/wirtschaft/finanzen/elektroautos-konjunktur-industrieproduktion-100.html",
+    "img": null,
+    "date": "2026-01-09T13:52:15.000Z",
+    "text": "Ein kräftiges Produktionsplus der Autoindustrie, vor allem deutscher E‑Autos, ankurbelt die Konjunktur.",
+    "bullets": [
+      "Die Autoindustrie verzeichnete zuletzt ein starkes Produktionsplus.",
+      "German electric cars are in high demand."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "iwe04ii1v",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Eisige Welle 'Elli' bringt starken Schneefall und Eiseskälte in Deutschland",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+    "date": "2026-01-09T12:42:00.000Z",
+    "text": "Der Wetterdienst warnt vor starkem Schneefall, Eiseskälte und Glatteis in Teilen Deutschlands, begleitet von einem waghalsigen Sturmtief, das sich jedoch am Wochenende abschwächen wird.",
+    "bullets": [
+      "Starker Schneefall und Eiseskälte in Teilen Deutschlands",
+      "Gefahr von Glatteis trotz kühler Temperaturen",
+      "Sturmtief trägt zu hohen Winden bei",
+      "Das Sturmtief soll sich am Wochenende langsam auflösen"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "3kgc37tam",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "EU-Mercosur-Abkommen: Nach 26 Jahren Verhandlungen entsteht eines der größten Freihandelsbündnisse der Welt",
+    "originalTitle": "Mercosur-Abkommen: EU und Südamerika schaffen großes Freihandelsbündnis",
+    "link": "https://www.spiegel.de/wirtschaft/service/mercosur-abkommen-eu-und-suedamerika-schaffen-grosses-freihandelsbuendnis-a-852b4229-f808-4292-a615-fa443bf9a129#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/3093cd6d-bca1-46eb-9cd8-719486f2ce41_w520_r2.08_fpx58.04_fpy50.97.jpg",
+    "date": "2026-01-09T11:54:00.000Z",
+    "text": "Ein nach Jahrzehnten langem Konsens nun tragfähiges EU‑Mercosur‑Handelsabkommen steht bereit.",
+    "bullets": [
+      "26 Jahre Verhandlungen zwischen EU und Mercosur-Staaten",
+      "Ein neues EU‑Mercosur‑Freihandelsbündnis als bedeutendste Nachkaufensänderung",
+      "Gewährleistung eines der weltweit größten Handelsabkommen"
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "jvbm8lz72",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Mercosur-Abkommen: Chancen für Politik und Wirtschaft, Sorgen für Bauern",
+        "originalTitle": "Wie Bauern und Wirtschaft auf das Mercosur-Abkommen blicken",
+        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/mercosur-abkommen-bauern-wirtschaft-100.html",
+        "img": null,
+        "date": "2026-01-09T13:20:30.000Z",
+        "text": "Der EU-Mercosur-Freihandelsvertrag eröffnet deutsche Politik und Wirtschaft neue Möglichkeiten, während Bauern vor unfairem Wettbewerb fürchten.",
+        "bullets": [
+          "Vier Mercosur-Staaten sind im Abkommen enthalten",
+          "Deutschland beteiligt sich aktiv an den Verhandlungen",
+          "Bauern befürchten einen unfairen Wettbewerb",
+          "Artikel verfasst von Dietrich Karl Mäurer"
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
     "id": "f2ephqvmm",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -171,6 +299,50 @@
       "Spiegel",
       "News"
     ],
-    "related": []
+    "related": [
+      {
+        "id": "dgsxxavn7",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief „Elli“: Schwerer Schneefall erwartet, Berlin & Brandenburg weniger betroffen",
+        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
+        "img": null,
+        "date": "2026-01-09T14:50:19.000Z",
+        "text": "Sturmtief Elli bringt heftige Schneefälle und starken Wind nach Deutschland, während Berlin und Brandenburg eher milde Auswirkungen erleben.",
+        "bullets": [
+          "Sturmtief ‚Elli‘ bringt starken Wind und viel Schnee nach Deutschland.",
+          "Behörden und Wetterdienste rufen zur Vorsicht auf.",
+          "Berlin und Brandenburg werden werden weniger stark getroffen als zunächst befürchtet.",
+          "Alle Entwicklungen werden im Liveticker verfolgt."
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "eumraseh0",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Winter in Deutschland: Schnee, Sturm und Glätte erhöhen die Belastung",
+        "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
+        "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
+        "date": "2026-01-08T19:56:00.000Z",
+        "text": "Aktuell erlebt das Land besonders stürmische Schneefälle, bei denen Schnee, Sturm und Glätte vorherrschen.",
+        "bullets": [
+          "Der Winter ist von starkem Schnee, Sturm und Glätte geprägt.",
+          "Mehrere Regionen Deutschlands sind stark betroffen.",
+          "Es wird diskutiert, ob die Temperaturen kälter und die Schneefälle höher sind als üblich."
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ],
+        "related": []
+      }
+    ]
   }
 ]
