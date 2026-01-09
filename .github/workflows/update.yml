@@ -36,3 +36,19 @@ jobs:
         git add news.json
         git commit -m "Update News" || echo "Keine Änderungen"
         git push
+        
+    - name: Create Config File
+      run: |
+        # Wir erstellen ein JSON mit dem Repo-Namen aus der GitHub-Variable
+        echo '{ "repository": "${{ github.repository }}" }' > config.json
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name 'NewsBot'
+        git config --global user.email 'bot@noreply.github.com'
+        # WICHTIG: config.json mit hinzufügen!
+        git add news.json config.json
+        git commit -m "Update News & Config" || echo "Keine Änderungen"
+        git push
+
+        
