@@ -482,9 +482,18 @@
                             ${metaExtra}
                         </div>
                         <a href="${item.link}" target="_blank" class="card-title">${highlightText(item.title, searchTerm)}</a>
-                        ${item.text ? `<div class="scoop">${highlightText(item.text, searchTerm)}</div>` : ''}
-                        <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
-                    </div>
+                    
+                    // NEU: Zeigt im Zen-Modus den Volltext, sonst die Zusammenfassung
+${
+    isZenMode && item.content 
+    ? `<div class="zen-content">${highlightText(item.content.replace(/\.\.\./g, '<br><br>'), searchTerm)}</div>` 
+    : `
+        ${item.text ? `<div class="scoop">${highlightText(item.text, searchTerm)}</div>` : ''}
+        <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
+      `
+}
+            
+                        </div>
                     <div class="actions">
                         <a href="${item.link}" target="_blank" class="btn-link">Artikel lesen →</a>
                         <div style="display:flex; gap:12px; align-items:center">
