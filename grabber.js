@@ -5,21 +5,41 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- Ähnlichkeits-Check (Repariert) ---
+// --- ÄHNLICHKEITS-CHECK (Verbessert & Lockerer) ---
 function isSimilar(title1, title2) {
     if (!title1 || !title2) return false;
-    
-    // Alles klein, Sonderzeichen weg, in Wörter splitten
-    const clean = t => t.toLowerCase().replace(/[^\w\säöüß]/g, '').split(/\s+/).filter(w => w.length > 3);
+
+    // Füllwörter, die wir ignorieren (Rauschen)
+    const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach"];
+
+    const clean = t => t.toLowerCase()
+        .replace(/[^\w\säöüß]/g, ' ') // Sonderzeichen zu Leerzeichen
+        .split(/\s+/)
+        .filter(w => w.length > 2) // Nur Wörter > 2 Zeichen
+        .filter(w => !stopWords.includes(w)); // Keine Füllwörter
+
     const words1 = clean(title1);
     const words2 = clean(title2);
 
-    // Schnittmenge berechnen
-    const matches = words1.filter(w => words2.includes(w)).length;
+    // Zählen der Treffer
+    let matches = 0;
+    words1.forEach(w1 => {
+        if (words2.includes(w1)) matches++;
+    });
     
-    // Wenn mehr als 3 wichtige Wörter gleich sind oder 40% Übereinstimmung
-    const threshold = Math.min(words1.length, words2.length) * 0.4; 
-    return matches >= 3 || matches > threshold;
+    // Wir prüfen auch Teilwörter (z.B. "Wintersturm" matcht "Sturm")
+    words1.forEach(w1 => {
+        words2.forEach(w2 => {
+            if (w1 !== w2 && (w1.includes(w2) || w2.includes(w1)) && w1.length > 4 && w2.length > 4) {
+                matches++;
+            }
+        });
+    });
+
+    // Wenn 2 oder mehr SIGNIFIKANTE Wörter gleich sind -> Match!
+    // Oder wenn mehr als 40% des Titels identisch sind.
+    const threshold = Math.min(words1.length, words2.length) * 0.4;
+    return matches >= 2 || matches > threshold;
 }
 
 function loadExistingNews() {
@@ -30,102 +50,67 @@ function loadExistingNews() {
 }
 
 async function analyzeWithPollinations(title, content, sourceName) {
-    // Input kürzen
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
     const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
     
     Antworte NUR mit validem JSON.
     ANWEISUNG:
-    1. Suche nach harten Fakten (Zahlen, Orte, Namen).
-    2. Schreibe 2-4 Bulletpoints.
+    1. Sprache: ZWINGEND DEUTSCH (Egal welche Sprache der Input hat!).
+    2. Suche nach harten Fakten (Zahlen, Orte, Namen).
+    3. Schreibe 2-4 Bulletpoints.
     
     Format:
     {
-      "newTitle": "Sachliche Überschrift",
+      "newTitle": "Sachliche Überschrift (Deutsch)",
       "scoop": "Kernaussage in einem Satz.",
       "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
     }`;
     
-    // Seed verhindert Caching
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
     let retries = 3;
     while (retries > 0) {
         try {
-            const response = await axios.get(url, { timeout: 35000 });
-            
+            const response = await axios.get(url, { timeout: 40000 });
             let rawText = response.data;
             if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
 
-            // --- AGGRESSIVER CLEANER ---
-            // 1. Werbung weg
+            // Cleaning
             rawText = rawText.split("--- Support")[0]; 
             rawText = rawText.split("🌸 Ad")[0];
-            
-            // 2. Markdown weg (```json ... ```)
             rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
 
-            // 3. Alles vor { und nach } abschneiden
             const firstOpen = rawText.indexOf('{');
             const lastClose = rawText.lastIndexOf('}');
-            
-            if (firstOpen !== -1 && lastClose !== -1) {
-                rawText = rawText.substring(firstOpen, lastClose + 1);
-            }
+            if (firstOpen !== -1 && lastClose !== -1) rawText = rawText.substring(firstOpen, lastClose + 1);
 
             let data;
-            try {
-                data = JSON.parse(rawText);
-            } catch (jsonError) {
-                // Letzter Rettungsversuch: Manchmal fehlen Anführungszeichen bei Keys
-                console.log("⚠️ JSON kaputt, nutze Fallback-Daten.");
-                throw new Error("JSON Broken");
-            }
-
-            // Validierung
-            if (!data.bullets || !Array.isArray(data.bullets)) data.bullets = [];
+            try { data = JSON.parse(rawText); } catch (e) { throw new Error("JSON Error"); }
             
-            // Aufzählungszeichen entfernen
+            if (!data.bullets) data.bullets = [];
             data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
 
-            return { 
-                summary: data.scoop || title, 
-                newTitle: data.newTitle || title, 
-                bullets: data.bullets,   
-                tags: [sourceName, "News"] 
-            };
+            return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
 
         } catch (error) {
-            const status = error.response?.status;
-            
-            if (status === 429) {
+            if (error.response?.status === 429) {
                 console.log(`🛑 Zu schnell! Warte 30s...`);
-                await sleep(30000); 
-                retries--;
-                continue; 
+                await sleep(30000); retries--; continue; 
             }
-
-            // Bei JSON Fehlern warten wir kurz und probieren es nochmal (neuer Seed hilft oft)
             console.error(`⚠️ Fehler: ${error.message}. Warte kurz...`);
-            await sleep(5000);
-            retries--;
+            await sleep(5000); retries--;
         }
     }
-
-    // Harter Fallback (damit das Skript nicht abbricht)
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Fixed Edition)...");
+    console.log("🚀 Starte News-Abruf (Better Clustering)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
-    catch(e) { 
-        console.log("⚠️ Keine sources.json, nutze Standard.");
-        sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; 
-    }
+    catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
 
     const existingNews = loadExistingNews();
     let newNewsFeed = [];
@@ -137,50 +122,60 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Wir generieren IMMER neu (außer es ist exakt derselbe Link im Cache mit Bullets)
-                // Cache-Check für exakte Performance
-                const cached = existingNews.find(n => n.link === item.link);
-                if (cached && cached.bullets && cached.bullets.length > 0) {
-                     // Check ob es schon im neuen Feed gruppiert wurde? Nein, wir laden es erstmal.
-                     // Wir verarbeiten cached items genauso wie neue, um Gruppierung zu prüfen
-                }
-
-                console.log(`🤖 Analysiere: ${item.title.substring(0, 30)}...`);
+                // 1. DUPLETTE PRÜFEN (Im aktuellen Lauf - BEVOR wir KI fragen)
+                // Wir schauen, ob im NEUEN Feed schon was Ähnliches liegt
+                const parentIndex = newNewsFeed.findIndex(n => isSimilar(n.originalTitle, item.title));
                 
-                const rawContent = item.contentSnippet || item.content || "";
-                
-                // KI Analyse starten
-                const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
-                
-                const newsItem = {
+                // Wir bauen das Item vorläufig (ohne KI Text)
+                const tempItem = {
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
                     sourceCountry: source.country || "🌍",
-                    title: ai.newTitle || item.title,
+                    title: item.title, // Vorläufiger Titel
                     originalTitle: item.title,
                     link: item.link,
                     img: item.enclosure?.url || item.itunes?.image || null,
                     date: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
-                    text: ai.summary,
-                    bullets: ai.bullets,
-                    tags: ai.tags,
-                    related: [] 
+                    text: "Lade Details...",
+                    bullets: [],
+                    tags: [],
+                    related: []
                 };
 
-                // --- GRUPPIERUNG ---
-                // Prüfen: Haben wir schon eine ähnliche Story im 'newNewsFeed'?
-                const parentIndex = newNewsFeed.findIndex(n => isSimilar(n.originalTitle, item.title));
-
                 if (parentIndex !== -1) {
-                    console.log(`🔗 Gruppiere "${item.title.substring(0,20)}..." zu existierender Story.`);
-                    // Als Variante hinzufügen
-                    newNewsFeed[parentIndex].related.push(newsItem);
+                    console.log(`🔗 TREFFER! Gruppiere "${item.title.substring(0,20)}..." zu existierender Story.`);
+                    // Wir müssen die Variante trotzdem analysieren, damit wir Bullets für sie haben!
+                    // (User-Wunsch: Inhalt nicht überspringen)
+                    const rawContent = item.contentSnippet || item.content || "";
+                    const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
+                    
+                    tempItem.title = ai.newTitle;
+                    tempItem.text = ai.summary;
+                    tempItem.bullets = ai.bullets;
+                    tempItem.tags = ai.tags;
+
+                    newNewsFeed[parentIndex].related.push(tempItem);
                 } else {
                     // Neue Haupt-Story
-                    newNewsFeed.push(newsItem);
+                    // Check Cache (um API zu sparen)
+                    const cached = existingNews.find(n => n.link === item.link);
+                    if (cached && cached.bullets && cached.bullets.length > 0) {
+                        console.log(`♻️ Aus Cache (Hauptstory): ${item.title.substring(0,20)}...`);
+                        newNewsFeed.push({ ...cached, lastUpdated: new Date() });
+                    } else {
+                        console.log(`🤖 Generiere Hauptstory: ${item.title.substring(0, 30)}...`);
+                        const rawContent = item.contentSnippet || item.content || "";
+                        const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
+                        
+                        tempItem.title = ai.newTitle;
+                        tempItem.text = ai.summary;
+                        tempItem.bullets = ai.bullets;
+                        tempItem.tags = ai.tags;
+                        
+                        newNewsFeed.push(tempItem);
+                    }
                 }
                 
-                // 10 Sekunden Pause für API-Stabilität
                 await sleep(10000); 
             }
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
@@ -188,7 +183,7 @@ async function run() {
 
     newNewsFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     fs.writeFileSync('news.json', JSON.stringify(newNewsFeed, null, 2));
-    console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten-Cluster.`);
+    console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten-Cluster gespeichert.`);
 }
 
 run();
