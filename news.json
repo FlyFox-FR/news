@@ -1,5 +1,240 @@
 [
   {
+    "id": "rn5m7z2zj",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Landtag lehnt Auflösung des Potsdamer Landtags ab",
+    "originalTitle": "Landtag lehnt Antrag auf Auflösung ab - BSW-Abgeordnete stimmen mit AfD",
+    "link": "https://www.rbb24.de/politik/beitrag/2026/01/brandenburg-landtag-afd-antrag-abwahl-gruhn-gescheitert.html",
+    "img": null,
+    "date": "2026-01-09T16:40:16.000Z",
+    "text": "Im Potsdamer Landtag wurde der Auflösungsantrag abgelehnt; AfD und BSW unterstützten den Antrag, während SPD und CDU dagegen stimmten.",
+    "bullets": [
+      "Potsdam – Ort der Abstimmung",
+      "AfD – Antragsteller und Unterstützer",
+      "BSW – unterstützte den Auflösungsantrag",
+      "SPD und CDU – stimmten gegen die Auflösung"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "qnynrj0kb",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Sturmtief Elli betrifft Bahn- und Flugverkehr in Deutschland",
+    "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+    "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+    "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+    "date": "2026-01-09T16:36:00.000Z",
+    "text": "Sturmtief Elli führt zu Flugabsagen und verlangsamten ICE-Verbindungen in Nord- und Süddeutschland.",
+    "bullets": [
+      "Mehrere Flüge in Deutschland wurden gestrichen",
+      "ICE-Verbindungen mussten im gesamten Land verlangsamt werden",
+      "Bodenverkehr in Nord- und Süddeutschland ist stark beeinträchtigt"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "29oan9gc0",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief 'Elli' führt zu bundesweiten Zugausfällen",
+        "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
+        "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+        "img": null,
+        "date": "2026-01-09T16:39:44.000Z",
+        "text": "Der Wintertief 'Elli' verursacht in Nord‑ und Ostdeutschland umfangreiche Zugverkehrsbeschränkungen, die der Deutschen Bahn zufolge bis auf Weiteres in Bayern und im Osten führend sein werden.",
+        "bullets": [
+          "Sturmtief 'Elli' zieht über Deutschland mit starkem Schneefall und Eis.",
+          "Zugverkehr im Norden Deutschlands bleibt laut Bahn bis auf Weiteres eingestellt.",
+          "Auch in Ostdeutschland werden Ausfälle erwartet.",
+          "Deutsche Bahn kündigt weitere Einschränkungen, insbesondere im Osten, an."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "yfhm7irox",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
+        "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
+        "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
+        "date": "2026-01-09T16:20:00.000Z",
+        "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
+        "bullets": [
+          "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
+          "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
+          "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ]
+      },
+      {
+        "id": "dgyaff61x",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
+        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
+        "img": null,
+        "date": "2026-01-09T16:15:07.000Z",
+        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
+        "bullets": [
+          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
+          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
+          "Behörden und Wetterdienste rufen zur Vorsicht auf"
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "78ui2nisc",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
+        "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
+        "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+        "date": "2026-01-09T16:09:00.000Z",
+        "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
+        "bullets": [
+          "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
+          "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
+          "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ]
+      },
+      {
+        "id": "a89lw1t3u",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Wetter: Schnee, Sturm und Glätte – Ist der Winter in Deutschland wirklich außergewöhnlich?",
+        "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
+        "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
+        "date": "2026-01-08T19:56:00.000Z",
+        "text": "Der Beitrag erörtert, ob der aktuelle Winter mit Schnee, Sturm und Glätte in Deutschland kälter und verschneit ist als üblich, und beleuchtet die regionale Wahrnehmung.",
+        "bullets": [
+          "Der Artikel beschreibt ungewöhnliche Wetterbedingungen – Schnee, Sturm und Glätte.",
+          "Er stellt die Frage, ob der aktuelle Winter in Deutschland tatsächlich kälter und verschneiter ist als üblich.",
+          "Der Fokus liegt auf der regionalen Wahrnehmung und der Erkundung, wie diese Wetterlage wirkt."
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "vnvlud4bi",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Schweiz gedenkt 40 Opfern des Crans-Montana-Desasters",
+    "originalTitle": "Schweiz nimmt Abschied von 40 Opfern",
+    "link": "https://www.zdfheute.de/panorama/trauerfeier-silvester-brand-crans-montana-100.html",
+    "img": "https://www.zdfheute.de/assets/gedenken-opfer-crans-montana-100~384x216?cb=1767968279328",
+    "date": "2026-01-09T16:30:00.000Z",
+    "text": "Bei dem Feuer in Crans-Montana verloren 40 Menschen ihr Leben; Präsident Parmelin ruft auf lückenlose Aufklärung, Ministerpräsident Kretschmann besucht den Tatort.",
+    "bullets": [
+      "40 Todesopfer beim Inferno von Crans-Montana",
+      "Ort: Crans-Montana, Schweiz",
+      "Präsident Parmelin fordert lückenlose Aufklärung",
+      "Ministerpräsident Kretschmann ist vor Ort"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "mrru0kk95",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Crans-Montana: Brandunglück in Bar – Besitzer in Untersuchungshaft",
+        "originalTitle": "Crans-Montana: Einer der Bar-Besitzer in Untersuchungshaft",
+        "link": "https://www.zdfheute.de/panorama/schweiz-crans-montana-brand-trauer-aussage-bar-betreiber-100.html",
+        "img": "https://www.zdfheute.de/assets/betreiber-der-bar-le-constellation-schweiz-100~384x216?cb=1767963918180",
+        "date": "2026-01-09T16:28:00.000Z",
+        "text": "Ein Barbesitzer in Crans-Montana befindet sich nach Brandunglücke in Untersuchungshaft, während der Bundespräsident Aufklärung ohne Verzögerung verlangt.",
+        "bullets": [
+          "Ort des Brandes: Crans-Montana",
+          "Betroffener: einer der Barbesitzer",
+          "Verhaftung: Untersuchungshaft (U-Haft)",
+          "Reaktion: Bundespräsident fordert Aufklärung ohne Verzögerungen"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ]
+      },
+      {
+        "id": "7lzgieuk4",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Operativer Barbrand in Crans-Montana: 40 Tote, Betreiber in Untersuchungshaft",
+        "originalTitle": "Crans-Montana – Le Constellation: Behörden nehmen Betreiber fest",
+        "link": "https://www.spiegel.de/panorama/justiz/crans-montana-le-constellation-behoerden-nehmen-betreiber-fest-a-6e7934df-8fc9-4696-bd05-9589e6976e92#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/fc71927e-5477-4f7e-bb49-31bb75f89189_w520_r2.08_fpx30.02_fpy46.98.jpg",
+        "date": "2026-01-09T15:07:00.000Z",
+        "text": "Bei einem Brand einer Bar in Crans-Montana, Schweiz, wurden 40 Menschen getötet und der Betreiber hält sich in Untersuchungshaft.",
+        "bullets": [
+          "Ort: Crans-Montana, Schweiz",
+          "Todesopfer: 40 Personen",
+          "Der Betreiber befindet sich in Untersuchungshaft"
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "u7s267lz9",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Feuer in Crans-Montana erschüttert Vertrauen Italiens in Schweizer Justiz",
+        "originalTitle": "Crans-Montana: In Italien ist das Vertrauen in die Schweizer Justiz erschüttert",
+        "link": "https://www.spiegel.de/ausland/crans-montana-in-italien-ist-das-vertrauen-in-die-schweizer-justiz-erschuettert-a-e47289c5-41b4-4128-bd9c-c2526a39121b#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/f5a0c884-ce59-4d79-aa73-8d4574aa6b2a_w520_r2.08_fpx68.67_fpy55.jpg",
+        "date": "2026-01-09T12:59:00.000Z",
+        "text": "Ein Brand in Crans-Montana tötete junge Menschen aus Frankreich und Italien, was in beiden Ländern Kritik an der Vorgehensweise der Schweizer Behörden auslöst.",
+        "bullets": [
+          "Ort des Brandes: Crans-Montana, Schweiz",
+          "Betroffene: junge Personen aus Frankreich und Italien, die beim Brand ums Leben kamen",
+          "Reaktion Italiens: Politiker und Angehörige fordern eine umfassende Beobachtung der Ermittlungen und kritisieren das Vorgehen der Schweizer Justiz",
+          "Gleichzeitige Kritik in Frankreich, weil dort ebenfalls Angehörige betroffen sind"
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
     "id": "539px17tr",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -40,23 +275,45 @@
           "News"
         ],
         "related": []
+      },
+      {
+        "id": "5ffwp5lpg",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Wegner im Tennis bei Stromausfall in Südwesten Berlins",
+        "originalTitle": "Wegners Tennisspiel während Stromausfall: \"Wenn es zu einer solchen Krise kommt, sollte man als politischer Akteur vor Ort sein\"",
+        "link": "https://www.rbb24.de/politik/beitrag/2026/01/berlin-stromausfall-wegner-tennis-inszenierung-interview.html",
+        "img": null,
+        "date": "2026-01-09T11:56:19.000Z",
+        "text": "Regierender Bürgermeister Kai Wegner spielte Tennis, als im Südwesten Berlins ein Stromausfall stattfand, und nahm die Situation zunächst nicht zugegeben.",
+        "bullets": [
+          "Regierender Bürgermeister Kai Wegner war im Südwesten Berlins beim Tennis aktiv.",
+          "Am ersten Tag des Stromausfalls in Südwesten Berlins hat er die Krisensituation zunächst nicht zugegeben.",
+          "Ein Medienwirkungsforscher bezeichnet die Reaktion des Politikers als vertane Chance."
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ],
+        "related": []
       }
     ]
   },
   {
-    "id": "yfhm7irox",
+    "id": "cv0l58pbv",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
-    "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
-    "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
-    "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
-    "date": "2026-01-09T16:20:00.000Z",
-    "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
+    "title": "USA entern Öltanker Olina in der Karibik",
+    "originalTitle": "USA entern erneut Öltanker in der Karibik",
+    "link": "https://www.spiegel.de/ausland/usa-entern-erneut-oeltanker-in-der-karibik-a-c10b59c6-008c-463b-9e21-80e8a42f32d0#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/7211b4c2-562d-4e74-a0c9-9bbc162fc600_w520_r2.08_fpx44.16_fpy50.jpg",
+    "date": "2026-01-09T16:26:00.000Z",
+    "text": "US-Streitkräfte übernehmen zum fünften Mal in kurzer Zeit einen Öltanker, der russisches Öl transportiert.",
     "bullets": [
-      "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
-      "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
-      "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
+      "Der Öltanker „Olina“ wird zum fünften seismischen Einsatz des Jahres genommen.",
+      "Der Schiffsbesatzung soll russisches Öl transportiert haben.",
+      "Die Festnahme erfolgte in der Karibik, genauer im Region maritime Annäherung von Südamerika.",
+      "US-Einsatzkräfte haben die Kontrolle über das Schiff übernommen."
     ],
     "tags": [
       "Spiegel",
@@ -64,110 +321,26 @@
     ],
     "related": [
       {
-        "id": "dgyaff61x",
-        "source": "rbb24",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
-        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
-        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
-        "img": null,
-        "date": "2026-01-09T16:15:07.000Z",
-        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
-        "bullets": [
-          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
-          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
-          "Behörden und Wetterdienste rufen zur Vorsicht auf"
-        ],
-        "tags": [
-          "rbb24",
-          "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "29oan9gc0",
+        "id": "t9tzpe4f4",
         "source": "Tagesschau",
         "sourceCountry": "🇩🇪",
-        "title": "Sturmtief 'Elli' führt zu bundesweiten Zugausfällen",
-        "originalTitle": "Liveblog zum Sturmtief: ++ Bahn: Weiter Einschränkungen, auch im Osten ++",
-        "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+        "title": "US‑Militär beschlagnahmt erneut Öltanker in der Karibik",
+        "originalTitle": "US-Einheiten beschlagnahmen erneut Öltanker in der Karibik",
+        "link": "https://www.tagesschau.de/ausland/amerika/karibik-tanker-usa-100.html",
         "img": null,
-        "date": "2026-01-09T16:14:03.000Z",
-        "text": "Der Wintertief 'Elli' verursacht in Nord‑ und Ostdeutschland umfangreiche Zugverkehrsbeschränkungen, die der Deutschen Bahn zufolge bis auf Weiteres in Bayern und im Osten führend sein werden.",
+        "date": "2026-01-09T16:00:47.000Z",
+        "text": "Ein US‑Öltanker, angeblich mit Venezuela verbunden, wurde erneut in der Karibik beschlagnahmt – Videoaufnahmen des Einsatzes wurden veröffentlicht.",
         "bullets": [
-          "Sturmtief 'Elli' zieht über Deutschland mit starkem Schneefall und Eis.",
-          "Zugverkehr im Norden Deutschlands bleibt laut Bahn bis auf Weiteres eingestellt.",
-          "Auch in Ostdeutschland werden Ausfälle erwartet.",
-          "Deutsche Bahn kündigt weitere Einschränkungen, insbesondere im Osten, an."
+          "Die US‑Einheiten haben erneut einen Öltanker in der Karibik beschlagnahmt.",
+          "Das Militär hat Videoaufnahmen des Einsatzes veröffentlicht.",
+          "US‑Medien führen das Schiff zu Verbindungen mit Venezuela."
         ],
         "tags": [
           "Tagesschau",
           "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "qnynrj0kb",
-        "source": "ZDF",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief Elli betrifft Bahn- und Flugverkehr in Deutschland",
-        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
-        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
-        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
-        "date": "2026-01-09T15:39:00.000Z",
-        "text": "Sturmtief Elli führt zu Flugabsagen und verlangsamten ICE-Verbindungen in Nord- und Süddeutschland.",
-        "bullets": [
-          "Mehrere Flüge in Deutschland wurden gestrichen",
-          "ICE-Verbindungen mussten im gesamten Land verlangsamt werden",
-          "Bodenverkehr in Nord- und Süddeutschland ist stark beeinträchtigt"
-        ],
-        "tags": [
-          "ZDF",
-          "News"
-        ]
-      },
-      {
-        "id": "78ui2nisc",
-        "source": "ZDF",
-        "sourceCountry": "🇩🇪",
-        "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
-        "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
-        "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
-        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
-        "date": "2026-01-09T15:24:00.000Z",
-        "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
-        "bullets": [
-          "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
-          "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
-          "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
-        ],
-        "tags": [
-          "ZDF",
-          "News"
         ]
       }
     ]
-  },
-  {
-    "id": "t9tzpe4f4",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "US‑Militär beschlagnahmt erneut Öltanker in der Karibik",
-    "originalTitle": "US-Einheiten beschlagnahmen erneut Öltanker in der Karibik",
-    "link": "https://www.tagesschau.de/ausland/amerika/karibik-tanker-usa-100.html",
-    "img": null,
-    "date": "2026-01-09T16:00:47.000Z",
-    "text": "Ein US‑Öltanker, angeblich mit Venezuela verbunden, wurde erneut in der Karibik beschlagnahmt – Videoaufnahmen des Einsatzes wurden veröffentlicht.",
-    "bullets": [
-      "Die US‑Einheiten haben erneut einen Öltanker in der Karibik beschlagnahmt.",
-      "Das Militär hat Videoaufnahmen des Einsatzes veröffentlicht.",
-      "US‑Medien führen das Schiff zu Verbindungen mit Venezuela."
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ],
-    "related": []
   },
   {
     "id": "b4u2bx2rv",
@@ -187,6 +360,27 @@
     ],
     "tags": [
       "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "hks3qff7i",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "EU genehmigt bis 2031 maximal 12 GW an neuen Gaskraftwerken",
+    "originalTitle": "Gaskraftwerke: EU will 12 Gigawatt bis 2031 genehmigen",
+    "link": "https://www.spiegel.de/wirtschaft/soziales/gaskraftwerke-eu-will-12-gigawatt-bis-2031-genehmigen-a-3ec54de5-6a18-49a6-bd9b-4029ebfc6ce6#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/a3456e32-38b8-4bfa-b34f-a50f713be833_w520_r2.08_fpx58.39_fpy49.86.jpg",
+    "date": "2026-01-09T15:53:00.000Z",
+    "text": "Die EU-Kommission plant, Deutschland höchstens 12 GW an Gaskraftwerken bis 2031 zu genehmigen – ein deutlich kleinerer Umfang als die vom Bund geforderte Kapazität.",
+    "bullets": [
+      "12 GW an neuen Gaskraftwerken sollen bis 2031 genehmigt werden",
+      "EU-Kommission hat nach SPIEGEL‑Informationen eine Vorentscheidung getroffen",
+      "Bundesregierung fordert deutlich mehr Kapazität als die EU einräumt"
+    ],
+    "tags": [
+      "Spiegel",
       "News"
     ],
     "related": []
@@ -296,29 +490,7 @@
       "ZDF",
       "News"
     ],
-    "related": [
-      {
-        "id": "a89lw1t3u",
-        "source": "Spiegel",
-        "sourceCountry": "🇩🇪",
-        "title": "Wetter: Schnee, Sturm und Glätte – Ist der Winter in Deutschland wirklich außergewöhnlich?",
-        "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
-        "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
-        "date": "2026-01-08T19:56:00.000Z",
-        "text": "Der Beitrag erörtert, ob der aktuelle Winter mit Schnee, Sturm und Glätte in Deutschland kälter und verschneit ist als üblich, und beleuchtet die regionale Wahrnehmung.",
-        "bullets": [
-          "Der Artikel beschreibt ungewöhnliche Wetterbedingungen – Schnee, Sturm und Glätte.",
-          "Er stellt die Frage, ob der aktuelle Winter in Deutschland tatsächlich kälter und verschneiter ist als üblich.",
-          "Der Fokus liegt auf der regionalen Wahrnehmung und der Erkundung, wie diese Wetterlage wirkt."
-        ],
-        "tags": [
-          "Spiegel",
-          "News"
-        ],
-        "related": []
-      }
-    ]
+    "related": []
   },
   {
     "id": "iqjedght3",
@@ -362,71 +534,6 @@
       "News"
     ],
     "related": []
-  },
-  {
-    "id": "mrru0kk95",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Crans-Montana: Brandunglück in Bar – Besitzer in Untersuchungshaft",
-    "originalTitle": "Crans-Montana: Einer der Bar-Besitzer in Untersuchungshaft",
-    "link": "https://www.zdfheute.de/panorama/schweiz-crans-montana-brand-trauer-aussage-bar-betreiber-100.html",
-    "img": "https://www.zdfheute.de/assets/betreiber-der-bar-le-constellation-schweiz-100~384x216?cb=1767963918180",
-    "date": "2026-01-09T15:19:00.000Z",
-    "text": "Ein Barbesitzer in Crans-Montana befindet sich nach Brandunglücke in Untersuchungshaft, während der Bundespräsident Aufklärung ohne Verzögerung verlangt.",
-    "bullets": [
-      "Ort des Brandes: Crans-Montana",
-      "Betroffener: einer der Barbesitzer",
-      "Verhaftung: Untersuchungshaft (U-Haft)",
-      "Reaktion: Bundespräsident fordert Aufklärung ohne Verzögerungen"
-    ],
-    "tags": [
-      "ZDF",
-      "News"
-    ],
-    "related": [
-      {
-        "id": "7lzgieuk4",
-        "source": "Spiegel",
-        "sourceCountry": "🇩🇪",
-        "title": "Operativer Barbrand in Crans-Montana: 40 Tote, Betreiber in Untersuchungshaft",
-        "originalTitle": "Crans-Montana – Le Constellation: Behörden nehmen Betreiber fest",
-        "link": "https://www.spiegel.de/panorama/justiz/crans-montana-le-constellation-behoerden-nehmen-betreiber-fest-a-6e7934df-8fc9-4696-bd05-9589e6976e92#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/fc71927e-5477-4f7e-bb49-31bb75f89189_w520_r2.08_fpx30.02_fpy46.98.jpg",
-        "date": "2026-01-09T15:07:00.000Z",
-        "text": "Bei einem Brand einer Bar in Crans-Montana, Schweiz, wurden 40 Menschen getötet und der Betreiber hält sich in Untersuchungshaft.",
-        "bullets": [
-          "Ort: Crans-Montana, Schweiz",
-          "Todesopfer: 40 Personen",
-          "Der Betreiber befindet sich in Untersuchungshaft"
-        ],
-        "tags": [
-          "Spiegel",
-          "News"
-        ]
-      },
-      {
-        "id": "u7s267lz9",
-        "source": "Spiegel",
-        "sourceCountry": "🇩🇪",
-        "title": "Feuer in Crans-Montana erschüttert Vertrauen Italiens in Schweizer Justiz",
-        "originalTitle": "Crans-Montana: In Italien ist das Vertrauen in die Schweizer Justiz erschüttert",
-        "link": "https://www.spiegel.de/ausland/crans-montana-in-italien-ist-das-vertrauen-in-die-schweizer-justiz-erschuettert-a-e47289c5-41b4-4128-bd9c-c2526a39121b#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/f5a0c884-ce59-4d79-aa73-8d4574aa6b2a_w520_r2.08_fpx68.67_fpy55.jpg",
-        "date": "2026-01-09T12:59:00.000Z",
-        "text": "Ein Brand in Crans-Montana tötete junge Menschen aus Frankreich und Italien, was in beiden Ländern Kritik an der Vorgehensweise der Schweizer Behörden auslöst.",
-        "bullets": [
-          "Ort des Brandes: Crans-Montana, Schweiz",
-          "Betroffene: junge Personen aus Frankreich und Italien, die beim Brand ums Leben kamen",
-          "Reaktion Italiens: Politiker und Angehörige fordern eine umfassende Beobachtung der Ermittlungen und kritisieren das Vorgehen der Schweizer Justiz",
-          "Gleichzeitige Kritik in Frankreich, weil dort ebenfalls Angehörige betroffen sind"
-        ],
-        "tags": [
-          "Spiegel",
-          "News"
-        ],
-        "related": []
-      }
-    ]
   },
   {
     "id": "w1fgfb910",
@@ -536,28 +643,6 @@
     "related": []
   },
   {
-    "id": "rn5m7z2zj",
-    "source": "rbb24",
-    "sourceCountry": "🇩🇪",
-    "title": "Landtag lehnt Auflösung des Potsdamer Landtags ab",
-    "originalTitle": "Landtag lehnt Antrag auf Auflösung ab - BSW-Abgeordnete stimmen mit AfD",
-    "link": "https://www.rbb24.de/politik/beitrag/2026/01/brandenburg-landtag-afd-antrag-abwahl-gruhn-gescheitert.html",
-    "img": null,
-    "date": "2026-01-09T14:23:31.000Z",
-    "text": "Im Potsdamer Landtag wurde der Auflösungsantrag abgelehnt; AfD und BSW unterstützten den Antrag, während SPD und CDU dagegen stimmten.",
-    "bullets": [
-      "Potsdam – Ort der Abstimmung",
-      "AfD – Antragsteller und Unterstützer",
-      "BSW – unterstützte den Auflösungsantrag",
-      "SPD und CDU – stimmten gegen die Auflösung"
-    ],
-    "tags": [
-      "rbb24",
-      "News"
-    ],
-    "related": []
-  },
-  {
     "id": "wvgzy3idw",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -595,6 +680,28 @@
     ],
     "tags": [
       "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "rnyckc3we",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Müllberg in den Philippinen kracht ein – mindestens eine Frau stirbt, Suche nach Vermissten läuft an",
+    "originalTitle": "Tote und Vermisste nach Einsturz von Müllberg auf den Philippinen",
+    "link": "https://www.tagesschau.de/ausland/asien/philippinen-muellberg-unglueck-100.html",
+    "img": null,
+    "date": "2026-01-09T14:00:42.000Z",
+    "text": "Ein Müllberg auf einer Deponie in den Philippinen ist nach starkem Regen eingestürzt, wobei mindestens eine Frau ums Leben kam und mehrere Menschen vermisst werden.",
+    "bullets": [
+      "Müllberg auf Deponie ist nach starkem Regen eingestürzt",
+      "Mindestens eine Frau kam ums Leben",
+      "Suche nach Vermissten dauert an",
+      "Vorfälle stattfand in den Philippinen"
+    ],
+    "tags": [
+      "Tagesschau",
       "News"
     ],
     "related": []
@@ -707,6 +814,27 @@
           "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
           "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
           "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "codipz249",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Unerwarteter Schneefall im Norden Deutschlands begleitet von Unwetterwarnungen",
+        "originalTitle": "Wie sich der Winter in Deutschland verändert hat",
+        "link": "https://www.tagesschau.de/wissen/klima/unwetter-schnee-norddeutschland-klima-schneetage-100.html",
+        "img": null,
+        "date": "2026-01-09T12:16:45.000Z",
+        "text": "Ein ungewöhnlich starker Wind begünstigt nun schon im Norden Deutschlands heftige Schneefälle, während mehrere Regionen Unwetterwarnungen erhalten haben.",
+        "bullets": [
+          "Der angekündigte Schneefall erscheint jetzt im Norden Deutschlands.",
+          "Starker Wind sorgt für ergiebigen Schneefall in Teilen der Region.",
+          "Für mehrere einheimische Gebiete wurden Unwetterwarnungen ausgegeben."
         ],
         "tags": [
           "Tagesschau",
@@ -826,6 +954,28 @@
     ]
   },
   {
+    "id": "qzcypf0vo",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "„Egal“ von Marius von Mayenburg: Kammerspiel zur Gleichberechtigung an der Berliner Schaubühne",
+    "originalTitle": "\"Egal\" an der Berliner Schaubühne thematisiert Gleichberechtigung",
+    "link": "https://www.rbb24.de/kultur/beitrag/2026/01/theaterpremiere-mayenburg-schaubuehne-berlin.html",
+    "img": null,
+    "date": "2026-01-09T10:59:55.000Z",
+    "text": "In seinem pointierten Kammerspiel „Egal“ beleuchtet Marius von Mayenburg die Herausforderungen der Gleichberechtigung auf der Berliner Schaubühne.",
+    "bullets": [
+      "Titel: „Egal“ – ein neues Kammerspiel",
+      "Autor und Regisseur: Marius von Mayenburg",
+      "Durchführung: Berliner Schaubühne",
+      "Thema: Gleichberechtigung und deren Schwierigkeiten"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "diwqyq6or",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -843,27 +993,6 @@
     ],
     "tags": [
       "Spiegel",
-      "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "zsfiu4gre",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Bürgermeister fordert ICE‑Beamte zum Weggehen aus Minneapolis",
-    "originalTitle": "Bürgermeister: \"Verpisst euch aus Minneapolis\"",
-    "link": "https://www.zdfheute.de/video/ausland-minneapolis-ice-einsatz-frey-100.html",
-    "img": "https://www.zdfheute.de/assets/jacob-frey-minneapolis-100~384x216?cb=1767878193803",
-    "date": "2026-01-08T13:00:00.000Z",
-    "text": "Nach dem tödlichen Einsatz der Bundesimmigrationsbehörde in Minneapolis fordert Bürgermeister Jacob Frey die Beamten auf, die Stadt zu verlassen.",
-    "bullets": [
-      "Ort: Minneapolis, Minnesota, USA",
-      "Einsatz: ICE (Immigration and Customs Enforcement) hat bei einer Kontroverse Inspektion zum Tod einer Person geführt",
-      "Reaktion: Bürgermeister Jacob Frey (Hg. Stadtvollversammlung) wendet sich an die ICE‑Beamten und fordert das Weggehen aus Minneapolis"
-    ],
-    "tags": [
-      "ZDF",
       "News"
     ],
     "related": []
