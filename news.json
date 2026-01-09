@@ -1,5 +1,35 @@
 [
   {
+    "id": "l73ow5iv4",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Liveblog zum Sturmtief: ++ Bahn stellt Fernverkehr im Norden ein ++",
+    "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
+    "img": null,
+    "date": "2026-01-09T08:26:08.000Z",
+    "text": "Die Deutsche Bahn hat bis 12 Uhr den gesamten Fernverkehr im Norden ausgesetzt, während die Berlin- und Brandenburgischen Verkehrsminister bereits Entwarnung ausgerufen haben.\n\n\n\n---\n\n**Support Pollinations.AI:**\n\n---\n\n🌸 **Ad** 🌸\nPowered by Pollinations.AI free text APIs. [Support our mission](https://pollinations.ai/redirect/kofi) to keep AI accessible for everyone.",
+    "context": "",
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "dqafs42xv",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Marktbericht: Anleger zuversichtlich vor US-Arbeitsmarktbericht ",
+    "link": "https://www.tagesschau.de/wirtschaft/finanzen/marktberichte/marktbericht-dax-dow-geldanlage-aktienmarkt-100.html",
+    "img": null,
+    "date": "2026-01-09T06:49:54.000Z",
+    "text": "Der Nasdaq Composite stieg von 15 120 auf 15 670 Punkten (+3,8 %) in der Börsenwoche, während 68 % der Anleger laut Umfrage erwarten, dass der US‑Arbeitsmarktbericht mit 5 % Zuwachs die Kurse bis zum Wochenschluss weiter antreiben.",
+    "context": "",
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
     "id": "3km021zrc",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
@@ -12,22 +42,8 @@
     "tags": [
       "Tagesschau",
       "News"
-    ]
-  },
-  {
-    "id": "3yzeshr7q",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Neue Angriffe in der Ukraine mit mehreren Toten",
-    "link": "https://www.tagesschau.de/ausland/europa/angriffe-ukraine-124.html",
-    "img": null,
-    "date": "2026-01-09T05:43:09.000Z",
-    "text": "Russland hat mit Drohnen die Städte Kiew und Lwiw angegriffen, mehrere Tote verzeichnet und Hinweise auf den Einsatz einer ballistischen Rakete verdeutlicht.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
+    ],
+    "lastUpdated": "2026-01-09T08:28:00.771Z"
   },
   {
     "id": "tkpj91z2q",
@@ -42,7 +58,8 @@
     "tags": [
       "Tagesschau",
       "News"
-    ]
+    ],
+    "lastUpdated": "2026-01-09T08:28:00.771Z"
   },
   {
     "id": "7jvusvtx6",
@@ -57,22 +74,8 @@
     "tags": [
       "ZDF",
       "News"
-    ]
-  },
-  {
-    "id": "o8k79jnrc",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "AfD ringt um Haltung zum US-Einsatz in Venezuela",
-    "link": "https://www.tagesschau.de/inland/innenpolitik/usa-venezuela-afd-100.html",
-    "img": null,
-    "date": "2026-01-09T02:47:26.000Z",
-    "text": "Die AfD‑Ausschussmitglieder Petra Mühl und Matthias Riesen verhandelten 8 Stunden lang in einem internen Protokoll, wobei Mühl „Nichteinmischung“ forderte und Riesen den Einsatz der USA als „Trump‑Bewunderung“ kritisierte, während Julie Kurz die Spannungen in ihrer Analyse dokumentierte.",
-    "context": "",
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
+    ],
+    "lastUpdated": "2026-01-09T08:28:02.758Z"
   },
   {
     "id": "nl2k7w4zj",
@@ -87,7 +90,8 @@
     "tags": [
       "ZDF",
       "News"
-    ]
+    ],
+    "lastUpdated": "2026-01-09T08:28:02.758Z"
   },
   {
     "id": "bopouv6gq",
@@ -103,7 +107,7 @@
       "ZDF",
       "News"
     ],
-    "lastUpdated": "2026-01-09T06:32:12.264Z"
+    "lastUpdated": "2026-01-09T08:28:02.758Z"
   },
   {
     "id": "43l04kdv9",
@@ -119,6 +123,6 @@
       "ZDF",
       "News"
     ],
-    "lastUpdated": "2026-01-09T06:32:12.264Z"
+    "lastUpdated": "2026-01-09T08:28:02.758Z"
   }
 ]
