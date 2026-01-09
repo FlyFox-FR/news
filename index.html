@@ -3,388 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Daily Briefing</title>
+    <title>Smart Brief</title>
     
-    <!-- Premium Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #0b0b0c;
-            --surface: #161618;
-            --surface-hover: #1f1f22;
-            --text-primary: #f2f2f2;
-            --text-secondary: #a0a0a0;
-            --accent: #3b82f6; /* Modernes Blau */
-            --border: #27272a;
+            --bg: #0f0f10;
+            --surface: #18181b;
+            --accent: #3b82f6;
+            --text: #f4f4f5;
+            --text-muted: #a1a1aa;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER & PROGRESS --- */
         header {
-            background: rgba(11, 11, 12, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 1.5rem;
+            background: rgba(15, 15, 16, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 50;
+            padding: 15px 20px;
+            border-bottom: 1px solid #27272a;
         }
 
-        .header-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .brand { font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: 700; }
+        .date { font-size: 0.8rem; color: var(--text-muted); }
 
-        .brand {
-            font-family: 'Merriweather', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        /* Catch-Up Bar */
+        .progress-container {
+            background: #27272a; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px;
         }
-
-        .filters {
-            display: flex;
-            gap: 0.8rem;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            scrollbar-width: none; /* Firefox */
+        .progress-bar {
+            background: var(--accent); height: 100%; width: 0%;
+            transition: width 0.5s ease;
         }
-        .filters::-webkit-scrollbar { display: none; } /* Chrome */
+        .progress-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; text-align: right; }
 
-        .chip {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 0.5rem 1rem;
-            border-radius: 99px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-        .chip:hover { border-color: #555; color: #fff; }
-        .chip.active { background: var(--text-primary); color: var(--bg); border-color: var(--text-primary); }
-
-        /* --- GRID LAYOUT --- */
+        /* --- GRID --- */
         .container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
-            padding-bottom: 4rem;
+            max-width: 800px; margin: 20px auto; padding: 0 15px;
+            display: flex; flex-direction: column; gap: 20px;
         }
 
-        /* --- NEWS CARD --- */
+        /* --- CARD --- */
         .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            position: relative;
+            background: var(--surface); border-radius: 12px; overflow: hidden;
+            border: 1px solid #27272a;
+            transition: transform 0.2s;
         }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
-            border-color: #444;
-        }
-
-        /* Hero Card (Erstes Element über 2 Spalten) */
-        @media (min-width: 768px) {
-            .card.hero {
-                grid-column: span 2;
-                flex-direction: row;
-            }
-            .card.hero .card-img {
-                width: 50%;
-                height: auto;
-            }
-            .card.hero .card-content {
-                width: 50%;
-                justify-content: center;
-                padding: 2.5rem;
-            }
-            .card.hero .card-title {
-                font-size: 1.8rem;
-            }
-        }
-
+        
         .card-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: #202022;
+            width: 100%; height: 180px; object-fit: cover; background: #222;
         }
 
-        .card-content {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
+        .card-body { padding: 15px; }
 
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 0.8rem;
+        .meta {
+            display: flex; justify-content: space-between;
+            font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 8px;
         }
 
         .card-title {
-            font-family: 'Merriweather', serif;
-            font-size: 1.25rem;
-            font-weight: 700;
-            line-height: 1.4;
-            margin: 0 0 1rem 0;
-            color: var(--text-primary);
+            font-family: 'Merriweather', serif; font-size: 1.1rem; margin: 0 0 10px 0; line-height: 1.4;
         }
 
-        .card-excerpt {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #d1d5db;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        .scoop {
+            font-size: 0.95rem; color: #e4e4e7; line-height: 1.5; margin-bottom: 15px;
+            padding-left: 10px; border-left: 3px solid var(--accent);
         }
 
-        /* --- READER OVERLAY (Article View) --- */
-        #reader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 1000;
-            display: none;
-            overflow-y: auto;
-            animation: fadeIn 0.3s ease;
+        /* Bullet Points List */
+        .bullets {
+            list-style: none; padding: 0; margin: 0 0 15px 0;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-        
-        #reader.active { display: block; }
-
-        .reader-nav {
-            position: sticky; top: 0;
-            padding: 1rem 1.5rem;
-            display: flex; justify-content: flex-end;
-            background: rgba(11, 11, 12, 0.9);
-            backdrop-filter: blur(10px);
+        .bullets li {
+            position: relative; padding-left: 20px; margin-bottom: 8px;
+            font-size: 0.9rem; color: #d4d4d8; line-height: 1.4;
+        }
+        .bullets li::before {
+            content: "•"; color: var(--accent); font-weight: bold;
+            position: absolute; left: 0;
         }
 
-        .close-btn {
-            background: rgba(255,255,255,0.1);
-            border: none; color: #fff;
-            width: 40px; height: 40px; border-radius: 50%;
-            font-size: 1.2rem; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
-        }
-        .close-btn:hover { background: rgba(255,255,255,0.2); }
-
-        .article-container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 0 1.5rem 4rem 1.5rem;
-        }
-
-        .article-img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            max-height: 400px; object-fit: cover;
-        }
-
-        .article-meta {
-            color: var(--accent);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .article-title {
-            font-family: 'Merriweather', serif;
-            font-size: 2rem;
-            line-height: 1.3;
-            margin-bottom: 1.5rem;
-        }
-
-        .article-body {
-            font-family: 'Merriweather', serif; /* Serif für Fließtext liest sich besser */
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #e5e7eb;
-            margin-bottom: 2rem;
-        }
-
-        .btn-primary {
+        .actions { border-top: 1px solid #27272a; padding: 10px 15px; background: #1c1c1f; }
+        .btn-link {
+            color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 600;
             display: inline-block;
-            background: var(--text-primary);
-            color: var(--bg);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
-            transition: opacity 0.2s;
         }
-        .btn-primary:hover { opacity: 0.9; }
-
-        .loader { text-align: center; margin-top: 4rem; color: #666; font-size: 0.9rem; }
 
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header>
-        <div class="header-inner">
-            <div class="brand">Daily Briefing.</div>
-            <div class="filters" id="filter-container">
-                <button class="chip active" onclick="setFilter('all')">Alle</button>
-            </div>
+        <div class="header-top">
+            <div class="brand">Daily Brief.</div>
+            <div class="date" id="current-date"></div>
         </div>
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        <div class="progress-label" id="progress-text">Lade News...</div>
     </header>
 
-    <!-- News Grid -->
-    <div class="container" id="news-grid">
-        <div class="loader">Lade Inhalte...</div>
-    </div>
-
-    <!-- Reader Overlay -->
-    <div id="reader">
-        <div class="reader-nav">
-            <button class="close-btn" onclick="closeReader()">✕</button>
-        </div>
-        <div class="article-container" id="reader-content">
-            <!-- Content via JS -->
-        </div>
+    <div class="container" id="feed">
+        <p style="text-align:center; color:#666; margin-top:50px">Generiere Briefing...</p>
     </div>
 
     <script>
-        let allNews = [];
-        let currentFilter = 'all';
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' });
 
-        // Daten laden
         fetch('news.json?t=' + Date.now())
-            .then(res => res.json())
+            .then(r => r.json())
             .then(data => {
-                allNews = data;
-                initFilters();
-                render();
+                renderFeed(data);
+                updateProgress(data.length);
             })
-            .catch(e => {
-                document.getElementById('news-grid').innerHTML = 
-                    '<p style="text-align:center; margin-top:3rem; color:#666">Konnte News nicht laden. Warte auf Update.</p>';
-            });
+            .catch(e => document.getElementById('feed').innerHTML = '<p style="text-align:center">Fehler beim Laden.</p>');
 
-        function initFilters() {
-            const sources = [...new Set(allNews.map(n => n.source))];
-            const container = document.getElementById('filter-container');
-            sources.forEach(src => {
-                const btn = document.createElement('button');
-                btn.className = 'chip';
-                btn.innerText = src;
-                btn.onclick = (e) => {
-                    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                    e.target.classList.add('active');
-                    setFilter(src);
-                };
-                container.appendChild(btn);
-            });
+        function updateProgress(total) {
+            // Simulierter "Catch-Up": Wir tun so, als wären alle neu geladenen ungelesen
+            // In einer echten App würde man speichern, was man schon gescrollt hat.
+            const bar = document.getElementById('progress');
+            const text = document.getElementById('progress-text');
+            
+            // Animation
+            setTimeout(() => {
+                bar.style.width = '100%';
+                text.innerText = `${total} Updates heute`;
+            }, 500);
         }
 
-        function setFilter(filter) {
-            currentFilter = filter;
-            render();
-        }
+        function renderFeed(news) {
+            const container = document.getElementById('feed');
+            container.innerHTML = '';
 
-        function render() {
-            const grid = document.getElementById('news-grid');
-            grid.innerHTML = '';
-
-            const filtered = currentFilter === 'all' ? allNews : allNews.filter(n => n.source === currentFilter);
-
-            filtered.forEach((news, index) => {
-                // Das erste Element bekommt die Klasse "hero" (große Darstellung)
-                const isHero = index === 0 && currentFilter === 'all' ? 'hero' : '';
+            news.forEach(item => {
+                const img = item.img || 'https://via.placeholder.com/600x300/222/555?text=News';
                 
-                const img = news.img || 'https://via.placeholder.com/600x400/222/555?text=News';
-                // JSON sicher machen für onclick
-                const newsData = encodeURIComponent(JSON.stringify(news));
+                // Bullets generieren
+                let bulletsHtml = '';
+                if (item.bullets && Array.isArray(item.bullets)) {
+                    bulletsHtml = '<ul class="bullets">' + 
+                        item.bullets.map(b => `<li>${b}</li>`).join('') + 
+                        '</ul>';
+                }
 
                 const html = `
-                    <div class="card ${isHero}" onclick="openReader('${newsData}')">
+                    <div class="card">
                         <img src="${img}" class="card-img" onerror="this.style.display='none'">
-                        <div class="card-content">
-                            <div class="card-meta">
-                                <span>${news.sourceCountry || ''} ${news.source}</span>
-                                <span>${new Date(news.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                        <div class="card-body">
+                            <div class="meta">
+                                <span>${item.sourceCountry || ''} ${item.source}</span>
+                                <span>${new Date(item.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
                             </div>
-                            <h3 class="card-title">${news.title}</h3>
-                            <div class="card-excerpt">${news.text}</div>
+                            
+                            <h3 class="card-title">${item.title}</h3>
+                            
+                            <!-- Der Scoop (Zusammenfassung) -->
+                            <div class="scoop">${item.text}</div>
+                            
+                            <!-- Die 5 Fakten -->
+                            ${bulletsHtml}
+                        </div>
+                        
+                        <div class="actions">
+                            <a href="${item.link}" target="_blank" class="btn-link">Originalartikel lesen →</a>
                         </div>
                     </div>
                 `;
-                grid.innerHTML += html;
+                container.innerHTML += html;
             });
-        }
-
-        function openReader(data) {
-            const news = JSON.parse(decodeURIComponent(data));
-            const container = document.getElementById('reader-content');
-            const img = news.img || 'https://via.placeholder.com/800x400/222/555?text=Cover';
-
-            container.innerHTML = `
-                <div class="article-meta">${news.source} • ${new Date(news.date).toLocaleDateString()}</div>
-                <h1 class="article-title">${news.title}</h1>
-                <img src="${img}" class="article-img" onerror="this.style.display='none'">
-                <div class="article-body">
-                    <p style="font-size:1.2em; font-weight:400; color:#fff; border-left:4px solid var(--accent); padding-left:15px; margin-bottom:30px;">
-                        ${news.text}
-                    </p>
-                    <p style="color:#a0a0a0; font-family:'Inter', sans-serif;">
-                        ${news.context ? '💡 <strong>Hintergrund:</strong> ' + news.context : ''}
-                    </p>
-                </div>
-                <a href="${news.link}" target="_blank" class="btn-primary">Originalartikel auf ${news.source} lesen</a>
-            `;
-
-            document.getElementById('reader').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeReader() {
-            document.getElementById('reader').classList.remove('active');
-            document.body.style.overflow = '';
         }
     </script>
 </body>
