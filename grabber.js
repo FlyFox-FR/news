@@ -71,18 +71,19 @@ async function analyzeWithPollinations(title, content, sourceName) {
             const response = await axios.get(url, { timeout: 35000 });
             let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
 
-            rawText = rawText.split("--- Support")[0]; 
-            rawText = rawText.replace(/```json|```/g, "").trim();
+            // Skalpell-Methode für Einzel-Artikel
+            rawText = rawText.replace(/```json|```/g, ""); // Markdown weg
             const firstOpen = rawText.indexOf('{');
             const lastClose = rawText.lastIndexOf('}');
-            if (firstOpen !== -1 && lastClose !== -1) rawText = rawText.substring(firstOpen, lastClose + 1);
-
-            let data;
-            try { data = JSON.parse(rawText); } catch (e) { throw new Error("JSON Error"); }
-            if (!data.bullets) data.bullets = [];
-            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
-
-            return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
+            
+            if (firstOpen !== -1 && lastClose !== -1) {
+                rawText = rawText.substring(firstOpen, lastClose + 1);
+                let data = JSON.parse(rawText);
+                if (!data.bullets) data.bullets = [];
+                data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
+                return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
+            }
+            throw new Error("Kein JSON Objekt gefunden");
 
         } catch (error) {
             if (error.response?.status === 429) { await sleep(30000); retries--; continue; }
@@ -92,7 +93,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- 2. CLUSTERING (MIT DEBUG & REASONING FILTER) ---
+// --- 2. KI CLUSTERING (DER META-KEY CHIRURG) ---
 async function clusterWithAI(articles) {
     if (articles.length === 0) return [];
     
@@ -103,40 +104,54 @@ async function clusterWithAI(articles) {
     const safeList = listForAI.substring(0, 3500);
 
     const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
+    
     Liste:
     ${safeList}
     
-    Aufgabe: Gib ein JSON Array von Arrays zurück. Jedes innere Array enthält die IDs, die zusammengehören.
-    Beispiel: [[0, 5], [1], [2, 3]]
+    Aufgabe: Erstelle ein JSON Objekt mit dem Key "groups". Darin ein Array von Arrays mit den IDs.
+    
+    Beispiel Output:
+    {
+      "groups": [[0, 5], [1], [2, 3]]
+    }
+    
     Regeln:
     1. "Sturm Elli" und "Unwetter im Norden" = GLEICHES EVENT -> Gruppieren.
     2. "Iran Protest" und "Iran Militärübung" = UNTERSCHIEDLICH -> Nicht gruppieren.
-    3. Antworte NUR mit dem JSON. Keine Erklärung!`;
+    3. Antworte NUR mit dem JSON.`;
 
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     try {
         const response = await axios.get(url, { timeout: 120000 });
         
-        // DEBUGGING: Wir speichern die rohe Antwort!
-        let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data, null, 2);
-        fs.writeFileSync('debug_ai_response.txt', rawText); // <--- HIER SPEICHERN WIR
-        console.log("🐛 KI-Antwort gespeichert in debug_ai_response.txt");
+        let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
+        
+        // DEBUG: Speichern für Analyse
+        fs.writeFileSync('debug_cluster_response.txt', rawText);
 
-        // --- LASER PARSER 2.0 ---
-        // Das Modell könnte { "role": "assistant", "content": "[[1,2]]" } zurückgeben.
-        // Wir suchen im GANZEN Text einfach nach [[ ... ]] mit Zahlen drin.
-        // Regex Erklärung: Suche nach [[ gefolgt von Zahlen/Kommas/Klammern gefolgt von ]]
-        const magicMatch = rawText.match(/\[\s*\[[\d\s,\[\]]*\]\s*\]/);
+        // --- DER CHIRURGISCHE SCHNITT ---
+        // 1. Markdown entfernen
+        rawText = rawText.replace(/```json/g, "").replace(/```/g, "");
+        
+        // 2. Finde das erste '{' und das letzte '}'
+        const start = rawText.indexOf('{');
+        const end = rawText.lastIndexOf('}');
 
-        if (magicMatch) {
-            rawText = magicMatch[0]; // Wir nehmen nur das gefundene Array!
-        } else {
-            throw new Error("Kein Array-Muster [[...]] im Text gefunden.");
+        if (start === -1 || end === -1) {
+            throw new Error("Kein JSON-Objekt { ... } gefunden.");
         }
 
-        const groups = JSON.parse(rawText);
-        if (!Array.isArray(groups)) throw new Error("Format ist kein Array");
+        // 3. Alles davor (Reasoning) und danach (Gelaber) abschneiden
+        const cleanJsonString = rawText.substring(start, end + 1);
+
+        // 4. Parsen
+        const parsedData = JSON.parse(cleanJsonString);
+        
+        // 5. Daten extrahieren
+        const groups = parsedData.groups;
+
+        if (!Array.isArray(groups)) throw new Error("Key 'groups' ist kein Array");
 
         console.log("🧠 KI-Gruppierung erfolgreich!");
         
@@ -174,6 +189,7 @@ async function clusterWithAI(articles) {
             clusteredFeed.push(parent);
         });
 
+        // Vergessene Items
         activeArticles.forEach((item, index) => {
             if (!usedIndices.has(index)) {
                 item.related = [];
@@ -185,7 +201,7 @@ async function clusterWithAI(articles) {
 
     } catch (e) {
         console.error("❌ KI-Clustering fehlgeschlagen:", e.message);
-        console.log("⚙️ Starte algorithmischen Fallback (Math-Mode)...");
+        console.log("⚙️ Starte algorithmischen Fallback...");
         return clusterAlgorithmic(articles);
     }
 }
@@ -234,7 +250,7 @@ function clusterAlgorithmic(allNews) {
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Debug & Fix)...");
+    console.log("🚀 Starte News-Abruf (Surgical JSON Edition)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
