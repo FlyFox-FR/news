@@ -1,5 +1,26 @@
 [
   {
+    "id": "l3co1tpbf",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Iran – Proteste laufen weiter, Angst vor Polizeigewalt laut ZDF",
+    "originalTitle": "ZDF-Korrespondentin im Iran: \"Angst hier im Land sehr groß\"",
+    "link": "https://www.zdfheute.de/politik/ausland/iran-proteste-demonstranten-angst-polizeigewalt-gaa-100.html",
+    "img": "https://www.zdfheute.de/assets/gaa-iran-100~384x216?cb=1767950586149",
+    "date": "2026-01-09T10:26:00.000Z",
+    "text": "Demonstranten in Iran setzen ihre Proteste fort, während die Angst vor Polizeigewalt laut ZDF‑Korrespondentin Gaa sehr groß ist.",
+    "bullets": [
+      "Demonstranten nutzen Barrikaden und brennende Fahrzeuge, um ihre Protestaktion fortzusetzen.",
+      "Die ZDF‑Korrespondentin Gaa berichtet, dass die Angst vor Polizeigewalt im Land hoch ist.",
+      "Die Proteste in Iran zeigen trotz staatlicher Repression weiterhin starke Beteiligung."
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": []
+  },
+  {
     "id": "mhw18u4pd",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
@@ -82,7 +103,28 @@
       "ZDF",
       "News"
     ],
-    "related": []
+    "related": [
+      {
+        "id": "8fz971dgc",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief 'Elli' – Schneefall, Eiseskälte, Glatteis in Teilen Deutschlands",
+        "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+        "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+        "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
+        "date": "2026-01-09T07:00:00.000Z",
+        "text": "Das Wetterwarnsystem meldet heftigen Schneefall und Gefrierkälte, begleitet von Glatteisgefahr, aufgrund des Sturmtyps 'Elli'.",
+        "bullets": [
+          "Sturmtief 'Elli' erreicht jetzt Teile Deutschlands.",
+          "Hoher Schneefall und extrem kalte Temperaturen erwartet.",
+          "Glatteisgefahr steigt, besonders auf verkehrsreicheren Straßen."
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ]
+      }
+    ]
   },
   {
     "id": "nfhir058w",
@@ -129,19 +171,19 @@
     "related": []
   },
   {
-    "id": "8fz971dgc",
+    "id": "wf4mpftyu",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
-    "title": "Sturmtief 'Elli' – Schneefall, Eiseskälte, Glatteis in Teilen Deutschlands",
-    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-    "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
-    "date": "2026-01-09T07:00:00.000Z",
-    "text": "Das Wetterwarnsystem meldet heftigen Schneefall und Gefrierkälte, begleitet von Glatteisgefahr, aufgrund des Sturmtyps 'Elli'.",
+    "title": "Deutschlands Geschäftsmodell in tiefer Stagnation – Wachstumsrückgang 2024–2025",
+    "originalTitle": "Was das deutsche Geschäftsmodell kaputt macht",
+    "link": "https://www.zdfheute.de/wirtschaft/deutsche-wirtschaft-wirtschaftswachstum-prognose-deutschland-100.html",
+    "img": "https://www.zdfheute.de/assets/deutsche-industrie-wirtschaft-100~384x216?cb=1767779675320",
+    "date": "2026-01-09T08:21:00.000Z",
+    "text": "Das deutsche Wirtschaftswachstum verschlechtert sich zunehmend; seit 2023 liegen die BIP-Prognosen für 2024-2025 bei unter 0,3 % und die industrielle Produktion schrumpft weiter.",
     "bullets": [
-      "Sturmtief 'Elli' erreicht jetzt Teile Deutschlands.",
-      "Hoher Schneefall und extrem kalte Temperaturen erwartet.",
-      "Glatteisgefahr steigt, besonders auf verkehrsreicheren Straßen."
+      "BIP-Wachstum: 2023 +0,9 % (verlangsamung auf +0,3 % 2024, +0,1 % 2025 laut Bundesbank); 2025-CPI-Inflation circa 2,1 %, über dem Ziel von 2 % der EZB.",
+      "Industrieproduktion: 2024 Umsatzrückgang um 5 % im Vergleich zu 2023, wobei Automobil‑ (‑4,5 %) und Maschinenbau‑ (‑7 %) Sektoren die größte Wertschöpfungstoppen.",
+      "Ausländische Direktinvestitionen: 2023 120 Milliarden EUR, 2024 108 Milliarden EUR – ein Rückgang von 10 % mit besonders einem Engpass im mittelständischen Maschinenbau von Stuttgart und dem Ruhrgebiet."
     ],
     "tags": [
       "ZDF",
