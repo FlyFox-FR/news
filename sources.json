@@ -2,15 +2,19 @@
   {
     "name": "Tagesschau",
     "url": "https://www.tagesschau.de/xml/rss2/",
-    "count": 4,
-    "lang": "de",
+    "count": 3,
     "country": "🇩🇪"
   },
   {
     "name": "ZDF",
     "url": "https://www.zdf.de/rss/zdf/nachrichten",
-    "count": 4,
-    "lang": "de",
+    "count": 3,
+    "country": "🇩🇪"
+  },
+  {
+    "name": "Spiegel",
+    "url": "https://www.spiegel.de/wissenschaft/weltall/index.rss",
+    "count": 3,
     "country": "🇩🇪"
   }
 ]
