@@ -1,4 +1,4 @@
-name: Update News NoKey
+name: Update News Final
 
 on:
   schedule:
@@ -11,7 +11,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # FIX: Timeout massiv erhöhen, da wir jetzt viele Quellen haben
+    timeout-minutes: 60
 
     steps:
     - name: Checkout Code
@@ -26,7 +27,6 @@ jobs:
       run: npm install
 
     - name: Run Grabber
-      # KEINE SECRETS MEHR NÖTIG!
       run: node grabber.js
 
     - name: Commit and Push changes
