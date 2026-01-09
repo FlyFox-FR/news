@@ -1,6 +1,6 @@
 [
   {
-    "id": "9sj8c8ixs",
+    "id": "budq6pt92",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
@@ -9,10 +9,12 @@
     "date": "2026-01-08T22:57:00.000Z",
     "text": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
     "context": "",
-    "tags": []
+    "tags": [
+      "ZDF"
+    ]
   },
   {
-    "id": "fzo95c6m8",
+    "id": "x6nfq9fn4",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Glätte, Schnee, Eis: Wo der Wetterdienst jetzt warnt",
@@ -21,10 +23,12 @@
     "date": "2026-01-08T22:30:00.000Z",
     "text": "Glätte, Schnee, Eis: Wo der Wetterdienst jetzt warnt",
     "context": "",
-    "tags": []
+    "tags": [
+      "ZDF"
+    ]
   },
   {
-    "id": "xav37osus",
+    "id": "17wsqyvhi",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Venezuela will viele Gefangene freilassen",
@@ -33,10 +37,12 @@
     "date": "2026-01-08T20:44:20.000Z",
     "text": "Venezuela will viele Gefangene freilassen",
     "context": "",
-    "tags": []
+    "tags": [
+      "Tagesschau"
+    ]
   },
   {
-    "id": "dick8cxtv",
+    "id": "3tex7pioz",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Wegen anhaltender Proteste: Iran verhängt Internetsperre",
@@ -45,10 +51,12 @@
     "date": "2026-01-08T19:29:19.000Z",
     "text": "Wegen anhaltender Proteste: Iran verhängt Internetsperre",
     "context": "",
-    "tags": []
+    "tags": [
+      "Tagesschau"
+    ]
   },
   {
-    "id": "8e7khqgef",
+    "id": "mm8jqffpz",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Russische Angriffe legen Stromversorgung in Südukraine lahm",
@@ -57,10 +65,12 @@
     "date": "2026-01-08T19:26:25.000Z",
     "text": "Russische Angriffe legen Stromversorgung in Südukraine lahm",
     "context": "",
-    "tags": []
+    "tags": [
+      "Tagesschau"
+    ]
   },
   {
-    "id": "rqlezkn9w",
+    "id": "1jnlpw44s",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Tennis im Blackout - Berlins Bürgermeister in der Kritik",
@@ -69,10 +79,12 @@
     "date": "2026-01-08T19:19:00.000Z",
     "text": "Tennis im Blackout - Berlins Bürgermeister in der Kritik",
     "context": "",
-    "tags": []
+    "tags": [
+      "ZDF"
+    ]
   },
   {
-    "id": "2gy41o9ec",
+    "id": "jjfl9ph8q",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
     "title": "Was Trumps Plan einer \"Traum-Armee\" bedeutet",
@@ -81,10 +93,12 @@
     "date": "2026-01-08T18:19:00.000Z",
     "text": "Was Trumps Plan einer \"Traum-Armee\" bedeutet",
     "context": "",
-    "tags": []
+    "tags": [
+      "ZDF"
+    ]
   },
   {
-    "id": "2p2zkd3hl",
+    "id": "32ooj0r2g",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
     "title": "Abschluss von Klausurtagung: Was die CSU jetzt durchsetzen will",
@@ -93,6 +107,8 @@
     "date": "2026-01-08T18:12:51.000Z",
     "text": "Abschluss von Klausurtagung: Was die CSU jetzt durchsetzen will",
     "context": "",
-    "tags": []
+    "tags": [
+      "Tagesschau"
+    ]
   }
 ]
