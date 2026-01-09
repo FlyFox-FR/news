@@ -5,21 +5,6 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- ALTER FALLBACK ALGORITHMUS (Falls KI versagt) ---
-function isRelatedTopicFallback(title1, title2) {
-    const clean = t => t.toLowerCase().replace(/[^\w\säöüß]/g, '').split(/\s+/).filter(w => w.length > 3);
-    const set1 = clean(title1);
-    const set2 = clean(title2);
-    let matchWeight = 0, totalWeight = 0;
-    set1.forEach(w1 => {
-        const w = w1.length * w1.length;
-        totalWeight += w;
-        if (set2.some(w2 => w2.includes(w1) || w1.includes(w2))) matchWeight += w * 2;
-    });
-    set2.forEach(w2 => totalWeight += w2.length * w2.length);
-    return (matchWeight / totalWeight) > 0.35;
-}
-
 function loadExistingNews() {
     try {
         if (fs.existsSync('news.json')) return JSON.parse(fs.readFileSync('news.json', 'utf8'));
@@ -27,53 +12,82 @@ function loadExistingNews() {
     return [];
 }
 
-// 1. TEXT ANALYSE (Wie bisher)
+// --- 1. DIE INHALTS-ANALYSE (Dein Prompt) ---
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
-    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}". Antworte mit JSON: { "newTitle": "Sachlich Deutsch", "scoop": "Kernaussage", "bullets": ["Fakt 1", "Fakt 2"] }`;
+
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+    Antworte NUR mit validem JSON.
+    ANWEISUNG:
+    1. Sprache: ZWINGEND DEUTSCH.
+    2. Nenne NUR Länder/Personen, die im Text stehen. ERFINDE NICHTS (z.B. keine Beteiligung von Deutschland, wenn es nicht da steht).
+    3. Suche nach harten Fakten (Zahlen, Orte, Namen).
+    4. Schreibe 2-4 Bulletpoints.
+    5. Erfinde NIE etwas. NICHTS erfinden. Was nicht so ungefähr in dem Kontext des Textes drinsteht, das kannst Du nicht nehmen.
+    6. Aber es wäre gut, wenn Du ein bisschen was aus dem ganzen Artikel nimmst, damit es wie eine ECHTE Zusammenfassung ist.
+    
+    Format:
+    {
+      "newTitle": "Sachliche Überschrift",
+      "scoop": "Kernaussage in einem Satz.",
+      "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
+    }`;
+    
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
-    let retries = 2;
+    let retries = 3;
     while (retries > 0) {
         try {
             const response = await axios.get(url, { timeout: 35000 });
-            let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
-            rawText = rawText.split("---")[0].replace(/```json|```/g, "").trim();
-            const first = rawText.indexOf('{'), last = rawText.lastIndexOf('}');
-            if (first !== -1 && last !== -1) rawText = rawText.substring(first, last + 1);
-            
-            let data = JSON.parse(rawText);
+            let rawText = response.data;
+            if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
+
+            // Cleaning
+            rawText = rawText.split("--- Support")[0]; 
+            rawText = rawText.split("🌸 Ad")[0];
+            rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+
+            const firstOpen = rawText.indexOf('{');
+            const lastClose = rawText.lastIndexOf('}');
+            if (firstOpen !== -1 && lastClose !== -1) rawText = rawText.substring(firstOpen, lastClose + 1);
+
+            let data;
+            try { data = JSON.parse(rawText); } catch (e) { throw new Error("JSON Error"); }
             if (!data.bullets) data.bullets = [];
+            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
+
             return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
+
         } catch (error) {
-            await sleep(3000); retries--;
+            if (error.response?.status === 429) { await sleep(30000); retries--; continue; }
+            await sleep(5000); retries--;
         }
     }
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// 2. AI CLUSTERING (Der neue "Konferenz-Tisch")
-async function groupNewsWithAI(flatFeed) {
-    console.log("🧠 KI sortiert jetzt die Themen...");
+// --- 2. KI GRUPPIERUNG (Der "Konferenz-Tisch") ---
+async function clusterWithAI(articles) {
+    if (articles.length === 0) return [];
+    
+    console.log(`🧠 KI sortiert ${articles.length} Artikel...`);
 
-    // Wir bauen eine sehr kurze Liste für die URL (um Platz zu sparen)
-    // Format: "0|TitelA| 1|TitelB| ..."
-    const inputList = flatFeed.map((item, index) => `${index}|${item.newTitle || item.title}`).join(" || ");
+    // Wir bauen eine Liste nur aus IDs und Titeln für die KI
+    const listForAI = articles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
     
-    // Wir schneiden ab, falls es zu lang für die URL wird (ca. 2000 Zeichen Puffer)
-    const safeInput = inputList.substring(0, 2500);
-
-    const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach exaktem Thema.
-    Input Format: "ID|Titel || ID|Titel..."
+    // Prompt: Wir wollen nur eine Liste von ID-Gruppen zurück.
+    const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
     
-    Liste: "${safeInput}"
+    Liste:
+    ${listForAI.substring(0, 3000)}
     
-    Aufgabe: Gib ein JSON-Array von Arrays zurück. Jedes innere Array enthält die IDs, die zum SELBEN Ereignis gehören.
-    Beispiel Output: [[0, 2], [1], [3, 4]]
+    Aufgabe: Gib ein JSON Array von Arrays zurück. Jedes innere Array enthält die IDs, die zusammengehören.
+    Beispiel: [[0, 5], [1], [2, 3]]
     
-    WICHTIG:
-    1. Jede ID muss vorkommen.
-    2. Gruppiere nur, wenn es wirklich dasselbe Ereignis ist (z.B. "Sturm Elli" und "Unwetter im Norden").
+    Regeln:
+    1. "Sturm Elli" und "Unwetter im Norden" = GLEICHES EVENT -> Gruppieren.
+    2. "Iran Protest" und "Iran Militärübung" = UNTERSCHIEDLICH -> Nicht gruppieren.
+    3. Jede ID muss vorkommen.
     4. Antworte NUR mit dem JSON.`;
 
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
@@ -81,47 +95,44 @@ async function groupNewsWithAI(flatFeed) {
     try {
         const response = await axios.get(url, { timeout: 45000 });
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
-        // Cleaning
+        
         rawText = rawText.replace(/```json|```/g, "").trim();
-        const first = rawText.indexOf('['), last = rawText.lastIndexOf(']');
+        const first = rawText.indexOf('[');
+        const last = rawText.lastIndexOf(']');
         if (first !== -1 && last !== -1) rawText = rawText.substring(first, last + 1);
 
         const groups = JSON.parse(rawText);
         
-        // Validierung: Ist es wirklich ein Array von Arrays?
-        if (!Array.isArray(groups) || !Array.isArray(groups[0])) throw new Error("Format falsch");
+        if (!Array.isArray(groups)) throw new Error("Kein Array");
 
-        console.log("🧠 KI-Gruppierung erfolgreich:", JSON.stringify(groups));
-        
-        // --- FEED NEU ZUSAMMENBAUEN ---
+        // --- FEED NEU BAUEN ---
         let clusteredFeed = [];
         let usedIndices = new Set();
 
         groups.forEach(groupIndices => {
-            // Filtern: Nur gültige Indizes
-            let validIndices = groupIndices.filter(i => flatFeed[i] !== undefined);
+            // Filtern auf gültige Indizes
+            let validIndices = groupIndices.filter(i => articles[i] !== undefined);
             if (validIndices.length === 0) return;
 
-            // Der erste im Cluster ist der Parent (Hauptartikel)
-            let parent = flatFeed[validIndices[0]];
+            // Der erste ist der "Chef" des Stapels
+            let parent = articles[validIndices[0]];
             usedIndices.add(validIndices[0]);
             parent.related = [];
 
-            // Die anderen sind Kinder
+            // Die anderen kommen in den Stapel
             for (let i = 1; i < validIndices.length; i++) {
                 let childIndex = validIndices[i];
                 if (!usedIndices.has(childIndex)) {
-                    parent.related.push(flatFeed[childIndex]);
+                    parent.related.push(articles[childIndex]);
                     usedIndices.add(childIndex);
                 }
             }
             clusteredFeed.push(parent);
         });
 
-        // Falls die KI Artikel vergessen hat (sollte nicht passieren, aber sicher ist sicher)
-        flatFeed.forEach((item, index) => {
+        // Reste einsammeln (falls KI was vergessen hat)
+        articles.forEach((item, index) => {
             if (!usedIndices.has(index)) {
-                console.log(`⚠️ KI hat Item ${index} vergessen, füge manuell hinzu.`);
                 item.related = [];
                 clusteredFeed.push(item);
             }
@@ -130,50 +141,23 @@ async function groupNewsWithAI(flatFeed) {
         return clusteredFeed;
 
     } catch (e) {
-        console.error("❌ KI-Clustering fehlgeschlagen:", e.message);
-        console.log("fallback auf manuelles Clustering...");
-        return manualClusterFallback(flatFeed);
+        console.error("❌ KI-Clustering fehlgeschlagen (Fallback auf flache Liste):", e.message);
+        // Im Notfall geben wir einfach die flache Liste zurück (ungruppiert), besser als Absturz
+        return articles;
     }
-}
-
-// Fallback (dein alter Code), falls KI abstürzt
-function manualClusterFallback(allNews) {
-    let clustered = [];
-    let processedIds = new Set();
-    allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    for (let i = 0; i < allNews.length; i++) {
-        let item = allNews[i];
-        if (processedIds.has(item.id)) continue;
-        let group = [item];
-        processedIds.add(item.id);
-
-        for (let j = i + 1; j < allNews.length; j++) {
-            let candidate = allNews[j];
-            if (processedIds.has(candidate.id)) continue;
-            if (isRelatedTopicFallback(item.originalTitle, candidate.originalTitle)) {
-                group.push(candidate);
-                processedIds.add(candidate.id);
-            }
-        }
-        let parent = group[0];
-        parent.related = [];
-        for (let k = 1; k < group.length; k++) parent.related.push(group[k]);
-        clustered.push(parent);
-    }
-    return clustered;
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (AI Cluster Edition)...");
+    console.log("🚀 Starte News-Abruf (AI Sorting)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
     catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
 
     const existingNews = loadExistingNews();
-    let flatFeed = [];
     
+    // 1. Alles flachklopfen (Cluster auflösen für Neu-Sortierung)
+    let flatFeed = [];
     existingNews.forEach(item => {
         let cleanItem = { ...item };
         delete cleanItem.related;
@@ -181,6 +165,7 @@ async function run() {
         if (item.related) item.related.forEach(child => flatFeed.push(child));
     });
 
+    // 2. Neue News holen
     for (const source of sources) {
         try {
             console.log(`\n📡 ${source.name}...`);
@@ -188,15 +173,17 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Deduplizierung (Exakt gleicher Link oder Titel)
-                const existingIndex = flatFeed.findIndex(n => n.link === item.link || n.originalTitle === item.title);
+                // Deduplizierung: Link Check
+                const existingIndex = flatFeed.findIndex(n => n.link === item.link);
                 if (existingIndex !== -1) {
                     flatFeed[existingIndex].date = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString();
                     continue; 
                 }
 
-                console.log(`🤖 Neu: ${item.title.substring(0, 30)}...`);
+                console.log(`🤖 Analysiere: ${item.title.substring(0, 30)}...`);
                 const rawContent = item.contentSnippet || item.content || "";
+                
+                // DEINE LOGIK
                 const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
                 
                 let imgUrl = item.enclosure?.url || item.itunes?.image || null;
@@ -215,16 +202,15 @@ async function run() {
                     tags: ai.tags,
                     related: []
                 });
-                await sleep(8000); // 8s Pause reicht, da wir am Ende eh nochmal Zeit für Cluster brauchen
+                await sleep(10000); 
             }
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
-    // --- HIER KOMMT DIE MAGIE ---
-    // Wir übergeben ALLES an die KI zum Sortieren
-    const finalFeed = await groupNewsWithAI(flatFeed);
+    // 3. AM ENDE: Die KI sortieren lassen
+    const finalFeed = await clusterWithAI(flatFeed);
     
-    // Sortieren (Neueste Cluster oben)
+    // Neueste Cluster nach oben
     finalFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
