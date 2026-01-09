@@ -2,9 +2,9 @@ name: Update News Final
 
 on:
   schedule:
-    - cron: '0 2 * * *'          # Nachts um 2 Uhr (Deep Clean & Pruning)
-    - cron: '0 6-22/2 * * *'     # Alle 2 Stunden tagsüber
-  workflow_dispatch:             # Manueller Start erlaubt
+    - cron: '0 2 * * *'          # Nachts um 2 Uhr (Deep Clean / Pruning)
+    - cron: '0 6-22/2 * * *'     # Alle 2 Stunden von 6 bis 22 Uhr
+  workflow_dispatch:             # Erlaubt manuelles Starten über deine Sidebar
 
 permissions:
   contents: write
@@ -24,7 +24,7 @@ jobs:
         node-version: '18'
 
     - name: Install Dependencies
-      run: npm install rss-parser axios cheerio
+      run: npm install
 
     - name: Run Grabber
       run: node grabber.js
@@ -37,6 +37,7 @@ jobs:
       run: |
         git config --global user.name 'NewsBot'
         git config --global user.email 'bot@noreply.github.com'
-        git add news.json config.json
-        git commit -m "Update News, Briefing & FullText" || echo "Keine Änderungen"
+        # Alle geänderten Dateien (news.json, config.json, debug_cluster_response.txt) hinzufügen
+        git add news.json config.json debug_cluster_response.txt
+        git commit -m "Update News, Config & Pruning" || echo "Keine Änderungen"
         git push
