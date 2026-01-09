@@ -1,3 +1,4 @@
+
 const Parser = require('rss-parser');
 const axios = require('axios');
 const fs = require('fs');
@@ -5,7 +6,7 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- HELPER & FALLBACK ---
+// --- HELPER ---
 function cleanString(str) {
     return str.toLowerCase().replace(/[^\w\säöüß]/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -17,7 +18,6 @@ function isSameArticle(item1, item2) {
     return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 5);
 }
 
-// Fallback Algo
 function isRelatedTopicAlgorithmic(title1, title2) {
     const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach", "gegen", "über"];
     const getWords = (t) => cleanString(t).split(' ').filter(w => w.length > 2 && !stopWords.includes(w));
@@ -43,11 +43,11 @@ function loadExistingNews() {
     return [];
 }
 
-// --- 1. INHALT ---
+// 1. INHALT
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
-     const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
@@ -63,6 +63,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
       "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
     }`
     
+    
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
 
     let retries = 3;
@@ -71,19 +72,18 @@ async function analyzeWithPollinations(title, content, sourceName) {
             const response = await axios.get(url, { timeout: 35000 });
             let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
 
-            // Skalpell-Methode für Einzel-Artikel
-            rawText = rawText.replace(/```json|```/g, ""); // Markdown weg
+            rawText = rawText.split("--- Support")[0]; 
+            rawText = rawText.replace(/```json|```/g, "").trim();
             const firstOpen = rawText.indexOf('{');
             const lastClose = rawText.lastIndexOf('}');
-            
-            if (firstOpen !== -1 && lastClose !== -1) {
-                rawText = rawText.substring(firstOpen, lastClose + 1);
-                let data = JSON.parse(rawText);
-                if (!data.bullets) data.bullets = [];
-                data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
-                return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
-            }
-            throw new Error("Kein JSON Objekt gefunden");
+            if (firstOpen !== -1 && lastClose !== -1) rawText = rawText.substring(firstOpen, lastClose + 1);
+
+            let data;
+            try { data = JSON.parse(rawText); } catch (e) { throw new Error("JSON Error"); }
+            if (!data.bullets) data.bullets = [];
+            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
+
+            return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
 
         } catch (error) {
             if (error.response?.status === 429) { await sleep(30000); retries--; continue; }
@@ -93,7 +93,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// --- 2. KI CLUSTERING (DER META-KEY CHIRURG) ---
+// 2. CLUSTERING (SNIPER MODE)
 async function clusterWithAI(articles) {
     if (articles.length === 0) return [];
     
@@ -104,54 +104,40 @@ async function clusterWithAI(articles) {
     const safeList = listForAI.substring(0, 3500);
 
     const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
-    
     Liste:
     ${safeList}
     
-    Aufgabe: Erstelle ein JSON Objekt mit dem Key "groups". Darin ein Array von Arrays mit den IDs.
-    
-    Beispiel Output:
-    {
-      "groups": [[0, 5], [1], [2, 3]]
-    }
-    
+    Aufgabe: Gib ein JSON Array von Arrays zurück.
+    Beispiel: [[0, 5], [1], [2, 3]]
     Regeln:
     1. "Sturm Elli" und "Unwetter im Norden" = GLEICHES EVENT -> Gruppieren.
     2. "Iran Protest" und "Iran Militärübung" = UNTERSCHIEDLICH -> Nicht gruppieren.
-    3. Antworte NUR mit dem JSON.`;
+    3. Antworte NUR mit dem JSON Array [[...]].`;
 
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     try {
         const response = await axios.get(url, { timeout: 120000 });
-        
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         
-        // DEBUG: Speichern für Analyse
+        // DEBUGGING LOG
         fs.writeFileSync('debug_cluster_response.txt', rawText);
 
-        // --- DER CHIRURGISCHE SCHNITT ---
-        // 1. Markdown entfernen
-        rawText = rawText.replace(/```json/g, "").replace(/```/g, "");
-        
-        // 2. Finde das erste '{' und das letzte '}'
-        const start = rawText.indexOf('{');
-        const end = rawText.lastIndexOf('}');
+        // --- DER FIX: ARRAY SNIPER ---
+        // Wir ignorieren alles, was nicht wie [[...]] aussieht.
+        // Regex Erklärung: Suche nach [[ gefolgt von Zahlen/Kommas/Klammern gefolgt von ]]
+        const arrayMatch = rawText.match(/\[\s*\[[\d\s,\[\]]*\]\s*\]/s);
 
-        if (start === -1 || end === -1) {
-            throw new Error("Kein JSON-Objekt { ... } gefunden.");
+        let groups;
+        if (arrayMatch) {
+            // Wir parsen NUR den gefundenen Array-Teil
+            groups = JSON.parse(arrayMatch[0]);
+        } else {
+            // Notfall: Vielleicht fehlen die äußeren Klammern?
+            throw new Error("Kein Array-Muster [[...]] gefunden.");
         }
 
-        // 3. Alles davor (Reasoning) und danach (Gelaber) abschneiden
-        const cleanJsonString = rawText.substring(start, end + 1);
-
-        // 4. Parsen
-        const parsedData = JSON.parse(cleanJsonString);
-        
-        // 5. Daten extrahieren
-        const groups = parsedData.groups;
-
-        if (!Array.isArray(groups)) throw new Error("Key 'groups' ist kein Array");
+        if (!Array.isArray(groups)) throw new Error("Geparstes Objekt ist kein Array");
 
         console.log("🧠 KI-Gruppierung erfolgreich!");
         
@@ -189,7 +175,7 @@ async function clusterWithAI(articles) {
             clusteredFeed.push(parent);
         });
 
-        // Vergessene Items
+        // Reste einsammeln
         activeArticles.forEach((item, index) => {
             if (!usedIndices.has(index)) {
                 item.related = [];
@@ -250,7 +236,7 @@ function clusterAlgorithmic(allNews) {
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Surgical JSON Edition)...");
+    console.log("🚀 Starte News-Abruf (Array Sniper Edition)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
