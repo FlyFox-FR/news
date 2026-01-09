@@ -1,44 +1,141 @@
 [
   {
-    "id": "rn5m7z2zj",
+    "id": "11fjuoezw",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
-    "title": "Landtag lehnt Auflösung des Potsdamer Landtags ab",
-    "originalTitle": "Landtag lehnt Antrag auf Auflösung ab - BSW-Abgeordnete stimmen mit AfD",
-    "link": "https://www.rbb24.de/politik/beitrag/2026/01/brandenburg-landtag-afd-antrag-abwahl-gruhn-gescheitert.html",
+    "title": "BSW nach Koalitionsbruch: Auflösung des Landtags im Blick",
+    "originalTitle": "BSW nach dem Koalitionsbruch: Bündnis für Selbstentzauberung und Wählertäuschung",
+    "link": "https://www.rbb24.de/politik/beitrag/2026/01/brandenburg-bsw-sahra-wagenknecht-koalitionsbruch-spd-partei-krise.html",
     "img": null,
-    "date": "2026-01-09T16:40:16.000Z",
-    "text": "Im Potsdamer Landtag wurde der Auflösungsantrag abgelehnt; AfD und BSW unterstützten den Antrag, während SPD und CDU dagegen stimmten.",
+    "date": "2026-01-09T18:00:30.000Z",
+    "text": "Der Bruch der SPD‑BSW‑Koalition führte zur Debatte über die Auflösung des Parlaments, die von Zuschauern als teilweise unterhaltsam, aber tatsächlich nicht humorvoll empfunden wurde.",
     "bullets": [
-      "Potsdam – Ort der Abstimmung",
-      "AfD – Antragsteller und Unterstützer",
-      "BSW – unterstützte den Auflösungsantrag",
-      "SPD und CDU – stimmten gegen die Auflösung"
+      "Koalitionsbruch zwischen SPD und BSW löste die Landtagsdebatte über die Auflösung des Parlaments aus.",
+      "Die Diskussion erreichte bei Zuschauern einen gewissen Unterhaltungswert, wurde jedoch von Michael Schon als nicht verschmitzt bewertet.",
+      "Michael Schon kommentiert die Debatte als Beispiel für „Bündnis für Selbstentzauberung und Wählertäuschung“."
     ],
     "tags": [
       "rbb24",
       "News"
     ],
+    "related": [
+      {
+        "id": "rn5m7z2zj",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Landtag lehnt Auflösung des Potsdamer Landtags ab",
+        "originalTitle": "Landtag lehnt Antrag auf Auflösung ab - BSW-Abgeordnete stimmen mit AfD",
+        "link": "https://www.rbb24.de/politik/beitrag/2026/01/brandenburg-landtag-afd-antrag-abwahl-gruhn-gescheitert.html",
+        "img": null,
+        "date": "2026-01-09T16:40:16.000Z",
+        "text": "Im Potsdamer Landtag wurde der Auflösungsantrag abgelehnt; AfD und BSW unterstützten den Antrag, während SPD und CDU dagegen stimmten.",
+        "bullets": [
+          "Potsdam – Ort der Abstimmung",
+          "AfD – Antragsteller und Unterstützer",
+          "BSW – unterstützte den Auflösungsantrag",
+          "SPD und CDU – stimmten gegen die Auflösung"
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c8pg7202z",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Putins Einsatz der Hyperschallrakete gegen die Ukraine: Ziele und Wirkung",
+    "originalTitle": "Was wollte Putin mit dem Einsatz der Hyperschallrakete erreichen?",
+    "link": "https://www.tagesschau.de/ausland/europa/russland-oreschnik-ukraine-100.html",
+    "img": null,
+    "date": "2026-01-09T17:43:57.000Z",
+    "text": "Russland nennt die Hyperschallrakete Oreschnik „Wunderwaffe“ und bestätigt, sie sei bislang unabwehrbar – mit dem ersten Einsatz bei der Ukraine.",
+    "bullets": [
+      "Der Kreml beschreibt die Oreschnik als „Wunderwaffe“ und behauptet, sie sei nicht abwehrbar.",
+      "Putin ließ die Rakete erstmals gegen die Ukraine einsetzen, um die Eindringlichkeit seiner Militärtechnologie zu demonstrieren.",
+      "Der Einsatz signalisiert einen technologischen Schritt in der Kriegsführung, indem Hyperschallfähige erstmals praktisch im Ukraine-Konflikt verwendet werden."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ],
     "related": []
   },
   {
-    "id": "qnynrj0kb",
+    "id": "5ujx33l4l",
+    "source": "rbb24",
+    "sourceCountry": "🇩🇪",
+    "title": "Berlin: Eisglätte bedroht Mobilität älterer Menschen",
+    "originalTitle": "\"Ich weiß von vielen Senioren, die an ihre Wohnung gefesselt sind\"",
+    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/eis-schnee-glaette-senioren-wohnung-drin-gefesselt.html",
+    "img": null,
+    "date": "2026-01-09T17:33:05.000Z",
+    "text": "In Berlin haben seit Tagen stark vereiste Gehwege dazu geführt, dass viele Senioren zu Hause bleiben, weil sie Angst vor Stürzen haben, wie ein Pflegedienstleiter und eine betroffene Seniorin schildern.",
+    "bullets": [
+      "Ort: Berlin",
+      "Seit Tagen Eisglätte: viele Gehwege kaum passierbar",
+      "Ältere Menschen bleiben zu Hause aus Angst vor Stürzen",
+      "Berichten stammen von einem Pflegedienstleiter und einer Seniorin"
+    ],
+    "tags": [
+      "rbb24",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "aqyhmdtyk",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
+        "originalTitle": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
+        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/berlin-sumatra-tiger-nachwuchs-tierpark-artenschutz.html",
+        "img": null,
+        "date": "2026-01-09T13:53:09.000Z",
+        "text": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
+        "bullets": [],
+        "tags": [
+          "rbb24"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "w1fgfb910",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
-    "title": "Sturmtief Elli betrifft Bahn- und Flugverkehr in Deutschland",
-    "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
-    "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
-    "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
-    "date": "2026-01-09T16:36:00.000Z",
-    "text": "Sturmtief Elli führt zu Flugabsagen und verlangsamten ICE-Verbindungen in Nord- und Süddeutschland.",
+    "title": "Kurzdarstellung von Schlagzeilen in Echtzeit",
+    "originalTitle": "Schlagzeilen",
+    "link": "https://www.zdfheute.de/newsticker/schlagzeilen-100.html",
+    "img": "https://www.zdfheute.de/assets/zdfheute-keyvisual-100~384x216?cb=1695027601231",
+    "date": "2026-01-09T17:18:00.000Z",
+    "text": "Der Ticker bietet einen schnellen Überblick über aktuelle Ereignisse in kompakter Form.",
     "bullets": [
-      "Mehrere Flüge in Deutschland wurden gestrichen",
-      "ICE-Verbindungen mussten im gesamten Land verlangsamt werden",
-      "Bodenverkehr in Nord- und Süddeutschland ist stark beeinträchtigt"
+      "Mehrere Schlagzeilen werden in einem übersichtlichen Ticker-Layout präsentiert.",
+      "Die Inhalte konzentrieren sich ausschließlich auf die wesentlichsten Fakten.",
+      "Der Format eignet sich besonders für Leser, die sich rasch über das aktuelle Geschehen informieren wollen."
     ],
     "tags": [
       "ZDF",
       "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "83bu9dzj7",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
+    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
+    "date": "2026-01-09T17:11:00.000Z",
+    "text": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
+    "bullets": [],
+    "tags": [
+      "ZDF"
     ],
     "related": [
       {
@@ -64,83 +161,129 @@
         "related": []
       },
       {
-        "id": "yfhm7irox",
-        "source": "Spiegel",
-        "sourceCountry": "🇩🇪",
-        "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
-        "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
-        "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
-        "date": "2026-01-09T16:20:00.000Z",
-        "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
-        "bullets": [
-          "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
-          "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
-          "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
-        ],
-        "tags": [
-          "Spiegel",
-          "News"
-        ]
-      },
-      {
-        "id": "dgyaff61x",
-        "source": "rbb24",
-        "sourceCountry": "🇩🇪",
-        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
-        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
-        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
-        "img": null,
-        "date": "2026-01-09T16:15:07.000Z",
-        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
-        "bullets": [
-          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
-          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
-          "Behörden und Wetterdienste rufen zur Vorsicht auf"
-        ],
-        "tags": [
-          "rbb24",
-          "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "78ui2nisc",
+        "id": "qnynrj0kb",
         "source": "ZDF",
         "sourceCountry": "🇩🇪",
-        "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
-        "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
-        "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
-        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
-        "date": "2026-01-09T16:09:00.000Z",
-        "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
+        "title": "Sturmtief Elli betrifft Bahn- und Flugverkehr in Deutschland",
+        "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
+        "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
+        "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
+        "date": "2026-01-09T16:36:00.000Z",
+        "text": "Sturmtief Elli führt zu Flugabsagen und verlangsamten ICE-Verbindungen in Nord- und Süddeutschland.",
         "bullets": [
-          "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
-          "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
-          "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
+          "Mehrere Flüge in Deutschland wurden gestrichen",
+          "ICE-Verbindungen mussten im gesamten Land verlangsamt werden",
+          "Bodenverkehr in Nord- und Süddeutschland ist stark beeinträchtigt"
         ],
         "tags": [
           "ZDF",
           "News"
         ]
-      },
+      }
+    ]
+  },
+  {
+    "id": "azkt033t0",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Verkehrsbehinderungen, Handelsverfahren, Waffenruhe",
+    "originalTitle": "News des Tages: Wetter, Schnee, Mercosur-Abkommen, Syrien",
+    "link": "https://www.spiegel.de/politik/deutschland/news-des-tages-wetter-schnee-mercosur-abkommen-syrien-a-dc40ffc5-a4d2-4fe6-83ac-b1df9d6e4447#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/0fb372c3-843d-4dc6-a445-e7c34c92f75c_w520_r2.08_fpx28.09_fpy49.93.png",
+    "date": "2026-01-09T17:11:00.000Z",
+    "text": "Wetterbedingte Einschränkungen, EU-Handelsabkommen und ein Waffenstillstand in Syria prägen die Schlagzeilen.",
+    "bullets": [
+      "Schnee und Eis behindern den Verkehr in vielen Teilen des Landes, was zu erheblichen Verzögerungen führt.",
+      "Die EU öffnet den Weg für ein Handelsabkommen mit Merkur (Mercosur), das den Austausch mit südamerikanischen Partnern stärkt.",
+      "Syrien kündigte offiziell eine Waffenruhe in der Stadt Aleppo an, ein möglicher Schritt zur Stabilisierung des Konflikts."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": []
+  },
+  {
+    "id": "c2i037u5r",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Iran: Spannungen steigen, Protestbewegung wächst trotz brutalem Regime",
+    "originalTitle": "Iran: So breiten sich die regimekritischen Proteste aus",
+    "link": "https://www.spiegel.de/ausland/iran-so-breiten-sich-die-regimekritischen-proteste-aus-a-46c9e04f-6556-4211-83d7-4fbcf0022e17#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/6dd29491-cdc6-4f23-994e-e2e38b2d2910_w520_r2.08_fpx49_fpy47.png",
+    "date": "2026-01-09T16:53:00.000Z",
+    "text": "Im Iran verstärkt sich die Protestbewegung, obwohl das Regime Gewalt gegen Demonstrierende einsetzt.",
+    "bullets": [
+      "Das Regime in Iran geht brutal gegen Demonstrierende vor.",
+      "Zusätzlich wagen sich immer mehr Menschen auf die Straßen.",
+      "Videos und Grafiken zeigen, wie die jüngste Protestwelle größer wird."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": [
       {
-        "id": "a89lw1t3u",
+        "id": "qzvgn6if3",
         "source": "Spiegel",
         "sourceCountry": "🇩🇪",
-        "title": "Wetter: Schnee, Sturm und Glätte – Ist der Winter in Deutschland wirklich außergewöhnlich?",
-        "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
-        "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
-        "date": "2026-01-08T19:56:00.000Z",
-        "text": "Der Beitrag erörtert, ob der aktuelle Winter mit Schnee, Sturm und Glätte in Deutschland kälter und verschneit ist als üblich, und beleuchtet die regionale Wahrnehmung.",
+        "title": "Iran: Dutzende getötet, Regime forciert harte Strafen",
+        "originalTitle": "Iran – Tote bei Protestwelle: Teheran droht Demonstranten mit »entschlossen und maximalen« Strafen",
+        "link": "https://www.spiegel.de/ausland/iran-tote-bei-protestwelle-praesident-ruft-sicherheitskraefte-zur-zurueckhaltung-auf-a-b19559a2-546b-405c-b5b4-3963c6a6cf74#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/ee6334be-3bcb-42ea-a874-70fa3b9657ea_w520_r2.08_fpx49.95_fpy44.99.jpg",
+        "date": "2026-01-09T14:31:00.000Z",
+        "text": "Bei einer Protestwelle in Iran sind bereits Dutzende Demonstranten getötet, während das Regime droht, „entschlossene und maximale“ Strafen zu verhängen.",
         "bullets": [
-          "Der Artikel beschreibt ungewöhnliche Wetterbedingungen – Schnee, Sturm und Glätte.",
-          "Er stellt die Frage, ob der aktuelle Winter in Deutschland tatsächlich kälter und verschneiter ist als üblich.",
-          "Der Fokus liegt auf der regionalen Wahrnehmung und der Erkundung, wie diese Wetterlage wirkt."
+          "Dutzende Demonstranten wurden bei der aktuellen Protestwelle getötet",
+          "Das Teheraner Regime kündigt harte, entschlossene und maximale Strafen an",
+          "Die Proteste stellen einen neuen Belastungstest für die iranische Politik dar"
         ],
         "tags": [
           "Spiegel",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
+    "id": "mn7tlgq1x",
+    "source": "ZDF",
+    "sourceCountry": "🇩🇪",
+    "title": "Müllberg auf Philippinen einstürzt – mehrere Gebäude begraben, Rettungskräfte suchen nach Vermissten",
+    "originalTitle": "Müllberg auf Philippinen eingestürzt",
+    "link": "https://www.zdfheute.de/video/philippinen-muelllawine-panorama-100.html",
+    "img": "https://www.zdfheute.de/assets/muelllawine-philippinen-100~384x216?cb=1767976815756",
+    "date": "2026-01-09T16:36:28.000Z",
+    "text": "Ein gewaltiger Müllberg an einer philippinischen Deponie und Recyclinganlage ist zu Boden gegangen und hat mehrere Gebäude unter sich begraben; Rettungskräfte suchen derzeit nach vielen Vermissten.",
+    "bullets": [
+      "Einsturz eines massiven Müllbergs auf einer Deponie und Recyclinganlage in den Philippinen",
+      "Mehrere Gebäude liegen unter dem einstürzten Müllberg begraben",
+      "Rettungskräfte suchen nach zahlreichen vermissten Personen"
+    ],
+    "tags": [
+      "ZDF",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "rnyckc3we",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Müllberg in den Philippinen kracht ein – mindestens eine Frau stirbt, Suche nach Vermissten läuft an",
+        "originalTitle": "Tote und Vermisste nach Einsturz von Müllberg auf den Philippinen",
+        "link": "https://www.tagesschau.de/ausland/asien/philippinen-muellberg-unglueck-100.html",
+        "img": null,
+        "date": "2026-01-09T14:00:42.000Z",
+        "text": "Ein Müllberg auf einer Deponie in den Philippinen ist nach starkem Regen eingestürzt, wobei mindestens eine Frau ums Leben kam und mehrere Menschen vermisst werden.",
+        "bullets": [
+          "Müllberg auf Deponie ist nach starkem Regen eingestürzt",
+          "Mindestens eine Frau kam ums Leben",
+          "Suche nach Vermissten dauert an",
+          "Vorfälle stattfand in den Philippinen"
+        ],
+        "tags": [
+          "Tagesschau",
           "News"
         ],
         "related": []
@@ -187,7 +330,8 @@
         "tags": [
           "ZDF",
           "News"
-        ]
+        ],
+        "related": []
       },
       {
         "id": "7lzgieuk4",
@@ -343,6 +487,90 @@
     ]
   },
   {
+    "id": "yfhm7irox",
+    "source": "Spiegel",
+    "sourceCountry": "🇩🇪",
+    "title": "Bundesligaspiel St. Pauli vs. RB Leipzig wegen Schneesturm \"Elli\" abgesagt",
+    "originalTitle": "Schneesturm »Elli« heute im Live-Blog: Bundesligaspiel zwischen St. Pauli und RB Leipzig abgesagt",
+    "link": "https://www.spiegel.de/panorama/schneesturm-elli-heute-im-live-blog-s-bahn-hannover-stellt-betrieb-ein-vielerorts-fahren-auch-keine-busse-a-248dde81-bca4-42af-bbc0-7d4aa2bd0571#ref=rss",
+    "img": "https://cdn.prod.www.spiegel.de/images/8fb3b738-2c98-4494-ab5c-956389b8d117_w520_r2.08_fpx31_fpy44.jpg",
+    "date": "2026-01-09T16:20:00.000Z",
+    "text": "Der Schneesturm \"Elli\" führt zur Absage eines Bundesliga-Spiels und verursacht große Beeinträchtigungen im Bahnverkehr Norddeutschlands.",
+    "bullets": [
+      "Bundesligaspiel zwischen FC St. Pauli und RB Leipzig wurde wegen Sturmtief \"Elli\" abgesagt.",
+      "Schneesturm \"Elli\" lammert auch Teile des Profifußballs und bewirkt erheblichen Einfluss auf Fern- und Regionalverkehr der Deutschen Bahn in Norddeutschland.",
+      "Fahrgäste in Norddeutschland erwartet vorerst erhebliche Unterbrechungen des Bahnverkehrs."
+    ],
+    "tags": [
+      "Spiegel",
+      "News"
+    ],
+    "related": [
+      {
+        "id": "dgyaff61x",
+        "source": "rbb24",
+        "sourceCountry": "🇩🇪",
+        "title": "Sturmtief Elli bringt Schneefall in Berlin und Brandenburg – trotz reduzierter Auswirkungen",
+        "originalTitle": "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+        "link": "https://www.rbb24.de/panorama/beitrag/2026/01/liveticker-schnee-sturm-minusgrade-winter-berlin-brandenburg.html",
+        "img": null,
+        "date": "2026-01-09T16:15:07.000Z",
+        "text": "Sturmtief „Elli“ sorgt für starken Wind und erheblichen Schneefall, wobei Berlin und Brandenburg weniger stark als erwartet betroffen sind.",
+        "bullets": [
+          "Sturmtief „Elli“ bringt erheblichen Schneefall und starken Wind nach Deutschland",
+          "Berlin und Brandenburg werden weniger stark getroffen als ursprünglich vermutet",
+          "Behörden und Wetterdienste rufen zur Vorsicht auf"
+        ],
+        "tags": [
+          "rbb24",
+          "News"
+        ],
+        "related": []
+      },
+      {
+        "id": "78ui2nisc",
+        "source": "ZDF",
+        "sourceCountry": "🇩🇪",
+        "title": "Wintersturm Elli: Deutsche Bahn stoppt Zugverkehr im Norden",
+        "originalTitle": "Wintersturm \"Elli\": Bahn stoppt Züge, tödliche Unfälle",
+        "link": "https://www.zdfheute.de/panorama/wetter-elli-deutschland-schnee-glaette-auswirkungen-100.html",
+        "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-hannover-102~384x216?cb=1767953667199",
+        "date": "2026-01-09T16:09:00.000Z",
+        "text": "Der Wintersturm Elli führt dazu, dass die Deutsche Bahn den Fernverkehr im Norden aussetzt und damit den Schulunterricht in vielen Regionen beeinträchtigt.",
+        "bullets": [
+          "Die Deutsche Bahn hält im Norden den Fernverkehr wegen des Wintersturms Elli",
+          "Durch die Aussetzung fallen Schulunterricht und andere regionale Aktivitäten aus",
+          "Der Sturm verursacht „tödliche Unfälle“ im Bahnverkehr"
+        ],
+        "tags": [
+          "ZDF",
+          "News"
+        ]
+      },
+      {
+        "id": "hgg8rejn6",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Wintersturm Elli lässt Deutschland von Schnee und Glätte zurückhalten",
+        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
+        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
+        "img": null,
+        "date": "2026-01-09T13:03:55.000Z",
+        "text": "Der Sturm bringt heftige Schneefälle, starke Glätte und vermehrte Bahnausfälle, die den öffentlichen Verkehr, Schulen und den Straßenverkehr stark beeinträchtigen.",
+        "bullets": [
+          "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
+          "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
+          "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
+  },
+  {
     "id": "b4u2bx2rv",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
@@ -490,7 +718,72 @@
       "ZDF",
       "News"
     ],
-    "related": []
+    "related": [
+      {
+        "id": "a89lw1t3u",
+        "source": "Spiegel",
+        "sourceCountry": "🇩🇪",
+        "title": "Wetter: Schnee, Sturm und Glätte – Ist der Winter in Deutschland wirklich außergewöhnlich?",
+        "originalTitle": "Wetter: Schnee, Sturm und Glätte - So (außer)gewöhnlich ist dieser Winter",
+        "link": "https://www.spiegel.de/wissenschaft/natur/wetter-schnee-sturm-und-glaette-so-ausser-gewoehnlich-ist-dieser-winter-a-94054310-144a-45e7-addd-cfb56cd7d062#ref=rss",
+        "img": "https://cdn.prod.www.spiegel.de/images/33c7b390-ef34-4ea9-9a19-8204bece21b9_w520_r2.08_fpx69.99_fpy46.98.jpg",
+        "date": "2026-01-08T19:56:00.000Z",
+        "text": "Der Beitrag erörtert, ob der aktuelle Winter mit Schnee, Sturm und Glätte in Deutschland kälter und verschneit ist als üblich, und beleuchtet die regionale Wahrnehmung.",
+        "bullets": [
+          "Der Artikel beschreibt ungewöhnliche Wetterbedingungen – Schnee, Sturm und Glätte.",
+          "Er stellt die Frage, ob der aktuelle Winter in Deutschland tatsächlich kälter und verschneiter ist als üblich.",
+          "Der Fokus liegt auf der regionalen Wahrnehmung und der Erkundung, wie diese Wetterlage wirkt."
+        ],
+        "tags": [
+          "Spiegel",
+          "News"
+        ],
+        "related": [
+          {
+            "id": "codipz249",
+            "source": "Tagesschau",
+            "sourceCountry": "🇩🇪",
+            "title": "Unerwarteter Schneefall im Norden Deutschlands begleitet von Unwetterwarnungen",
+            "originalTitle": "Wie sich der Winter in Deutschland verändert hat",
+            "link": "https://www.tagesschau.de/wissen/klima/unwetter-schnee-norddeutschland-klima-schneetage-100.html",
+            "img": null,
+            "date": "2026-01-09T12:16:45.000Z",
+            "text": "Ein ungewöhnlich starker Wind begünstigt nun schon im Norden Deutschlands heftige Schneefälle, während mehrere Regionen Unwetterwarnungen erhalten haben.",
+            "bullets": [
+              "Der angekündigte Schneefall erscheint jetzt im Norden Deutschlands.",
+              "Starker Wind sorgt für ergiebigen Schneefall in Teilen der Region.",
+              "Für mehrere einheimische Gebiete wurden Unwetterwarnungen ausgegeben."
+            ],
+            "tags": [
+              "Tagesschau",
+              "News"
+            ],
+            "related": []
+          }
+        ]
+      },
+      {
+        "id": "codipz249",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Unerwarteter Schneefall im Norden Deutschlands begleitet von Unwetterwarnungen",
+        "originalTitle": "Wie sich der Winter in Deutschland verändert hat",
+        "link": "https://www.tagesschau.de/wissen/klima/unwetter-schnee-norddeutschland-klima-schneetage-100.html",
+        "img": null,
+        "date": "2026-01-09T12:16:45.000Z",
+        "text": "Ein ungewöhnlich starker Wind begünstigt nun schon im Norden Deutschlands heftige Schneefälle, während mehrere Regionen Unwetterwarnungen erhalten haben.",
+        "bullets": [
+          "Der angekündigte Schneefall erscheint jetzt im Norden Deutschlands.",
+          "Starker Wind sorgt für ergiebigen Schneefall in Teilen der Region.",
+          "Für mehrere einheimische Gebiete wurden Unwetterwarnungen ausgegeben."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
+      }
+    ]
   },
   {
     "id": "iqjedght3",
@@ -536,27 +829,6 @@
     "related": []
   },
   {
-    "id": "w1fgfb910",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Kurzdarstellung von Schlagzeilen in Echtzeit",
-    "originalTitle": "Schlagzeilen",
-    "link": "https://www.zdfheute.de/newsticker/schlagzeilen-100.html",
-    "img": "https://www.zdfheute.de/assets/zdfheute-keyvisual-100~384x216?cb=1695027601231",
-    "date": "2026-01-09T15:07:00.000Z",
-    "text": "Der Ticker bietet einen schnellen Überblick über aktuelle Ereignisse in kompakter Form.",
-    "bullets": [
-      "Mehrere Schlagzeilen werden in einem übersichtlichen Ticker-Layout präsentiert.",
-      "Die Inhalte konzentrieren sich ausschließlich auf die wesentlichsten Fakten.",
-      "Der Format eignet sich besonders für Leser, die sich rasch über das aktuelle Geschehen informieren wollen."
-    ],
-    "tags": [
-      "ZDF",
-      "News"
-    ],
-    "related": []
-  },
-  {
     "id": "ogxvkgq55",
     "source": "Spiegel",
     "sourceCountry": "🇩🇪",
@@ -570,27 +842,6 @@
       "Minneapolis liegt im Bundesstaat Minnesota, USA.",
       "Die US‑Einwanderungsbehörde ICE wird im Text als brutaler und enthemter beschrieben.",
       "Der Protest entsteht nach dem Totschlag einer Frau am Mittwoch und könnte von der Trump‑Regierung instrumentalisiert werden."
-    ],
-    "tags": [
-      "Spiegel",
-      "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "qzvgn6if3",
-    "source": "Spiegel",
-    "sourceCountry": "🇩🇪",
-    "title": "Iran: Dutzende getötet, Regime forciert harte Strafen",
-    "originalTitle": "Iran – Tote bei Protestwelle: Teheran droht Demonstranten mit »entschlossen und maximalen« Strafen",
-    "link": "https://www.spiegel.de/ausland/iran-tote-bei-protestwelle-praesident-ruft-sicherheitskraefte-zur-zurueckhaltung-auf-a-b19559a2-546b-405c-b5b4-3963c6a6cf74#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/ee6334be-3bcb-42ea-a874-70fa3b9657ea_w520_r2.08_fpx49.95_fpy44.99.jpg",
-    "date": "2026-01-09T14:31:00.000Z",
-    "text": "Bei einer Protestwelle in Iran sind bereits Dutzende Demonstranten getötet, während das Regime droht, „entschlossene und maximale“ Strafen zu verhängen.",
-    "bullets": [
-      "Dutzende Demonstranten wurden bei der aktuellen Protestwelle getötet",
-      "Das Teheraner Regime kündigt harte, entschlossene und maximale Strafen an",
-      "Die Proteste stellen einen neuen Belastungstest für die iranische Politik dar"
     ],
     "tags": [
       "Spiegel",
@@ -685,44 +936,6 @@
     "related": []
   },
   {
-    "id": "rnyckc3we",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Müllberg in den Philippinen kracht ein – mindestens eine Frau stirbt, Suche nach Vermissten läuft an",
-    "originalTitle": "Tote und Vermisste nach Einsturz von Müllberg auf den Philippinen",
-    "link": "https://www.tagesschau.de/ausland/asien/philippinen-muellberg-unglueck-100.html",
-    "img": null,
-    "date": "2026-01-09T14:00:42.000Z",
-    "text": "Ein Müllberg auf einer Deponie in den Philippinen ist nach starkem Regen eingestürzt, wobei mindestens eine Frau ums Leben kam und mehrere Menschen vermisst werden.",
-    "bullets": [
-      "Müllberg auf Deponie ist nach starkem Regen eingestürzt",
-      "Mindestens eine Frau kam ums Leben",
-      "Suche nach Vermissten dauert an",
-      "Vorfälle stattfand in den Philippinen"
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ],
-    "related": []
-  },
-  {
-    "id": "aqyhmdtyk",
-    "source": "rbb24",
-    "sourceCountry": "🇩🇪",
-    "title": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
-    "originalTitle": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
-    "link": "https://www.rbb24.de/panorama/beitrag/2026/01/berlin-sumatra-tiger-nachwuchs-tierpark-artenschutz.html",
-    "img": null,
-    "date": "2026-01-09T13:53:09.000Z",
-    "text": "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin  ",
-    "bullets": [],
-    "tags": [
-      "rbb24"
-    ],
-    "related": []
-  },
-  {
     "id": "daaa4ov7n",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
@@ -786,65 +999,6 @@
     "related": []
   },
   {
-    "id": "83bu9dzj7",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-    "img": "https://www.zdfheute.de/assets/winterwetter-sturmtief-elli-norddeutschland-100~384x216?cb=1767955912798",
-    "date": "2026-01-09T12:42:00.000Z",
-    "text": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "bullets": [],
-    "tags": [
-      "ZDF"
-    ],
-    "related": [
-      {
-        "id": "hgg8rejn6",
-        "source": "Tagesschau",
-        "sourceCountry": "🇩🇪",
-        "title": "Wintersturm Elli lässt Deutschland von Schnee und Glätte zurückhalten",
-        "originalTitle": "Schnee, Glätte, Bahnausfälle: Wintersturm \"Elli\" hat das Land im Griff",
-        "link": "https://www.tagesschau.de/inland/gesellschaft/wintersturm-elli-bahn-100.html",
-        "img": null,
-        "date": "2026-01-09T13:03:55.000Z",
-        "text": "Der Sturm bringt heftige Schneefälle, starke Glätte und vermehrte Bahnausfälle, die den öffentlichen Verkehr, Schulen und den Straßenverkehr stark beeinträchtigen.",
-        "bullets": [
-          "Starker Schneefall und Glätte führen zu vermehrten Bahnausfällen und langen Wartezeiten für Züge.",
-          "Schüler und Fahrgäste sehen sich mit eingeschränkten Schulwegen und transportierten Pendlern konfrontiert, besonders in den betroffenen Suburbanregionen.",
-          "Autofahrer sind mit glatten Straßen, eingeschränkter Sicht und erhöhtem Unfallrisiko konfrontiert."
-        ],
-        "tags": [
-          "Tagesschau",
-          "News"
-        ],
-        "related": []
-      },
-      {
-        "id": "codipz249",
-        "source": "Tagesschau",
-        "sourceCountry": "🇩🇪",
-        "title": "Unerwarteter Schneefall im Norden Deutschlands begleitet von Unwetterwarnungen",
-        "originalTitle": "Wie sich der Winter in Deutschland verändert hat",
-        "link": "https://www.tagesschau.de/wissen/klima/unwetter-schnee-norddeutschland-klima-schneetage-100.html",
-        "img": null,
-        "date": "2026-01-09T12:16:45.000Z",
-        "text": "Ein ungewöhnlich starker Wind begünstigt nun schon im Norden Deutschlands heftige Schneefälle, während mehrere Regionen Unwetterwarnungen erhalten haben.",
-        "bullets": [
-          "Der angekündigte Schneefall erscheint jetzt im Norden Deutschlands.",
-          "Starker Wind sorgt für ergiebigen Schneefall in Teilen der Region.",
-          "Für mehrere einheimische Gebiete wurden Unwetterwarnungen ausgegeben."
-        ],
-        "tags": [
-          "Tagesschau",
-          "News"
-        ],
-        "related": []
-      }
-    ]
-  },
-  {
     "id": "bzvrg5oah",
     "source": "ZDF",
     "sourceCountry": "🇩🇪",
@@ -886,25 +1040,47 @@
     ],
     "related": [
       {
-        "id": "14nfyskmn",
+        "id": "c0n12708j",
         "source": "Tagesschau",
         "sourceCountry": "🇩🇪",
-        "title": "Mercosur-Freihandelsabkommen mit der EU: Nach über 25 Jahren Verhandlungen",
-        "originalTitle": "Warum Mercosur trotz aller Skepsis beschlossen werden konnte",
-        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/faq-mercosur-100.html",
+        "title": "EU genehmigt trotz Landwirtsprotesten Mercosur-Handelsabkommen",
+        "originalTitle": "Trotz Protesten: EU macht Weg frei für Mercosur-Abkommen",
+        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/mercosur-abkommen-eu-suedamerika-100.html",
         "img": null,
-        "date": "2026-01-09T14:00:09.000Z",
-        "text": "Mehr als 25 Jahre der Verhandlungen führen nun zum Abschluss des Mercosur‑Freihandelsabkommens mit der EU.",
+        "date": "2026-01-09T16:45:18.000Z",
+        "text": "Die EU hat dem Handelsabkommen mit den Mercosur-Staaten zugestimmt, obwohl europäische Bauern und Bundeslaender protestiert haben.",
         "bullets": [
-          "Mehr als 25 Jahre wurden für die Ausarbeitung des Abkommens zwischen Mercosur und der EU verhandelt.",
-          "Das Abkommen ist ein Freihandelskonzept zwischen Mercosur und der EU.",
-          "Plan ist, den Handel zwischen den Mercosur‑Ländern und der EU zu intensivieren."
+          "Mercosur-Abkommen regelt den Handel zwischen EU und den südamerikanischen Mitgliedsstaaten",
+          "Europäische Landwirte haben versucht, das Abkommen zu blockieren, vor allem wegen Bedenken um Wettbewerbsverzerrungen",
+          "Die EU-Länder haben in einer Abstimmung die Mehrheit erlangt",
+          "Der Artikel wurde von Thomas Spickhofen verfasst"
         ],
         "tags": [
           "Tagesschau",
           "News"
         ],
         "related": [
+          {
+            "id": "14nfyskmn",
+            "source": "Tagesschau",
+            "sourceCountry": "🇩🇪",
+            "title": "Mercosur-Freihandelsabkommen mit der EU: Nach über 25 Jahren Verhandlungen",
+            "originalTitle": "Warum Mercosur trotz aller Skepsis beschlossen werden konnte",
+            "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/faq-mercosur-100.html",
+            "img": null,
+            "date": "2026-01-09T14:00:09.000Z",
+            "text": "Mehr als 25 Jahre der Verhandlungen führen nun zum Abschluss des Mercosur‑Freihandelsabkommens mit der EU.",
+            "bullets": [
+              "Mehr als 25 Jahre wurden für die Ausarbeitung des Abkommens zwischen Mercosur und der EU verhandelt.",
+              "Das Abkommen ist ein Freihandelskonzept zwischen Mercosur und der EU.",
+              "Plan ist, den Handel zwischen den Mercosur‑Ländern und der EU zu intensivieren."
+            ],
+            "tags": [
+              "Tagesschau",
+              "News"
+            ],
+            "related": []
+          },
           {
             "id": "6gzk2aj79",
             "source": "Tagesschau",
@@ -928,6 +1104,27 @@
             "related": []
           }
         ]
+      },
+      {
+        "id": "14nfyskmn",
+        "source": "Tagesschau",
+        "sourceCountry": "🇩🇪",
+        "title": "Mercosur-Freihandelsabkommen mit der EU: Nach über 25 Jahren Verhandlungen",
+        "originalTitle": "Warum Mercosur trotz aller Skepsis beschlossen werden konnte",
+        "link": "https://www.tagesschau.de/wirtschaft/weltwirtschaft/faq-mercosur-100.html",
+        "img": null,
+        "date": "2026-01-09T14:00:09.000Z",
+        "text": "Mehr als 25 Jahre der Verhandlungen führen nun zum Abschluss des Mercosur‑Freihandelsabkommens mit der EU.",
+        "bullets": [
+          "Mehr als 25 Jahre wurden für die Ausarbeitung des Abkommens zwischen Mercosur und der EU verhandelt.",
+          "Das Abkommen ist ein Freihandelskonzept zwischen Mercosur und der EU.",
+          "Plan ist, den Handel zwischen den Mercosur‑Ländern und der EU zu intensivieren."
+        ],
+        "tags": [
+          "Tagesschau",
+          "News"
+        ],
+        "related": []
       },
       {
         "id": "6gzk2aj79",
