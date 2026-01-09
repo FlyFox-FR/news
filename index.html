@@ -187,6 +187,48 @@
     white-space: pre-wrap; /* Damit Absätze erhalten bleiben */
     margin-top: 20px;
 }
+
+
+        /* --- SIDEBAR METRICS --- */
+.sidebar-metrics { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    padding: 20px; 
+}
+
+.metric-card { 
+    background: rgba(255, 255, 255, 0.03); /* Leicht aufgehellter Hintergrund */
+    border: 1px solid var(--border); 
+    padding: 15px 10px; 
+    border-radius: 16px; 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 5px; 
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+}
+
+.metric-card .val { 
+    font-size: 1.5rem; 
+    font-weight: 800; 
+    color: var(--accent); 
+    font-family: 'Inter', sans-serif; /* Zahlen bleiben modern, auch im Zen-Modus */
+    line-height: 1;
+}
+
+.metric-card .lbl { 
+    font-size: 0.65rem; 
+    text-transform: uppercase; 
+    color: var(--text-muted); 
+    font-weight: 700; 
+    letter-spacing: 1px; 
+}
     </style>
 </head>
 <body>
