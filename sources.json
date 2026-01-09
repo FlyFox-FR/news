@@ -2,28 +2,28 @@
   {
     "name": "Tagesschau",
     "url": "https://www.tagesschau.de/xml/rss2/",
-    "count": 2,
+    "count": 4,
     "country": "🇩🇪",
     "scrape": true
   },
   {
     "name": "ZDF",
     "url": "https://www.zdf.de/rss/zdf/nachrichten",
-    "count": 2,
+    "count": 4,
     "country": "🇩🇪",
     "scrape": true
   },
   {
     "name": "Spiegel",
     "url": "https://www.spiegel.de/index.rss",
-    "count": 2,
+    "count": 4,
     "country": "🇩🇪",
     "scrape": false
   },
     {
     "name": "rbb24",
     "url": "https://www.rbb24.de/index.xml/feed=rss.xml",
-    "count": 2,
+    "count": 4,
     "country": "🇩🇪",
     "scrape": false
   }
