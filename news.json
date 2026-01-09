@@ -1,154 +1,167 @@
-[
-  {
-    "id": "tar1z31tq",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Bahn stellt Fernverkehr im Norden wegen Wintertief ein",
-    "originalTitle": "Liveblog zum Sturmtief: ++ Bahn stellt Fernverkehr im Norden ein ++",
-    "link": "https://www.tagesschau.de/newsticker/liveblog-wintersturm-elli-100.html",
-    "img": null,
-    "date": "2026-01-09T09:07:42.000Z",
-    "text": "Der Fernverkehr der Bahn im Norden ist bis zum Mittag wegen des Wintertiefs 'Elli' ausgesetzt.",
-    "bullets": [
-      "Das Wintertief 'Elli' zieht über Deutschland und bringt viel Schnee sowie Eis.",
-      "Für Berlin und Brandenburg gibt es bereits Entwarnung."
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "spkht1rar",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Elli bringt Sturm und Schnee in Teilen Deutschlands",
-    "originalTitle": "Eisige \"Elli\" bringt Sturm und Schnee",
-    "link": "https://www.tagesschau.de/inland/gesellschaft/winterwetter-mit-sturmtief-100.html",
-    "img": null,
-    "date": "2026-01-09T08:52:54.000Z",
-    "text": "Tief 'Elli' führt zu Schneefall, Unfällen und Zugausfällen, während Berlin und Brandenburg bereits entschärft werden.",
-    "bullets": [
-      "Unfälle und Stopp des Fernverkehrs im Norden wegen 'Elli'",
-      "Meteorologen geben für Berlin und Brandenburg bereits Entwarnung"
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "p6nhrwm5q",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Sturmtief Elli stört Bahn- und Flugverkehr in Deutschland",
-    "originalTitle": "Sturmtief \"Elli\" bringt Bahn- und Flugpläne ins Wanken",
-    "link": "https://www.zdfheute.de/panorama/unwetterwarnung-schneesturm-wetter-schnee-glaette-deutschland-liveticker-100.html",
-    "img": "https://www.zdfheute.de/assets/schnee-bahnsteig-100~384x216?cb=1767948033911",
-    "date": "2026-01-09T08:46:00.000Z",
-    "text": "Sturmtief Elli sorgt für Unsicherheit in Bahn- und Flugplänen.",
-    "bullets": [
-      "Das Unwetter verursacht schwierige Bedingungen im Norden und Süden Deutschlands",
-      "Mehrere Flüge werden gestrichen und ICE-Verbindungen müssen verlangsamt werden"
-    ],
-    "tags": [
-      "ZDF",
-      "News"
-    ]
-  },
-  {
-    "id": "9s2rbo3y0",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "German Economy Stagnates in 2025",
-    "originalTitle": "Was das deutsche Geschäftsmodell kaputt macht",
-    "link": "https://www.zdfheute.de/wirtschaft/deutsche-wirtschaft-wirtschaftswachstum-prognose-deutschland-100.html",
-    "img": "https://www.zdfheute.de/assets/deutsche-industrie-wirtschaft-100~384x216?cb=1767779675320",
-    "date": "2026-01-09T08:21:00.000Z",
-    "text": "The German economy remains stagnant in 2025, marking the longest weakness phase in post-war history.",
-    "bullets": [
-      "Designation of 2025 as a stagnant year for the German economy",
-      "Question raised about the viability of the German business model"
-    ],
-    "tags": [
-      "ZDF",
-      "News"
-    ]
-  },
-  {
-    "id": "bgtf2u8l8",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Sturmtief Elli bringt Schneefall und Eiseskälte",
-    "originalTitle": "Die eisige \"Elli\" ist da: Wo der Wetterdienst jetzt warnt",
-    "link": "https://www.zdfheute.de/panorama/wetter-deutschland-frost-sturm-schnee-100.html",
-    "img": "https://www.zdfheute.de/assets/wetter-wiesbaden-100~384x216?cb=1767874274014",
-    "date": "2026-01-09T07:00:00.000Z",
-    "text": "Sturmtief Elli sorgt heute für starken Schneefall und eiskalte Temperaturen in Teilen Deutschlands, mit Glatteisgefahr.",
-    "bullets": [
-      "Viele Teile Deutschlands sind von Schneefall und eiskalten Temperaturen betroffen",
-      "Es besteht Glatteisgefahr"
-    ],
-    "tags": [
-      "ZDF",
-      "News"
-    ]
-  },
-  {
-    "id": "md8bmryvl",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Anleger bleiben zuversichtlich vor US-Arbeitsmarktbericht",
-    "originalTitle": "Marktbericht: Anleger zuversichtlich vor US-Arbeitsmarktbericht ",
-    "link": "https://www.tagesschau.de/wirtschaft/finanzen/marktberichte/marktbericht-dax-dow-geldanlage-aktienmarkt-100.html",
-    "img": null,
-    "date": "2026-01-09T06:49:54.000Z",
-    "text": "Der Marktbericht hebt hervor, dass Anleger vor dem US‑Arbeitsmarktbericht optimistisch stehen und die aktuelle Börsenwoche starke Gewinne verzeichnete.",
-    "bullets": [
-      "Die Börsenwoche war ausgesprochen erfolgreich.",
-      "Weitere Gewinne zum Wochenschluss sind möglich, sofern die US‑Jobmarktdaten keine negativen Einflüsse ausüben."
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "h6t9x8cyz",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "NASA abortiert ISS-Mission",
-    "originalTitle": "Medizinisches Problem: NASA bricht ISS-Mission vorzeitig ab",
-    "link": "https://www.tagesschau.de/ausland/amerika/iss-nasa-missionsabbruch-100.html",
-    "img": null,
-    "date": "2026-01-09T05:55:11.000Z",
-    "text": "Vorzeitigabbruch der ISS-Mission wegen medizinischer Probleme einer Crew-Mitglieds",
-    "bullets": [
-      "NASA bricht die ISS-Mission vorzeitig ab",
-      "Erstmals wird eine Astronauten-Besatzung wegen gesundheitlichen Problems eines Crew-Mitglieds zurück zur Erde gebracht"
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ]
-  },
-  {
-    "id": "f593ryl08",
-    "source": "ZDF",
-    "sourceCountry": "🇩🇪",
-    "title": "Proteste im Iran erreichen neue Höhe",
-    "originalTitle": "\"Wie Krieg\": Proteste im Iran spitzen sich zu",
-    "link": "https://www.zdfheute.de/politik/ausland/iran-proteste-ausweitung-internet-blackout-100.html",
-    "img": "https://www.zdfheute.de/assets/iran-protest-kermanshah-strasse-100~384x216?cb=1767925528336",
-    "date": "2026-01-09T02:25:00.000Z",
-    "text": "Im Iran wurden die größten Demonstrationen seit dem Beginn der jüngsten Protestwelle abgehalten, bei denen die Demonstranten den Sturz der Islamischen Republik fordern.",
-    "bullets": [
-      "Demonstranten fordern den Sturz der Islamischen Republik",
-      "Die Proteste sind die größten seit Beginn der jüngsten Protestwelle"
-    ],
-    "tags": [
-      "ZDF",
-      "News"
-    ]
-  }
-]
+const Parser = require('rss-parser');
+const axios = require('axios');
+const fs = require('fs');
+
+const parser = new Parser();
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function loadExistingNews() {
+    try {
+        if (fs.existsSync('news.json')) return JSON.parse(fs.readFileSync('news.json', 'utf8'));
+    } catch (e) { }
+    return [];
+}
+
+async function analyzeWithPollinations(title, content, sourceName) {
+    // Input bereinigen
+    const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
+
+    // --- DER "DETAIL-JÄGER" PROMPT ---
+    const instruction = `Du bist ein investigativer News-Redakteur.
+    Analysiere diesen Input: "${title} - ${safeContent}"
+    
+    Aufgabe: Erstelle ein JSON-Objekt auf DEUTSCH.
+    
+    ANWEISUNG:
+    1. Suche aggressiv nach Details: Zahlen, Orte, Namen, Uhrzeiten, Geldbeträge.
+    2. Wenn im Text "48 Stunden" oder "3000 Menschen" steht, MUSS das in die Bullets.
+    3. Sprache: ZWINGEND DEUTSCH (auch wenn der Input Englisch ist).
+    4. Versuche immer 3 bis 4 Bulletpoints zu finden.
+    5. Sei präzise, aber nicht langweilig.
+    
+    Format:
+    {
+      "newTitle": "Knackige, informative Headline",
+      "scoop": "Der wichtigste Satz (Was ist passiert?).",
+      "bullets": [
+        "Detail mit Zahl/Fakt 1",
+        "Detail mit Name/Ort 2",
+        "Hintergrund/Kontext 3"
+      ]
+    }`;
+    
+    // Seed für Variation
+    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
+
+    let retries = 3;
+    while (retries > 0) {
+        try {
+            // Timeout erhöht für bessere Ergebnisse
+            const response = await axios.get(url, { timeout: 35000 });
+            
+            let rawText = response.data;
+            if (typeof rawText !== 'string') rawText = JSON.stringify(rawText);
+
+            // --- REPARATUR & CLEANING ---
+            // Ad-Blocker
+            rawText = rawText.split("--- Support")[0]; 
+            
+            // JSON ausschneiden
+            const firstOpen = rawText.indexOf('{');
+            const lastClose = rawText.lastIndexOf('}');
+            
+            if (firstOpen !== -1 && lastClose !== -1) {
+                rawText = rawText.substring(firstOpen, lastClose + 1);
+            }
+
+            let data;
+            try {
+                data = JSON.parse(rawText);
+            } catch (jsonError) {
+                // Fallback: Manchmal hilft ein simpler Regex Fix
+                console.log("⚠️ JSON Reparatur Versuch...");
+                throw new Error("Invalid JSON");
+            }
+
+            // Validierung
+            if (!data.bullets || !Array.isArray(data.bullets)) data.bullets = [];
+            
+            // Aufzählungszeichen entfernen
+            data.bullets = data.bullets.map(b => b.replace(/^(Fakt \d:|Punkt \d:|-|\*|•)\s*/i, "").trim());
+
+            return { 
+                summary: data.scoop || title, 
+                newTitle: data.newTitle || title, 
+                bullets: data.bullets,   
+                tags: [sourceName, "News"] 
+            };
+
+        } catch (error) {
+            const status = error.response?.status;
+            
+            if (status === 429) {
+                console.log(`🛑 Zu schnell! Warte 30s...`);
+                await sleep(30000); 
+                retries--;
+                continue; 
+            }
+
+            console.error(`⚠️ Fehler: ${error.message}. Warte kurz...`);
+            await sleep(5000);
+            retries--;
+        }
+    }
+
+    return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
+}
+
+async function run() {
+    console.log("🚀 Starte News-Abruf (Detail Hunter)...");
+    
+    let sources = [];
+    try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
+    catch(e) { 
+        console.log("⚠️ Keine sources.json, nutze Standard.");
+        sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; 
+    }
+
+    const existingNews = loadExistingNews();
+    let newNewsFeed = [];
+
+    for (const source of sources) {
+        try {
+            console.log(`\n📡 ${source.name}...`);
+            const feed = await parser.parseURL(source.url);
+            const items = feed.items.slice(0, source.count);
+
+            for (const item of items) {
+                const cached = existingNews.find(n => n.link === item.link);
+                
+                // Cache nutzen? Nur wenn Bullets da sind.
+                // ACHTUNG: Ich habe den Cache-Check etwas gelockert, damit er englische Texte neu generiert (Deutsch-Zwang)
+                if (cached && cached.bullets && cached.bullets.length > 1 && cached.text !== cached.title) {
+                    newNewsFeed.push({ ...cached, lastUpdated: new Date() });
+                    continue; 
+                }
+
+                console.log(`🤖 Analysiere: ${item.title.substring(0, 40)}...`);
+                
+                const rawContent = item.contentSnippet || item.content || "";
+                const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
+                
+                newNewsFeed.push({
+                    id: Math.random().toString(36).substr(2, 9),
+                    source: source.name,
+                    sourceCountry: source.country || "🌍",
+                    title: ai.newTitle,
+                    originalTitle: item.title,
+                    link: item.link,
+                    img: item.enclosure?.url || item.itunes?.image || null,
+                    date: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
+                    text: ai.summary,
+                    bullets: ai.bullets,
+                    tags: ai.tags
+                });
+                
+                // 10 Sekunden Pause für Stabilität
+                await sleep(10000); 
+            }
+        } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
+    }
+
+    newNewsFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
+    fs.writeFileSync('news.json', JSON.stringify(newNewsFeed, null, 2));
+    console.log(`✅ Fertig! ${newNewsFeed.length} Nachrichten gespeichert.`);
+}
+
+run();
