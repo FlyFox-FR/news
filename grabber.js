@@ -5,31 +5,30 @@ const fs = require('fs');
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// --- HELPER: HTML ENTITIES DECODIEREN ---
+// --- KONFIGURATION ---
+const MAX_DAYS = 4; // News behalten für 4 Tage
+const MAX_ITEMS = 600; // Sicherheitslimit (ca. 150 pro Tag)
+
+// --- HELPER ---
 function decodeEntities(text) {
     if (!text) return "";
-    return text
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&quot;/g, '"')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&szlig;/g, 'ß')
-        .replace(/&auml;/g, 'ä')
-        .replace(/&ouml;/g, 'ö')
-        .replace(/&uuml;/g, 'ü')
-        .replace(/&Auml;/g, 'Ä')
-        .replace(/&Ouml;/g, 'Ö')
-        .replace(/&Uuml;/g, 'Ü')
-        .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
+    return text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"')
+               .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&szlig;/g, 'ß')
+               .replace(/&auml;/g, 'ä').replace(/&ouml;/g, 'ö').replace(/&uuml;/g, 'ü')
+               .replace(/&Auml;/g, 'Ä').replace(/&Ouml;/g, 'Ö').replace(/&Uuml;/g, 'Ü')
+               .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
 }
 
-// --- HELPER: HTML TAGS ENTFERNEN ---
 function stripTags(html) {
     return html.replace(/<[^>]+>/g, "").trim();
 }
 
-// --- CORE: PRÄZISER SCRAPER ---
+function cleanString(str) {
+    if (!str) return "";
+    return str.replace(/\s+/g, ' ').trim();
+}
+
+// --- CORE: ROBUSTER SCRAPER (v3.3 Logic restored) ---
 async function fetchArticleText(url) {
     try {
         const { data } = await axios.get(url, { 
@@ -41,58 +40,83 @@ async function fetchArticleText(url) {
 
         let html = data;
 
-        const junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption', 'style'];
+        // 1. Technischen Müll entfernen
+        const junkTags = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption'];
         junkTags.forEach(tag => {
             const regex = new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi');
             html = html.replace(regex, '');
         });
 
-        const containerMatch = html.match(/<article[^>]*>([\s\\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\\S]*?)<\/main>/i);
-        if (!containerMatch) return ""; 
+        // 2. Strategie A: Hauptcontainer suchen
+        const containerRegex = /<article[^>]*>([\s\S]*?)<\/article>/i;
+        const mainRegex = /<main[^>]*>([\s\S]*?)<\/main>/i;
+        
+        let match = html.match(containerRegex) || html.match(mainRegex);
+        let contentScope = match ? match[1] : html;
 
-        let contentScope = containerMatch[1];
+        // 3. Strategie B: Absätze extrahieren
         let paragraphs = extractParagraphs(contentScope);
+
+        // 4. RETTUNGS-ANKER (Das fehlte in v4.1!): 
+        // Wenn < 800 Zeichen, scanne ganze Seite (wichtig für ZDF/Video-Seiten)
+        let totalLength = paragraphs.join(" ").length;
+        if (totalLength < 800) {
+            console.log(`      ⚠️ Wenig Text im Container (${totalLength}). Scanne ganze Seite...`);
+            paragraphs = extractParagraphs(html);
+        }
+
         let fullText = paragraphs.join('\n\n');
         
+        // 5. Decoding & Limit
         fullText = decodeEntities(fullText);
         if (fullText.length > 15000) fullText = fullText.substring(0, 15000);
         
         return fullText;
-    } catch (e) { return ""; }
+
+    } catch (e) {
+        console.log(`⚠️ Skip Text für ${url}: ${e.message}`);
+        return "";
+    }
 }
 
+// Zieht saubere P-Tags
 function extractParagraphs(htmlContent) {
-    const pRegex = /<p[^>]*>([\s\\S]*?)<\/p>/gi;
+    const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
     let paragraphs = [];
     let match;
+
     while ((match = pRegex.exec(htmlContent)) !== null) {
         let rawText = match[1];
         let cleanText = stripTags(rawText);
-        if (isValidParagraph(cleanText)) paragraphs.push(cleanText);
+
+        if (isValidParagraph(cleanText)) {
+            paragraphs.push(cleanText);
+        }
     }
     return paragraphs;
 }
 
+// Filtert NUR technischen Müll
 function isValidParagraph(text) {
     text = text.trim();
-    if (text.length < 50) return false; 
+    if (text.length < 50) return false; // Zu kurz (oft Menüpunkte)
+    
     const lower = text.toLowerCase();
+
+    // Technische Blacklist
     const blacklist = [
         "alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", 
         "melden sie sich an", "newsletter", "anzeige", "datenschutz", 
         "impressum", "quelle:", "bild:", "foto:", "video:", 
-        "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang",
-        "copyright", "©"
+        "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang"
     ];
+
     if (blacklist.some(bad => lower.includes(bad))) return false;
+    
     return true;
 }
 
-// --- UTILS ---
-function cleanString(str) {
-    if (!str) return "";
-    return str.replace(/\s+/g, ' ').trim();
-}
+// --- LOGIK ---
 
 function isSameArticle(item1, item2) {
     if (item1.link === item2.link) return true;
@@ -101,18 +125,20 @@ function isSameArticle(item1, item2) {
     return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 10);
 }
 
+// PRUNING: 4 Tage (96h)
 function pruneNews(newsArray) {
     const now = new Date();
-    const einTagInMs = 24 * 60 * 60 * 1000; 
-    console.log(`🧹 Pruning: Prüfe ${newsArray.length} Items...`);
+    const retentionMs = MAX_DAYS * 24 * 60 * 60 * 1000; 
+    console.log(`🧹 Pruning: Prüfe ${newsArray.length} Items (Limit: ${MAX_DAYS} Tage)...`);
     const filtered = newsArray.filter(item => {
         const itemDate = new Date(item.date);
-        return (now - itemDate) < einTagInMs;
+        return (now - itemDate) < retentionMs;
     });
     console.log(`🧹 Pruning beendet: ${filtered.length} Items verbleiben.`);
     return filtered;
 }
 
+// Clustering
 function isRelatedTopicAlgorithmic(title1, title2) {
     const clean1 = cleanString(title1).toLowerCase();
     const clean2 = cleanString(title2).toLowerCase();
@@ -133,6 +159,7 @@ function loadExistingNews() {
     return [];
 }
 
+// AI Analysis
 async function analyzeWithPollinations(title, fullText, sourceName) {
     const context = fullText && fullText.length > 500 ? fullText.substring(0, 5000) : title;
     
@@ -182,6 +209,7 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
+// AI Clustering
 async function clusterBatchWithAI(batchArticles, batchIndex) {
     console.log(`📦 Batch ${batchIndex + 1}: KI sortiert ${batchArticles.length} Artikel...`);
     const listForAI = batchArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
@@ -248,10 +276,11 @@ async function runClusteringPipeline(allArticles) {
     return finalClusters;
 }
 
-// --- MAIN LOOP MIT DEBUG-LOGS ---
+// --- MAIN LOOP ---
 async function run() {
-    console.log("🚀 Start News-Bot v4.1 (Debug Mode)...");
+    console.log("🚀 Start News-Bot v4.2 (Robust & 4 Days)...");
     
+    // SOURCES LADEN
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
     catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -267,35 +296,42 @@ async function run() {
 
     for (const source of sources) {
         try {
-            console.log(`\n📡 ${source.name} (Ziel: ${source.count} Artikel)...`);
+            console.log(`\n📡 ${source.name} (Ziel: ${source.count})...`);
             const feed = await parser.parseURL(source.url);
             let added = 0;
-            let skipped = 0;
+            let errorSkips = 0;
 
             for (const item of feed.items) {
                 if (added >= source.count) break;
-                if (skipped >= 5) { console.log(`   🛑 Zu viele Skips (${skipped}) bei ${source.name}. Breche Quelle ab.`); break; }
+                // Lockerere Notbremse: Erst bei 8 echten Fehlern abbrechen
+                if (errorSkips >= 8) { console.log(`   🛑 Zu viele Fehler bei ${source.name}. Abbruch.`); break; }
 
                 const exists = flatFeed.some(n => isSameArticle(n, item));
-                if (exists) {
-                    console.log(`   ⏩ Skip (Cache): ${item.title.substring(0, 40)}...`);
-                    skipped++;
-                    continue;
+                if (exists) { 
+                    // Cache Hit ist kein Fehler
+                    // console.log("   ⏩ Cache Hit");
+                    continue; 
                 }
 
                 let fullText = "";
+
                 if (source.scrape !== false) {
+                    process.stdout.write(`   🔍 Prüfe: ${item.title.substring(0, 30)}... `);
                     fullText = await fetchArticleText(item.link);
+                    
+                    // QUALITÄTS-CHECK: Ist genug Text da?
                     if (fullText.length < 500) {
-                        console.log(`   ❌ Skip (zu wenig Text: ${fullText.length}): ${item.title.substring(0, 40)}...`);
-                        skipped++;
-                        continue;
+                        console.log(`❌ Zu kurz (${fullText.length}). Skip.`);
+                        errorSkips++;
+                        continue; 
+                    } else {
+                        console.log(`✅ OK (${fullText.length} Zeichen).`);
                     }
                 } else {
+                    console.log(`   ⏩ Scrape deaktiviert für ${item.title.substring(0, 20)}...`);
                     fullText = (item.contentSnippet || item.content || "").substring(0, 5000);
                 }
-                
-                console.log(`   ✅ Verarbeite: ${item.title.substring(0, 40)}... (${fullText.length} Zeichen)`);
+
                 const ai = await analyzeWithPollinations(item.title, fullText, source.name);
                 
                 flatFeed.push({
@@ -314,7 +350,7 @@ async function run() {
                     related: []
                 });
                 added++;
-                skipped = 0;
+                errorSkips = 0; // Reset Fehler bei Erfolg
                 await sleep(4000); 
             }
         } catch (e) { console.error(`   ❌ Error ${source.name}: ${e.message}`); }
@@ -322,12 +358,15 @@ async function run() {
 
     flatFeed = pruneNews(flatFeed);
     flatFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-    if (flatFeed.length > 120) {
-        console.log(`✂️ Cleanup: Behalte Top 120.`);
-        flatFeed = flatFeed.slice(0, 120);
+    
+    // LIMIT AUF 600
+    if (flatFeed.length > MAX_ITEMS) {
+        console.log(`✂️ Cleanup: Behalte Top ${MAX_ITEMS}.`);
+        flatFeed = flatFeed.slice(0, MAX_ITEMS);
     }
 
     const finalFeed = await runClusteringPipeline(flatFeed);
+    
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
     console.log(`✅ Fertig! ${finalFeed.length} Cluster gespeichert.`);
 }
