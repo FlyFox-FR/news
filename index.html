@@ -114,8 +114,39 @@
         .btn-link { color: var(--accent); text-decoration: none; font-size: 0.8rem; font-weight: 700; }
         .btn-share { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
 
-        /* Variants */
-        .btn-toggle { background: var(--surface-variant); color: #ccc; border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
+        /* --- VERBESSERTE QUELLEN BUTTONS --- */
+        .btn-toggle { 
+            background: rgba(59, 130, 246, 0.12); 
+            color: var(--accent); 
+            border: 1px solid rgba(59, 130, 246, 0.3); 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: 700;
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-toggle:hover { 
+            background: var(--accent); 
+            color: white; 
+            border-color: var(--accent);
+        }
+        .btn-toggle .chevron {
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+        .btn-toggle.active {
+            background: var(--surface-variant);
+            color: white;
+            border-color: var(--border);
+        }
+        .btn-toggle.active .chevron {
+            transform: rotate(180deg);
+        }
+
         .variants-container { display: none; background: #121214; padding: 15px; border-top: 1px solid var(--border); }
         .variants-container.show { display: block; }
 
@@ -329,7 +360,11 @@
                             <a href="${item.link}" target="_blank" class="btn-link">ARTIKEL ÖFFNEN →</a>
                             <div style="display:flex; gap:10px; align-items:center">
                                 <button class="btn-share" onclick="copyLink('${item.link}')" title="Link kopieren">🔗</button>
-                                ${item.related?.length ? `<button class="btn-toggle" onclick="toggleVars('${item.id}')">${item.related.length} Quellen</button>` : ''}
+                                ${item.related?.length ? `
+                                    <button class="btn-toggle" onclick="toggleVars('${item.id}', this)">
+                                        <span>📚 ${item.related.length} Quellen</span>
+                                        <span class="chevron">▼</span>
+                                    </button>` : ''}
                             </div>
                         </div>
                         <div id="vars-${item.id}" class="variants-container">
@@ -346,13 +381,14 @@
             });
         }
 
-        function toggleVars(id) {
+        function toggleVars(id, btn) {
             const el = document.getElementById('vars-' + id);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+            const isOpen = el.style.display === 'block';
+            el.style.display = isOpen ? 'none' : 'block';
+            if(btn) btn.classList.toggle('active');
         }
 
-        // --- Die restlichen Funktionen (openSaveMenu, confirmSave, triggerUpdate, checkConfig) ---
-        // Bleiben identisch zu deinem vorherigen Skript, damit die Logik erhalten bleibt.
+        // --- Die restlichen Funktionen ---
         function openSaveMenu(id, e) {
             e.stopPropagation();
             if(savedNews.some(s => s.news.id === id)) {
