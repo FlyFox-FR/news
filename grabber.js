@@ -12,7 +12,7 @@ function loadExistingNews() {
     return [];
 }
 
-// 1. INHALTS-ANALYSE (Dein bewährter Prompt)
+// 1. INHALTS-ANALYSE
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
@@ -20,11 +20,9 @@ async function analyzeWithPollinations(title, content, sourceName) {
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
-    2. Nenne NUR Länder/Personen, die im Text stehen. ERFINDE NICHTS (z.B. keine Beteiligung von Deutschland, wenn es nicht da steht).
-    3. Suche nach harten Fakten (Zahlen, Orte, Namen).
+    2. Nenne NUR Länder/Personen, die im Text stehen. ERFINDE NICHTS.
+    3. Suche nach harten Fakten (Zahlen, Orte).
     4. Schreibe 2-4 Bulletpoints.
-    5. Erfinde NIE etwas. NICHTS erfinden. Was nicht so ungefähr in dem Kontext des Textes drinsteht, das kannst Du nicht nehmen.
-    6. Aber es wäre gut, wenn Du ein bisschen was aus dem ganzen Artikel nimmst, damit es wie eine ECHTE Zusammenfassung ist.
     
     Format:
     {
@@ -65,18 +63,22 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// 2. AI CLUSTERING & BILD-SORTIERUNG
+// 2. KI CLUSTERING (Mit erhöhtem Timeout)
 async function clusterWithAI(articles) {
     if (articles.length === 0) return [];
     
     console.log(`🧠 KI sortiert ${articles.length} Artikel...`);
 
+    // Liste bauen
     const listForAI = articles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
     
+    // Sicherheit: Falls Liste zu lang für URL ist, kürzen wir hart
+    const safeList = listForAI.substring(0, 3500);
+
     const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
     
     Liste:
-    ${listForAI.substring(0, 3000)}
+    ${safeList}
     
     Aufgabe: Gib ein JSON Array von Arrays zurück. Jedes innere Array enthält die IDs, die zusammengehören.
     Beispiel: [[0, 5], [1], [2, 3]]
@@ -90,7 +92,9 @@ async function clusterWithAI(articles) {
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     try {
-        const response = await axios.get(url, { timeout: 45000 });
+        // FIX: Timeout auf 120 Sekunden erhöht!
+        const response = await axios.get(url, { timeout: 120000 });
+        
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         
         rawText = rawText.replace(/```json|```/g, "").trim();
@@ -108,37 +112,26 @@ async function clusterWithAI(articles) {
         let usedIndices = new Set();
 
         groups.forEach(groupIndices => {
-            // Indizes validieren
             let validIndices = groupIndices.filter(i => articles[i] !== undefined);
             if (validIndices.length === 0) return;
 
-            // --- NEU: BILD-PRIORITÄT ALGORITHMUS ---
-            // Wir suchen im Cluster den besten Kandidaten für die Hauptkarte (den mit Bild)
-            
-            let bestParentIndex = 0; // Standard: Der erste (meistens der neueste)
-            
-            // Suche: Gibt es einen Artikel mit Bild?
+            // BILD-PRIORITÄT: Wer hat ein Bild? Der wird Chef.
+            let bestParentIndex = 0; 
             for (let k = 0; k < validIndices.length; k++) {
-                const articleIndex = validIndices[k];
-                const article = articles[articleIndex];
-                
-                // Wenn wir ein Bild finden, wird das sofort der neue Chef
-                if (article.img) {
+                if (articles[validIndices[k]].img) {
                     bestParentIndex = k;
-                    break; // Gefunden, Suche beenden
+                    break; 
                 }
             }
 
-            // Den "besten" Artikel als Parent setzen
             let parentRealIndex = validIndices[bestParentIndex];
             let parent = articles[parentRealIndex];
             usedIndices.add(parentRealIndex);
             
             parent.related = [];
 
-            // Alle anderen als "Kinder" hinzufügen
             for (let i = 0; i < validIndices.length; i++) {
-                if (i === bestParentIndex) continue; // Parent nicht nochmal hinzufügen
+                if (i === bestParentIndex) continue; 
 
                 let childIndex = validIndices[i];
                 if (!usedIndices.has(childIndex)) {
@@ -149,7 +142,7 @@ async function clusterWithAI(articles) {
             clusteredFeed.push(parent);
         });
 
-        // Reste einsammeln (falls KI was vergessen hat)
+        // Reste einsammeln
         articles.forEach((item, index) => {
             if (!usedIndices.has(index)) {
                 item.related = [];
@@ -160,22 +153,21 @@ async function clusterWithAI(articles) {
         return clusteredFeed;
 
     } catch (e) {
-        console.error("❌ KI-Clustering fehlgeschlagen (Fallback):", e.message);
-        return articles; // Fallback: Einfach alles anzeigen
+        console.error("❌ KI-Clustering fehlgeschlagen (Timeout/Error):", e.message);
+        return articles; // Fallback: Alles anzeigen
     }
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Image Priority)...");
+    console.log("🚀 Starte News-Abruf (High Timeout)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
     catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3, country: "🇩🇪" }]; }
 
     const existingNews = loadExistingNews();
-    
-    // 1. Alles flachklopfen
     let flatFeed = [];
+    
     existingNews.forEach(item => {
         let cleanItem = { ...item };
         delete cleanItem.related;
@@ -183,7 +175,6 @@ async function run() {
         if (item.related) item.related.forEach(child => flatFeed.push(child));
     });
 
-    // 2. Neue News holen
     for (const source of sources) {
         try {
             console.log(`\n📡 ${source.name}...`);
@@ -191,7 +182,6 @@ async function run() {
             const items = feed.items.slice(0, source.count);
 
             for (const item of items) {
-                // Deduplizierung
                 const existingIndex = flatFeed.findIndex(n => n.link === item.link);
                 if (existingIndex !== -1) {
                     flatFeed[existingIndex].date = item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString();
@@ -224,10 +214,8 @@ async function run() {
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
-    // 3. Sortieren mit Bild-Priorität
     const finalFeed = await clusterWithAI(flatFeed);
     
-    // Neueste Cluster nach oben
     finalFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
