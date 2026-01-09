@@ -321,80 +321,113 @@
             return `Noch ${hours} Std.`;
         }
 
-        function render() {
-            document.getElementById('nav-saved').innerHTML = `<span>🔖</span> Gemerkt (${savedNews.length})`;
-            const container = document.getElementById('feed');
-            const searchTerm = document.getElementById('search').value.trim();
-            container.innerHTML = '';
+     function render() {
+    const container = document.getElementById('feed');
+    const searchTerm = document.getElementById('search').value.trim().toLowerCase();
+    container.innerHTML = '';
 
-            let data = [];
-            if (selectedSources.length > 0) {
-                allNewsData.forEach(cluster => {
-                    if (selectedSources.includes(cluster.source)) data.push({ ...cluster, related: [] });
-                    cluster.related?.forEach(rel => { if (selectedSources.includes(rel.source)) data.push(rel); });
-                });
-            } else {
-                data = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+    // 1. Basis-Daten bestimmen (Entweder Feed oder Gemerkt)
+    // Wir mappen savedNews direkt auf die enthaltenen News-Objekte
+    let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+    let data = [];
+
+    // 2. Filter nach Quelle (Extraktion einzelner Artikel falls Filter aktiv)
+    if (selectedSources.length > 0) {
+        baseData.forEach(item => {
+            // Hauptartikel prüfen
+            if (selectedSources.includes(item.source)) {
+                // Kopie ohne 'related', da wir im Filter-Modus nur Einzelartikel wollen
+                data.push({ ...item, related: [] });
             }
-
-            if (currentSort === 'time') data.sort((a,b) => new Date(b.date) - new Date(a.date));
-            else data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
-
-            if (searchTerm) {
-                const s = searchTerm.toLowerCase();
-                data = data.filter(i => i.title.toLowerCase().includes(s) || (i.text && i.text.toLowerCase().includes(s)));
-            }
-
-            data.forEach((item, index) => {
-                const savedObj = savedNews.find(s => s.news.id === item.id);
-                const relTime = getRelativeTime(item.date);
-                const isNew = (new Date() - new Date(item.date)) < 3600000;
-
-                const card = document.createElement('div');
-                card.className = 'card animate-fade';
-                card.style.animationDelay = (index * 0.05) + 's';
-                
-                let metaExtra = '';
-                if(currentTab === 'saved' && savedObj) {
-                    metaExtra = `<span class="expiry-info" onclick="toggleSave('${item.id}')">${getExpiryLabel(savedObj.expiresAt)}</span>`;
+            // Verwandte Artikel im Cluster prüfen
+            item.related?.forEach(rel => {
+                if (selectedSources.includes(rel.source)) {
+                    data.push(rel);
                 }
-
-                card.innerHTML = `
-                    <button class="btn-save ${savedObj ? 'saved' : ''}" onclick="toggleSave('${item.id}')">${savedObj ? '★' : '☆'}</button>
-                    ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
-                    <div class="card-body">
-                        <div class="meta">
-                            <span style="display:flex; align-items:center; gap:8px;">
-                                ${isNew ? '<span class="new-indicator"></span>' : ''}
-                                <img src="${getSourceLogo(item.source)}" class="source-logo">
-                                ${item.source} • ${relTime}
-                            </span>
-                            ${metaExtra}
-                        </div>
-                        <a href="${item.link}" target="_blank" class="card-title">${highlightText(item.title, searchTerm)}</a>
-                        ${item.text ? `<div class="scoop">${highlightText(item.text, searchTerm)}</div>` : ''}
-                        <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
-                    </div>
-                    <div class="actions">
-                        <a href="${item.link}" target="_blank" class="btn-link">Lesen →</a>
-                        <div style="display:flex; gap:12px; align-items:center">
-                            <button onclick="copyLink('${item.link}')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem">🔗</button>
-                            ${selectedSources.length === 0 && item.related?.length ? `<button class="btn-toggle" onclick="toggleVars('${item.id}')">📚 ${item.related.length} Quellen</button>` : ''}
-                        </div>
-                    </div>
-                    <div id="vars-${item.id}" class="variants-container" style="display:none">
-                        ${(item.related || []).map(r => `
-                            <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px">
-                                <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
-                                <div style="font-weight:bold; font-size:0.95rem; margin-bottom:6px; color:#fff">${r.title}</div>
-                                <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Zum Artikel</a>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(card);
             });
+        });
+    } else {
+        data = baseData;
+    }
+
+    // 3. Suche anwenden
+    if (searchTerm) {
+        data = data.filter(i => 
+            i.title.toLowerCase().includes(searchTerm) || 
+            (i.text && i.text.toLowerCase().includes(searchTerm)) ||
+            (i.bullets && i.bullets.some(b => b.toLowerCase().includes(searchTerm)))
+        );
+    }
+
+    // 4. Sortierung
+    if (currentSort === 'time') {
+        data.sort((a,b) => new Date(b.date) - new Date(a.date));
+    } else {
+        data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
+    }
+
+    // Sidebar Zähler aktualisieren
+    document.getElementById('nav-saved').innerHTML = `<span>🔖</span> Gemerkt (${savedNews.length})`;
+
+    if (data.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:100px 20px; color:var(--text-muted)">Keine Ergebnisse gefunden.</div>`;
+        return;
+    }
+
+    // 5. Karten generieren
+    data.forEach((item, index) => {
+        const savedObj = savedNews.find(s => s.news.id === item.id);
+        const relTime = getRelativeTime(item.date);
+        const isNew = (new Date() - new Date(item.date)) < 3600000; // Jünger als 1 Std.
+
+        const card = document.createElement('div');
+        card.className = 'card animate-fade';
+        card.style.animationDelay = (index * 0.05) + 's';
+        
+        let metaExtra = '';
+        if(currentTab === 'saved' && savedObj) {
+            metaExtra = `<span class="expiry-info" onclick="toggleSave('${item.id}')">${getExpiryLabel(savedObj.expiresAt)}</span>`;
         }
+
+        card.innerHTML = `
+            <button class="btn-save ${savedObj ? 'saved' : ''}" onclick="toggleSave('${item.id}')">${savedObj ? '★' : '☆'}</button>
+            ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
+            <div class="card-body">
+                <div class="meta">
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        ${isNew ? '<span class="new-indicator"></span>' : ''}
+                        <img src="${getSourceLogo(item.source)}" class="source-logo">
+                        ${item.source} • ${relTime}
+                    </span>
+                    ${metaExtra}
+                </div>
+                <a href="${item.link}" target="_blank" class="card-title">${highlightText(item.title, searchTerm)}</a>
+                ${item.text ? `<div class="scoop">${highlightText(item.text, searchTerm)}</div>` : ''}
+                <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
+            </div>
+            <div class="actions">
+                <a href="${item.link}" target="_blank" class="btn-link">Artikel lesen →</a>
+                <div style="display:flex; gap:12px; align-items:center">
+                    <button onclick="copyLink('${item.link}')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem">🔗</button>
+                    ${selectedSources.length === 0 && item.related?.length ? `
+                        <button class="btn-toggle" onclick="toggleVars('${item.id}')">
+                            <span>📚 ${item.related.length} Quellen</span>
+                        </button>` : ''}
+                </div>
+            </div>
+            <div id="vars-${item.id}" class="variants-container" style="display:none; padding:20px; background:#121214; border-top:1px solid var(--border)">
+                ${(item.related || []).map(r => `
+                    <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px">
+                        <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
+                        <div style="font-weight:bold; font-size:0.95rem; margin-bottom:6px; color:#fff">${r.title}</div>
+                        <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Zum Artikel</a>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
         function toggleVars(id) {
             const el = document.getElementById('vars-' + id);
