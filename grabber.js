@@ -23,6 +23,7 @@ async function analyzeWithPollinations(title, content, sourceName) {
     2. Nenne NUR Länder/Personen, die im Text stehen. ERFINDE NICHTS.
     3. Suche nach harten Fakten (Zahlen, Orte).
     4. Schreibe 2-4 Bulletpoints.
+    5. Wenn Du wirklich keine harten Fakten, Orte, Namen etc. findest, dann schreibe kein Bulletpoint mit "Keine Orte, Fakten etc... im Text gefunden", sondern dann schreibe etwas zum Inhalt/Kontext des Artikels. Schreibe quasi niemals was du nicht findest. Vergiss nicht, du bist ein professioneller Nachrichten Redakteur.
     
     Format:
     {
