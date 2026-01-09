@@ -1,4 +1,3 @@
-
 const Parser = require('rss-parser');
 const axios = require('axios');
 const fs = require('fs');
@@ -18,6 +17,7 @@ function isSameArticle(item1, item2) {
     return t1 === t2 || (t1.includes(t2) && t1.length - t2.length < 5);
 }
 
+// "Kleber"-Algorithmus für Batch-Übergänge
 function isRelatedTopicAlgorithmic(title1, title2) {
     const stopWords = ["und", "der", "die", "das", "mit", "von", "für", "auf", "den", "im", "in", "ist", "hat", "zu", "eine", "ein", "bei", "nach", "gegen", "über"];
     const getWords = (t) => cleanString(t).split(' ').filter(w => w.length > 2 && !stopWords.includes(w));
@@ -43,7 +43,7 @@ function loadExistingNews() {
     return [];
 }
 
-// 1. INHALT
+// 1. INHALTS-ANALYSE
 async function analyzeWithPollinations(title, content, sourceName) {
     const safeContent = (content || "").substring(0, 1500).replace(/<[^>]*>/g, "");
 
@@ -72,6 +72,16 @@ async function analyzeWithPollinations(title, content, sourceName) {
             const response = await axios.get(url, { timeout: 35000 });
             let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
 
+            // DeepSeek Cleaning: Falls es ein JSON mit 'content' ist, packen wir es aus
+            try {
+                const deepSeekObj = JSON.parse(rawText);
+                if (deepSeekObj.content) rawText = deepSeekObj.content;
+                else if (deepSeekObj.reasoning_content) {
+                    // Falls nur reasoning da ist, ist es Müll, aber wir schauen ob 'content' fehlt
+                    // Wir nehmen einfach den rawText weiter, falls das Parsen nicht half
+                }
+            } catch (e) { /* War kein JSON-Objekt, einfach weitermachen */ }
+
             rawText = rawText.split("--- Support")[0]; 
             rawText = rawText.replace(/```json|```/g, "").trim();
             const firstOpen = rawText.indexOf('{');
@@ -93,150 +103,156 @@ async function analyzeWithPollinations(title, content, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
-// 2. CLUSTERING (SNIPER MODE)
-async function clusterWithAI(articles) {
-    if (articles.length === 0) return [];
+// 2. KI CLUSTERING (MIT DEEPSEEK FIX)
+async function clusterBatchWithAI(batchArticles, batchIndex) {
+    console.log(`📦 Batch ${batchIndex + 1}: KI sortiert ${batchArticles.length} Artikel...`);
+
+    const listForAI = batchArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
     
-    const activeArticles = articles.slice(0, 60); 
-    console.log(`🧠 KI sortiert Top ${activeArticles.length}...`);
-
-    const listForAI = activeArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
-    const safeList = listForAI.substring(0, 3500);
-
-    const instruction = `Du bist ein News-Aggregator. Gruppiere diese Schlagzeilen nach EXAKT demselben Ereignis.
+    const instruction = `Gruppiere diese Nachrichten nach EXAKT demselben Ereignis.
     Liste:
-    ${safeList}
+    ${listForAI}
     
     Aufgabe: Gib ein JSON Array von Arrays zurück.
     Beispiel: [[0, 5], [1], [2, 3]]
     Regeln:
     1. "Sturm Elli" und "Unwetter im Norden" = GLEICHES EVENT -> Gruppieren.
     2. "Iran Protest" und "Iran Militärübung" = UNTERSCHIEDLICH -> Nicht gruppieren.
-    3. Antworte NUR mit dem JSON Array [[...]].`;
+    3. Antworte NUR mit dem JSON Array [[...]]. Keine Erklärung.`;
 
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
 
     try {
-        const response = await axios.get(url, { timeout: 120000 });
+        const response = await axios.get(url, { timeout: 60000 });
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         
-        // DEBUGGING LOG
-        fs.writeFileSync('debug_cluster_response.txt', rawText);
+        fs.writeFileSync(`debug_batch_${batchIndex}.txt`, rawText);
 
-        // --- DER FIX: ARRAY SNIPER ---
-        // Wir ignorieren alles, was nicht wie [[...]] aussieht.
-        // Regex Erklärung: Suche nach [[ gefolgt von Zahlen/Kommas/Klammern gefolgt von ]]
-        const arrayMatch = rawText.match(/\[\s*\[[\d\s,\[\]]*\]\s*\]/s);
-
-        let groups;
-        if (arrayMatch) {
-            // Wir parsen NUR den gefundenen Array-Teil
-            groups = JSON.parse(arrayMatch[0]);
-        } else {
-            // Notfall: Vielleicht fehlen die äußeren Klammern?
-            throw new Error("Kein Array-Muster [[...]] gefunden.");
+        // --- DER DEEPSEEK FIX ---
+        // Versuch 1: Ist die Antwort selbst ein JSON-Objekt mit 'reasoning_content'?
+        // Wenn ja, wollen wir nur den Teil in 'content' haben.
+        try {
+            // Wir suchen nach dem Muster {"role": ... } oder ähnlichem
+            if (rawText.trim().startsWith('{')) {
+                const jsonObj = JSON.parse(rawText);
+                // Wenn es das DeepSeek Format ist:
+                if (jsonObj.content) {
+                    console.log("🕵️ DeepSeek Wrapper erkannt, extrahiere Content...");
+                    rawText = jsonObj.content; 
+                }
+            }
+        } catch (e) {
+            // War kein JSON-Objekt, also wahrscheinlich direkter Text -> Weitermachen
         }
 
-        if (!Array.isArray(groups)) throw new Error("Geparstes Objekt ist kein Array");
-
-        console.log("🧠 KI-Gruppierung erfolgreich!");
+        // --- DER ARRAY SNIPER ---
+        // Jetzt suchen wir im (bereinigten) Text nach [[...]]
+        const arrayMatch = rawText.match(/\[\s*\[[\d\s,\[\]]*\]\s*\]/s);
         
-        let clusteredFeed = [];
+        let groups;
+        if (arrayMatch) {
+            groups = JSON.parse(arrayMatch[0]);
+        } else {
+            throw new Error("Kein Array-Muster [[...]] gefunden");
+        }
+
+        if (!Array.isArray(groups)) throw new Error("Kein Array");
+
+        // Gruppen bauen
+        let localClusters = [];
         let usedIndices = new Set();
 
         groups.forEach(groupIndices => {
             if (!Array.isArray(groupIndices)) return;
-            let validIndices = groupIndices.filter(i => activeArticles[i] !== undefined);
+            let validIndices = groupIndices.filter(i => batchArticles[i] !== undefined);
             if (validIndices.length === 0) return;
 
             // Bild-Priorität
             let bestParentIndex = 0; 
             for (let k = 0; k < validIndices.length; k++) {
-                if (activeArticles[validIndices[k]].img) {
+                if (batchArticles[validIndices[k]].img) {
                     bestParentIndex = k;
                     break; 
                 }
             }
 
-            let parentRealIndex = validIndices[bestParentIndex];
-            let parent = activeArticles[parentRealIndex];
-            usedIndices.add(parentRealIndex);
-            
+            let parentIndex = validIndices[bestParentIndex];
+            let parent = batchArticles[parentIndex];
+            usedIndices.add(parentIndex);
             parent.related = [];
 
             for (let i = 0; i < validIndices.length; i++) {
                 if (i === bestParentIndex) continue; 
                 let childIndex = validIndices[i];
                 if (!usedIndices.has(childIndex)) {
-                    parent.related.push(activeArticles[childIndex]);
+                    parent.related.push(batchArticles[childIndex]);
                     usedIndices.add(childIndex);
                 }
             }
-            clusteredFeed.push(parent);
+            localClusters.push(parent);
         });
 
-        // Reste einsammeln
-        activeArticles.forEach((item, index) => {
+        // Vergessene Items
+        batchArticles.forEach((item, index) => {
             if (!usedIndices.has(index)) {
                 item.related = [];
-                clusteredFeed.push(item);
+                localClusters.push(item);
             }
         });
 
-        return clusteredFeed;
+        return localClusters;
 
     } catch (e) {
-        console.error("❌ KI-Clustering fehlgeschlagen:", e.message);
-        console.log("⚙️ Starte algorithmischen Fallback...");
-        return clusterAlgorithmic(articles);
+        console.error(`⚠️ Batch ${batchIndex + 1} fehlgeschlagen (${e.message}). Behalte Items einzeln.`);
+        return batchArticles.map(a => { a.related = []; return a; });
     }
 }
 
-function clusterAlgorithmic(allNews) {
-    let clustered = [];
-    let processedIds = new Set();
-    allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+// --- 3. PIPELINE ---
+async function runClusteringPipeline(allArticles) {
+    const BATCH_SIZE = 15;
+    let finalClusters = [];
 
-    for (let i = 0; i < allNews.length; i++) {
-        let item = allNews[i];
-        if (processedIds.has(item.id)) continue;
+    // A. Batching
+    for (let i = 0; i < allArticles.length; i += BATCH_SIZE) {
+        const batch = allArticles.slice(i, i + BATCH_SIZE);
+        const batchClusters = await clusterBatchWithAI(batch, Math.floor(i / BATCH_SIZE));
+        
+        // B. Gluing (Zusammenkleben)
+        console.log(`🧩 Klebe Batch-Ergebnisse zusammen...`);
+        
+        for (const newCluster of batchClusters) {
+            let matched = false;
 
-        let group = [item];
-        processedIds.add(item.id);
+            for (const existingCluster of finalClusters) {
+                if (isRelatedTopicAlgorithmic(existingCluster.title, newCluster.title)) {
+                    console.log(`🔗 Batch-Overlap: "${newCluster.title}" -> "${existingCluster.title}"`);
+                    
+                    if (!existingCluster.img && newCluster.img) {
+                        newCluster.related.push(existingCluster);
+                        if (existingCluster.related) newCluster.related.push(...existingCluster.related);
+                        const idx = finalClusters.indexOf(existingCluster);
+                        finalClusters[idx] = newCluster;
+                    } else {
+                        existingCluster.related.push(newCluster);
+                        if (newCluster.related) existingCluster.related.push(...newCluster.related);
+                    }
+                    matched = true;
+                    break;
+                }
+            }
 
-        for (let j = i + 1; j < allNews.length; j++) {
-            let candidate = allNews[j];
-            if (processedIds.has(candidate.id)) continue;
-
-            if (isRelatedTopicAlgorithmic(item.originalTitle, candidate.originalTitle)) {
-                console.log(`🔗 Algo-Cluster: "${candidate.originalTitle}" -> "${item.originalTitle}"`);
-                group.push(candidate);
-                processedIds.add(candidate.id);
+            if (!matched) {
+                finalClusters.push(newCluster);
             }
         }
-
-        let parent = group[0];
-        if (!parent.img) {
-            const childWithImgIndex = group.findIndex(g => g.img);
-            if (childWithImgIndex !== -1) {
-                parent = group[childWithImgIndex];
-                group.splice(childWithImgIndex, 1);
-                group.unshift(parent);
-            }
-        }
-
-        parent.related = [];
-        for (let k = 1; k < group.length; k++) {
-            parent.related.push(group[k]);
-            if (group[k].related) parent.related.push(...group[k].related);
-        }
-        clustered.push(parent);
+        await sleep(5000);
     }
-    return clustered;
+    return finalClusters;
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Array Sniper Edition)...");
+    console.log("🚀 Starte News-Abruf (DeepSeek Proof)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -252,12 +268,11 @@ async function run() {
         if (item.related) item.related.forEach(child => flatFeed.push(child));
     });
 
-    console.log(`📂 Cache: ${flatFeed.length} Artikel.`);
-
     for (const source of sources) {
         try {
             console.log(`\n📡 ${source.name}...`);
             const feed = await parser.parseURL(source.url);
+            
             let addedCount = 0;
             let checkedCount = 0;
             const maxLookback = 20; 
@@ -301,6 +316,7 @@ async function run() {
         } catch (e) { console.error(`❌ Fehler bei ${source.name}:`, e.message); }
     }
 
+    // Safety Save
     flatFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     fs.writeFileSync('news.json', JSON.stringify(flatFeed, null, 2));
 
@@ -309,7 +325,8 @@ async function run() {
         flatFeed = flatFeed.slice(0, 60);
     }
 
-    const finalFeed = await clusterWithAI(flatFeed);
+    // PIPELINE (Batching + DeepSeek Filter)
+    const finalFeed = await runClusteringPipeline(flatFeed);
     
     finalFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
@@ -317,3 +334,11 @@ async function run() {
 }
 
 run();
+
+
+
+
+
+
+
+
