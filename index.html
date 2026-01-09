@@ -4,291 +4,594 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Smart Brief</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #09090b;
+            --bg: #0f0f10;
             --surface: #18181b;
-            --surface-variant: #27272a;
+            --surface-variant: #202024;
             --accent: #3b82f6;
             --text: #f4f4f5;
             --text-muted: #a1a1aa;
             --border: #27272a;
-            --highlight: rgba(59, 130, 246, 0.35);
+            --danger: #ef4444;
+            --success: #22c55e;
+            --highlight: rgba(255, 215, 0, 0.25);
+            --header-bg: rgba(15, 15, 16, 0.95);
         }
 
-        /* --- FOCUS MODE STYLES --- */
-        body.zen-mode {
-            --bg: #121214;
-            --surface: #121214;
-            --text: #e0e0e0;
-            --border: #1d1d20;
-            font-family: 'Merriweather', serif;
+        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--header-bg); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 50;
+            border-bottom: 1px solid var(--border);
         }
-        body.zen-mode .card-img, body.zen-mode .new-indicator, body.zen-mode .briefing-card { display: none; }
-        body.zen-mode .card { border: none; border-bottom: 1px solid var(--border); border-radius: 0; }
-        body.zen-mode .container { max-width: 650px; }
-
-        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 80px; transition: background 0.5s; }
-
-        /* --- UI COMPONENTS --- */
-        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 1000; width: 0%; transition: width 0.1s; }
-        
-        header { background: rgba(9, 9, 11, 0.9); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
-        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
-        .brand { font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: 700; }
-        .brand span { color: var(--accent); }
+        .header-main { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { background: transparent; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1; }
+        .brand { font-family: 'Merriweather', serif; font-size: 1.1rem; font-weight: 700; }
         
         .header-right { display: flex; gap: 8px; }
-        .sort-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); padding: 7px 12px; border-radius: 20px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
-        .sort-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .icon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        .icon-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .search-area { padding: 0 15px 12px; }
-        .search-wrapper { display: flex; gap: 8px; position: relative; }
-        .search-box { background: var(--surface); border: 1px solid var(--border); padding: 10px 15px; border-radius: 12px; color: var(--text); flex-grow: 1; }
-        
-        /* Filter Dropdown */
-        .filter-trigger-btn { background: var(--surface-variant); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; }
-        .filter-dropdown { position: absolute; top: 50px; right: 0; width: 240px; background: #161618; border: 1px solid var(--border); border-radius: 15px; z-index: 100; display: none; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .filter-dropdown.show { display: block; }
-        .source-item { padding: 8px 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; }
-        .source-item:hover { background: rgba(255,255,255,0.05); }
+        .search-container { padding: 0 15px 10px 15px; }
+        .search-box { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text); font-size: 0.85rem; width: 100%; box-sizing: border-box; }
+        .search-box:focus { outline: none; border-color: var(--accent); }
 
-        /* Sidebar Stats */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--bg); z-index: 200; transition: 0.3s; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .progress-container { background: var(--border); height: 3px; width: 100%; }
+        .progress-bar { background: var(--accent); height: 100%; width: 0%; transition: width 0.5s ease; }
+
+        /* --- SIDEBAR --- */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .sidebar {
+            position: fixed; top: 0; left: -260px; width: 260px; height: 100%;
+            background: var(--surface); z-index: 100; transition: left 0.3s ease;
+            border-right: 1px solid var(--border); display: flex; flex-direction: column;
+            padding-top: 20px;
+        }
         .sidebar.active { left: 0; }
-        .sidebar-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
-        .metric-card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 15px; text-align: center; }
-        .metric-card .val { display: block; font-size: 1.3rem; font-weight: 800; color: var(--accent); }
-        .metric-card .lbl { font-size: 0.6rem; text-transform: uppercase; color: var(--text-muted); }
 
-        /* Briefing & Cards */
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
-        .briefing-card { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; padding: 20px; margin-bottom: 25px; }
-        
-        .card { background: var(--surface); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 20px; position: relative; }
-        .card-img { width: 100%; height: 200px; object-fit: cover; }
-        .card-body { padding: 20px; }
-        .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; align-items: center; }
-        .source-logo { width: 16px; height: 16px; border-radius: 3px; background: white; padding: 1px; }
-        .card-title { font-family: 'Merriweather', serif; font-size: 1.25rem; color: #fff; text-decoration: none; display: block; margin-bottom: 10px; }
-        .scoop { font-size: 1rem; color: #d4d4d8; line-height: 1.6; border-left: 3px solid var(--accent); padding-left: 15px; margin-bottom: 15px; }
-        
-        .btn-save { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); border: none; width: 40px; height: 40px; border-radius: 50%; color: #fff; cursor: pointer; font-size: 1.2rem; }
-        .btn-save.saved { color: #fbbf24; }
-        
-        .actions { padding: 15px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; }
-        .btn-link { color: var(--accent); text-decoration: none; font-weight: bold; font-size: 0.8rem; background: none; border: none; cursor: pointer; }
+        .sidebar-title { padding: 0 20px 20px 20px; font-family: 'Merriweather', serif; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid var(--border); margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .sidebar-close { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
 
-        /* Modals & Chat */
-        #reader-modal, #chat-drawer { position: fixed; inset: 0; background: var(--bg); z-index: 3000; display: none; flex-direction: column; }
-        #chat-drawer { top: auto; height: 70%; border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; padding: 20px; }
-        .active { display: flex !important; }
-        .highlight { background: var(--highlight); color: white; }
+        .nav-item { padding: 15px 20px; color: var(--text-muted); text-decoration: none; font-size: 1rem; font-weight: 500; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; }
+        .nav-item:hover { background: var(--surface-variant); color: var(--text); }
+        .nav-item.active { color: var(--accent); border-left: 3px solid var(--accent); background: rgba(59, 130, 246, 0.1); }
 
-        #back-to-top { position: fixed; bottom: 25px; right: 25px; background: var(--accent); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; display: none; align-items: center; justify-content: center; z-index: 1000; }
+        /* Admin Section in Sidebar */
+        .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); background: #121214; }
+        .admin-btn {
+            background: #27272a; color: #ccc; border: 1px solid var(--border); width: 100%; padding: 10px;
+            border-radius: 8px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.2s;
+        }
+        .admin-btn:hover { background: #333; color: white; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
+        .status-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
+        .status-dot.success { background: var(--success); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* --- CONTENT --- */
+        .container { max-width: 800px; margin: 15px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 15px; }
+        .highlight { background-color: var(--highlight); color: #fff; border-radius: 2px; padding: 0 1px; }
+
+        .card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+        .card-img { width: 100%; height: 160px; object-fit: cover; background: #222; }
+        .card-body { padding: 15px; }
+        .meta { display: flex; justify-content: space-between; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+        .card-title { font-family: 'Merriweather', serif; font-size: 1.05rem; margin: 0 0 8px 0; line-height: 1.4; color: #fff; text-decoration: none; display: block; }
+        .scoop { font-size: 0.9rem; color: #e4e4e7; line-height: 1.5; margin-bottom: 12px; padding-left: 10px; border-left: 3px solid var(--accent); }
+        .bullets { list-style: none; padding: 0; margin: 0; }
+        .bullets li { position: relative; padding-left: 15px; margin-bottom: 6px; font-size: 0.85rem; color: #d4d4d8; line-height: 1.4; }
+        .bullets li::before { content: "•"; color: var(--accent); font-weight: bold; position: absolute; left: 0; }
+
+        .btn-save { position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border: none; width: 32px; height: 32px; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .btn-save.saved { background: var(--accent); }
+
+        .actions { padding: 8px 15px; background: #1c1c1f; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .btn-link { color: var(--accent); text-decoration: none; font-size: 0.8rem; font-weight: 600; }
+        .btn-toggle { background: #27272a; color: #ccc; border: none; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+        .variants-container { display: none; background: var(--surface-variant); border-top: 1px solid var(--border); padding: 10px; }
+        .variants-container.show { display: block; }
+        .sub-card { background: var(--surface-variant); border-radius: 8px; padding: 10px; margin-bottom: 10px; border: 1px solid #333; }
+        .sub-title { font-family: 'Merriweather', serif; font-size: 0.9rem; margin-bottom: 5px; color: #ddd; }
+        .sub-bullets li { padding-left: 12px; margin-bottom: 4px; font-size: 0.8rem; color: #ccc; list-style:none; position:relative; }
+        .sub-bullets li::before { content: "•"; color: #666; position: absolute; left: 0; }
+
+        #save-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; display: none; justify-content: center; align-items: center; padding: 20px; }
+        #save-modal.active { display: flex; }
+        .modal-content { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 320px; }
+        .modal-header { padding: 15px; border-bottom: 1px solid var(--border); font-weight: bold; text-align: center; }
+        .modal-options { display: flex; flex-direction: column; }
+        .modal-btn { background: transparent; border: none; padding: 15px; color: var(--text); border-bottom: 1px solid var(--border); cursor: pointer; font-size: 1rem; }
+        .saved-info { font-size: 0.7rem; color: var(--accent); margin-top: 5px; display: block; }
+
+
+        /* Stats Bereich */
+.sidebar-stats {
+    padding: 15px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+}
+.stat-box {
+    background: var(--surface-variant);
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+.stat-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--accent);
+}
+.stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+/* Quellen Chips */
+.sidebar-section-title {
+    padding: 15px 20px 5px 20px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+.sources-container {
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.source-chip {
+    background: var(--surface-variant);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.source-chip:hover {
+    border-color: var(--accent);
+    color: var(--text);
+}
+.source-chip.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
     </style>
 </head>
 <body>
 
-    <div id="scroll-progress"></div>
-    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
-
-    <!-- UI COMPONENTS -->
-    <div id="reader-modal" style="padding: 20px; overflow-y: auto;">
-        <div style="max-width: 700px; margin: 0 auto;">
-            <button onclick="closeReader()" style="margin-bottom:20px; background:var(--surface-variant); border:none; color:white; padding:10px 20px; border-radius:10px;">← Schließen</button>
-            <div id="reader-content"></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
+   <div class="sidebar" id="sidebar">
+    <div class="sidebar-title">Menü <button class="sidebar-close" onclick="toggleMenu()">✕</button></div>
+    
+    <!-- STATS BEREICH -->
+    <div class="sidebar-stats">
+        <div class="stat-box">
+            <span class="stat-value" id="stat-articles">0</span>
+            <span class="stat-label">Artikel</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-value" id="stat-clusters">0</span>
+            <span class="stat-label">Themen</span>
         </div>
     </div>
 
-    <div id="chat-drawer">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <b id="chat-title">KI-Analyse</b>
-            <button onclick="closeChat()" style="background:none; border:none; color:white; font-size:1.5rem;">✕</button>
-        </div>
-        <div id="chat-msgs" style="flex-grow:1; overflow-y:auto; margin-bottom:15px; line-height:1.5;"></div>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="chat-input" class="search-box" placeholder="Frage stellen...">
-            <button onclick="askAI()" class="sort-btn active">Senden</button>
+    <div class="nav-item active" id="nav-feed" onclick="switchTab('feed')">
+        <span>🔥</span> Feed
+    </div>
+    <div class="nav-item" id="nav-saved" onclick="switchTab('saved')">
+        <span>🔖</span> Gemerkt
+    </div>
+
+    <!-- QUELLEN FILTER -->
+    <div class="sidebar-section-title">Quellen</div>
+    <div class="sources-container" id="sources-list">
+        <!-- Chips werden dynamisch eingefügt -->
+    </div>
+        
+        <!-- ADMIN BEREICH -->
+        <div class="sidebar-footer">
+            <button class="admin-btn" onclick="triggerUpdate()" id="update-btn">
+                <div class="status-dot" id="update-dot"></div>
+                <span>Update Starten</span>
+            </button>
+            <div style="text-align:center; margin-top:10px; font-size:0.65rem; color:#555;">
+                Config: <span id="config-status">Check...</span>
+            </div>
         </div>
     </div>
 
-    <div class="sidebar" id="sidebar">
-        <div style="padding:20px; font-weight:bold; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
-            Menü <button onclick="toggleMenu()" style="background:none; border:none; color:white;">✕</button>
-        </div>
-        <div class="sidebar-metrics">
-            <div class="metric-card"><span class="val" id="stat-articles">-</span><span class="lbl">Artikel</span></div>
-            <div class="metric-card"><span class="val" id="stat-clusters">-</span><span class="lbl">Themen</span></div>
-        </div>
-        <div onclick="switchTab('feed')" style="padding:15px 20px; cursor:pointer;">🗞️ Feed</div>
-        <div id="nav-saved" onclick="switchTab('saved')" style="padding:15px 20px; cursor:pointer;">🔖 Gemerkt (0)</div>
-        <div onclick="toggleFocusMode()" style="padding:15px 20px; cursor:pointer;">👁️ Fokus Modus</div>
-        <div style="margin-top:auto; padding:20px;">
-            <button onclick="triggerUpdate()" style="width:100%; padding:12px; background:var(--surface-variant); color:white; border:1px solid var(--border); border-radius:10px;">🔄 Update</button>
+    <!-- SAVE MODAL -->
+    <div id="save-modal">
+        <div class="modal-content">
+            <div class="modal-header">Merken für...</div>
+            <div class="modal-options">
+                <button class="modal-btn" onclick="confirmSave(24 * 60 * 60 * 1000)">24 Stunden</button>
+                <button class="modal-btn" onclick="confirmSave(7 * 24 * 60 * 60 * 1000)">1 Woche</button>
+                <button class="modal-btn" onclick="confirmSave(null)">Für immer</button>
+                <button class="modal-btn" style="color:#aaa" onclick="closeModal()">Abbrechen</button>
+            </div>
         </div>
     </div>
 
     <header>
         <div class="header-main">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:1.5rem;">☰</button>
-                <div class="brand">Smart<span>Brief</span></div>
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleMenu()">☰</button>
+                <div class="brand">Daily Brief.</div>
             </div>
-            <div class="header-right">
-                <button class="sort-btn active" id="btn-time" onclick="setSort('time')">Zeit</button>
-                <button class="sort-btn" id="btn-trend" onclick="setSort('trend')">Trends</button>
-            </div>
-        </div>
-        <div class="search-area">
-            <div class="search-wrapper">
-                <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="render()">
-                <button class="filter-trigger-btn" onclick="document.getElementById('filter-dropdown').classList.toggle('show')">Quellen</button>
-                <div class="filter-dropdown" id="filter-dropdown">
-                    <div id="source-options"></div>
-                    <button onclick="resetFilters()" style="width:100%; margin-top:10px; background:none; border:none; color:var(--accent); cursor:pointer;">Alle anzeigen</button>
-                </div>
+            <div class="header-right" id="sort-controls">
+                <button class="icon-btn active" id="btn-time" onclick="setSort('time')" title="Neueste">🕒</button>
+                <button class="icon-btn" id="btn-trend" onclick="setSort('trend')" title="Top Themen">🔥</button>
             </div>
         </div>
+        <div class="search-container">
+            <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="render()">
+        </div>
+        <div class="progress-container"><div class="progress-bar" id="progress"></div></div>
     </header>
 
-    <div class="container">
-        <div id="briefing-container"></div>
-        <div id="feed"></div>
+    <div class="container" id="feed">
+        <p style="text-align:center; color:#666; margin-top:50px">Lade News...</p>
     </div>
 
     <script>
-        let allNewsData = [];
-        let savedNews = [];
-        let briefingText = "";
-        let currentTab = 'feed', currentSort = 'time', selectedSources = [], repoConfig = null, activeArticle = null;
 
-        const sourceDomains = { "Tagesschau": "tagesschau.de", "ZDF": "zdf.de", "Spiegel": "spiegel.de", "Welt": "welt.de", "Zeit": "zeit.de", "FAZ": "faz.net" };
+// --- VARIABLEN ---
+let repoConfig = null;
+let allNewsData = [];
+let savedNews = [];
+let currentTab = 'feed';
+let currentSort = 'time';
+let itemToSaveId = null;
+let selectedSource = null; // Neu: Hält die aktuell gefilterte Quelle
 
-        async function fetchData() {
-            const r = await fetch('news.json?t=' + Date.now());
-            const data = await r.json();
-            allNewsData = data.news;
-            briefingText = data.briefing;
+// --- INITIALISIERUNG ---
+// Wir laden die Config, die der Bot erstellt hat
+fetch('config.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(config => {
+        repoConfig = config;
+        checkConfig();
+    })
+    .catch(e => console.log("Config noch nicht bereit"));
+
+loadSavedItems();
+fetchData();
+
+// --- DATEN LADEN & STATS ---
+function fetchData() {
+    fetch('news.json?t=' + Date.now())
+        .then(r => r.json())
+        .then(data => {
+            allNewsData = data;
+            updateSidebarExtras(); // Stats und Quellen berechnen
             render();
-            updateSidebarExtras();
-        }
+            setTimeout(() => document.getElementById('progress').style.width = '100%', 500);
+        })
+        .catch(e => {
+            console.error(e);
+            document.getElementById('feed').innerHTML = '<p style="text-align:center">Ladefehler.</p>';
+        });
+}
 
-        function render() {
-            const feed = document.getElementById('feed');
-            const search = document.getElementById('search').value.toLowerCase();
-            feed.innerHTML = '';
-            
-            // Briefing
-            const bContainer = document.getElementById('briefing-container');
-            bContainer.innerHTML = (briefingText && currentTab === 'feed' && !search) ? `<div class="briefing-card"><b>Briefing:</b><br>${briefingText}</div>` : '';
+function updateSidebarExtras() {
+    let totalArticles = 0;
+    const sourcesSet = new Set();
 
-            let data = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
-            
-            if (selectedSources.length) data = data.filter(i => selectedSources.includes(i.source));
-            if (search) data = data.filter(i => i.title.toLowerCase().includes(search) || i.text.toLowerCase().includes(search));
-            
-            data.sort((a,b) => currentSort === 'time' ? new Date(b.date) - new Date(a.date) : (b.related?.length || 0) - (a.related?.length || 0));
-
-            data.forEach(item => {
-                const isSaved = savedNews.some(s => s.news.id === item.id);
-                const domain = sourceDomains[item.source] || "google.com";
-                const logo = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
-                
-                feed.innerHTML += `
-                    <div class="card animate-fade">
-                        <button class="btn-save ${isSaved?'saved':''}" onclick="toggleSave('${item.id}')">★</button>
-                        ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
-                        <div class="card-body">
-                            <div class="meta">
-                                <span style="display:flex; align-items:center; gap:8px;">
-                                    <img src="${logo}" class="source-logo"> ${item.source} • ${new Date(item.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
-                                </span>
-                            </div>
-                            <a href="${item.link}" target="_blank" class="card-title">${highlight(item.title, search)}</a>
-                            <div class="scoop">${highlight(item.text, search)}</div>
-                        </div>
-                        <div class="actions">
-                            <button onclick="openReader('${item.id}')" class="btn-link">In-App Lesen →</button>
-                            <button onclick="openChat('${item.id}')" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">💡 KI-Chat</button>
-                        </div>
-                    </div>
-                `;
-            });
-            document.getElementById('nav-saved').innerText = `🔖 Gemerkt (${savedNews.length})`;
-        }
-
-        function highlight(t, s) { if(!s) return t; return t.replace(new RegExp(s, 'gi'), m => `<mark class="highlight">${m}</mark>`); }
-
-        function toggleSave(id) {
-            const idx = savedNews.findIndex(s => s.news.id === id);
-            if(idx > -1) savedNews.splice(idx, 1);
-            else savedNews.push({ news: allNewsData.find(n => n.id === id) });
-            localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
-            render();
-        }
-
-        function openReader(id) {
-            activeArticle = allNewsData.find(n => n.id === id);
-            if(!activeArticle.fullText) return window.open(activeArticle.link, '_blank');
-            document.getElementById('reader-content').innerHTML = `<h1>${activeArticle.title}</h1><p>${activeArticle.fullText.replace(/\n/g, '<br><br>')}</p>`;
-            document.getElementById('reader-modal').classList.add('active');
-        }
-
-        function openChat(id) {
-            activeArticle = allNewsData.find(n => n.id === id);
-            document.getElementById('chat-msgs').innerHTML = `<div style="color:var(--text-muted)">Frage mich etwas zum Artikel von ${activeArticle.source}...</div>`;
-            document.getElementById('chat-drawer').classList.add('active');
-        }
-
-        async function askAI() {
-            const input = document.getElementById('chat-input'), msgs = document.getElementById('chat-msgs');
-            const q = input.value; if(!q) return;
-            msgs.innerHTML += `<div style="margin-top:10px; color:var(--accent)"><b>Frage:</b> ${q}</div><div id="ai-loading">KI denkt nach...</div>`;
-            const prompt = `Artikel: ${activeArticle.fullText || activeArticle.text}\nFrage: ${q}\nAntworte kurz.`;
-            input.value = '';
-            const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`);
-            const a = await r.text();
-            document.getElementById('ai-loading').remove();
-            msgs.innerHTML += `<div style="margin-top:10px; background:var(--surface-variant); padding:10px; border-radius:10px;">${a}</div>`;
-        }
-
-        function toggleFocusMode() { document.body.classList.toggle('zen-mode'); toggleMenu(); }
-        function switchTab(t) { currentTab = t; toggleMenu(); render(); }
-        function setSort(s) { currentSort = s; document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); render(); }
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-        function closeReader() { document.getElementById('reader-modal').classList.remove('active'); }
-        function closeChat() { document.getElementById('chat-drawer').classList.remove('active'); }
+    allNewsData.forEach(item => {
+        totalArticles += 1; // Der Hauptartikel des Clusters
+        if (item.source) sourcesSet.add(item.source);
         
-        function updateSidebarExtras() {
-            document.getElementById('stat-articles').innerText = allNewsData.length;
-            document.getElementById('stat-clusters').innerText = "1"; // Vereinfacht
-            const sources = [...new Set(allNewsData.map(i => i.source))];
-            document.getElementById('source-options').innerHTML = sources.map(s => `<div class="source-item"><input type="checkbox" onchange="toggleSource('${s}')"> ${s}</div>`).join('');
+        if (item.related) {
+            totalArticles += item.related.length; // Alle Varianten im Cluster
+            item.related.forEach(rel => {
+                if (rel.source) sourcesSet.add(rel.source);
+            });
+        }
+    });
+
+    // Stats in UI schreiben
+    const statArtEl = document.getElementById('stat-articles');
+    const statCluEl = document.getElementById('stat-clusters');
+    if(statArtEl) statArtEl.innerText = totalArticles;
+    if(statCluEl) statCluEl.innerText = allNewsData.length;
+
+    // Quellen Chips rendern
+    const sourcesList = document.getElementById('sources-list');
+    if (!sourcesList) return;
+
+    const sortedSources = Array.from(sourcesSet).sort((a, b) => a.localeCompare(b));
+    sourcesList.innerHTML = '';
+    
+    // "Alle" Chip
+    const allChip = document.createElement('div');
+    allChip.className = `source-chip ${!selectedSource ? 'active' : ''}`;
+    allChip.innerText = "Alle";
+    allChip.onclick = () => filterBySource(null);
+    sourcesList.appendChild(allChip);
+
+    // Individuelle Quellen Chips
+    sortedSources.forEach(src => {
+        const chip = document.createElement('div');
+        chip.className = `source-chip ${selectedSource === src ? 'active' : ''}`;
+        chip.innerText = src;
+        chip.onclick = () => filterBySource(src);
+        sourcesList.appendChild(chip);
+    });
+}
+
+function filterBySource(source) {
+    selectedSource = source;
+    updateSidebarExtras(); // UI State der Chips aktualisieren
+    render();
+    if (window.innerWidth < 900) toggleMenu(); // Sidebar auf Handy schließen nach Auswahl
+}
+
+// --- ADMIN & CONFIG ---
+function checkConfig() {
+    const hasToken = localStorage.getItem('gh_token');
+    const statusEl = document.getElementById('config-status');
+    if (!statusEl) return;
+    
+    if (!repoConfig) {
+        statusEl.innerText = "Lade Config...";
+        statusEl.style.color = "orange";
+    } else if (!hasToken) {
+        statusEl.innerText = "Key fehlt (Klick Button)";
+        statusEl.style.color = "#aaa";
+    } else {
+        statusEl.innerText = "Bereit ✅";
+        statusEl.style.color = "var(--success)";
+    }
+}
+
+async function triggerUpdate() {
+    let token = localStorage.getItem('gh_token');
+    if (!token) {
+        token = prompt("Bitte GitHub Token eingeben:");
+        if (token) {
+            localStorage.setItem('gh_token', token);
+            checkConfig();
+        } else return;
+    }
+
+    if (!repoConfig || !repoConfig.repository) {
+        alert("Fehler: config.json fehlt noch.");
+        return;
+    }
+
+    const btn = document.getElementById('update-btn');
+    const dot = document.getElementById('update-dot');
+    const label = btn.querySelector('span');
+
+    dot.className = 'status-dot loading';
+    label.innerText = 'Starte Workflow...';
+    btn.disabled = true;
+
+    try {
+        const url = `https://api.github.com/repos/${repoConfig.repository}/actions/workflows/update.yml/dispatches`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({ ref: 'main' })
+        });
+
+        if (response.ok) {
+            dot.className = 'status-dot success';
+            label.innerText = 'Gestartet! (Warte 5min)';
+            alert("Update angestoßen! Seite in ca. 5 Min neu laden.");
+        } else {
+            throw new Error(`Fehler: ${response.status}`);
+        }
+    } catch (e) {
+        alert("Fehler: " + e.message);
+        dot.className = 'status-dot';
+        label.innerText = 'Fehler - Retry';
+        if (e.message.includes('401')) localStorage.removeItem('gh_token');
+    } finally {
+        btn.disabled = false;
+        setTimeout(() => {
+            label.innerText = 'Update Starten';
+            dot.className = 'status-dot';
+        }, 5000);
+    }
+}
+
+// --- UI & NAVIGATION ---
+function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('sidebar-overlay').classList.toggle('active');
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    // Wenn man auf 'Gemerkt' wechselt, Filter zurücksetzen? 
+    // Meistens besser: Filter nur für Feed.
+    if (tab === 'saved') selectedSource = null; 
+    
+    toggleMenu();
+    document.getElementById('nav-feed').classList.toggle('active', tab === 'feed');
+    document.getElementById('nav-saved').classList.toggle('active', tab === 'saved');
+    document.getElementById('sort-controls').style.display = tab === 'feed' ? 'flex' : 'none';
+    document.getElementById('search').value = '';
+    updateSidebarExtras();
+    render();
+}
+
+function loadSavedItems() {
+    const raw = localStorage.getItem('my_saved_news');
+    if (!raw) return;
+    let items = JSON.parse(raw);
+    const now = Date.now();
+    savedNews = items.filter(item => item.expiresAt === null || item.expiresAt > now);
+    if (savedNews.length !== items.length) localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+}
+
+function openSaveMenu(id, event) {
+    event.stopPropagation();
+    if (isSaved(id)) {
+        savedNews = savedNews.filter(i => i.news.id !== id);
+        localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+        render();
+        return;
+    }
+    itemToSaveId = id;
+    document.getElementById('save-modal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('save-modal').classList.remove('active');
+    itemToSaveId = null;
+}
+
+function confirmSave(duration) {
+    if (!itemToSaveId) return;
+    const article = allNewsData.find(n => n.id === itemToSaveId);
+    if (article) {
+        savedNews.push({ news: article, savedAt: Date.now(), expiresAt: duration ? Date.now() + duration : null });
+        localStorage.setItem('my_saved_news', JSON.stringify(savedNews));
+    }
+    closeModal();
+    render();
+}
+
+function isSaved(id) { return savedNews.some(i => i.news.id === id); }
+
+function setSort(mode) {
+    currentSort = mode;
+    document.getElementById('btn-time').classList.toggle('active', mode === 'time');
+    document.getElementById('btn-trend').classList.toggle('active', mode === 'trend');
+    render();
+}
+
+function toggleVariants(id) {
+    document.getElementById('vars-' + id).classList.toggle('show');
+}
+
+function highlightText(text, term) {
+    if (!term || !text) return text;
+    const safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${safeTerm})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+}
+
+// --- RENDER LOGIK ---
+function render() {
+    const container = document.getElementById('feed');
+    const searchTerm = document.getElementById('search').value.toLowerCase();
+    container.innerHTML = '';
+
+    let dataToRender = [];
+    if (currentTab === 'feed') {
+        dataToRender = [...allNewsData];
+        
+        // 1. Filter: Quelle
+        if (selectedSource) {
+            dataToRender = dataToRender.filter(item => {
+                const mainMatch = item.source === selectedSource;
+                const relatedMatch = item.related && item.related.some(r => r.source === selectedSource);
+                return mainMatch || relatedMatch;
+            });
         }
 
-        function toggleSource(s) {
-            const idx = selectedSources.indexOf(s);
-            if(idx > -1) selectedSources.splice(idx, 1);
-            else selectedSources.push(s);
-            render();
+        // 2. Sortierung
+        if (currentSort === 'time') dataToRender.sort((a, b) => new Date(b.date) - new Date(a.date));
+        else dataToRender.sort((a, b) => (b.related?.length || 0) - (a.related?.length || 0));
+    } else {
+        dataToRender = [...savedNews].sort((a, b) => b.savedAt - a.savedAt).map(i => i.news);
+    }
+
+    // 3. Suche
+    if (searchTerm) {
+        dataToRender = dataToRender.filter(item => {
+            const inTitle = item.title.toLowerCase().includes(searchTerm);
+            const inText = item.text.toLowerCase().includes(searchTerm);
+            const inBullets = item.bullets ? item.bullets.some(b => b.toLowerCase().includes(searchTerm)) : false;
+            return inTitle || inText || inBullets;
+        });
+    }
+
+    if(dataToRender.length === 0) { 
+        container.innerHTML = '<p style="text-align:center; color:#666; margin-top:50px;">Nichts gefunden.</p>'; 
+        return; 
+    }
+
+    dataToRender.forEach(item => {
+        let savedInfo = '';
+        const savedObj = savedNews.find(s => s.news.id === item.id);
+        if (currentTab === 'saved' && savedObj) {
+            if (savedObj.expiresAt) {
+                const daysLeft = Math.ceil((savedObj.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+                savedInfo = `<span class="saved-info">Löscht sich in ${daysLeft} Tagen</span>`;
+            } else { savedInfo = `<span class="saved-info">Für immer gespeichert</span>`; }
         }
 
-        function resetFilters() { selectedSources = []; document.querySelectorAll('#source-options input').forEach(i => i.checked = false); render(); }
+        let displayTitle = highlightText(item.title, searchTerm);
+        let displayText = highlightText(item.text, searchTerm);
+        let bulletsHtml = '';
+        if (item.bullets && Array.isArray(item.bullets)) {
+            bulletsHtml = '<ul class="bullets">' + item.bullets.map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('') + '</ul>';
+        }
 
-        window.onscroll = () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            document.getElementById("scroll-progress").style.width = (winScroll / height) * 100 + "%";
-            document.getElementById('back-to-top').style.display = winScroll > 500 ? 'flex' : 'none';
-        };
+        const img = item.img || 'https://via.placeholder.com/600x300/222/555?text=News';
+        const savedClass = isSaved(item.id) ? 'saved' : '';
+        
+        let variantsHtml = '';
+        let toggleBtn = '';
+        if (item.related && item.related.length > 0) {
+            toggleBtn = `<button class="btn-toggle" onclick="toggleVariants('${item.id}')"><span>⬇ ${item.related.length} weitere Quellen</span></button>`;
+            variantsHtml = `<div id="vars-${item.id}" class="variants-container">` + 
+                item.related.map(rel => `
+                    <div class="sub-card">
+                        <div class="meta"><span>${rel.source}</span><span>${new Date(rel.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>
+                        <div class="sub-title">${highlightText(rel.title, searchTerm)}</div>
+                        <div class="scoop" style="font-size:0.9rem; border-left-color:#666">${highlightText(rel.text, searchTerm)}</div>
+                        <ul class="sub-bullets">${(rel.bullets||[]).map(b=>`<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
+                        <a href="${rel.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Zum Artikel →</a>
+                    </div>`).join('') + `</div>`;
+        }
 
-        const raw = localStorage.getItem('my_saved_news');
-        if(raw) savedNews = JSON.parse(raw);
-        fetchData();
-        fetch('config.json').then(r => r.json()).then(c => { repoConfig = c; });
+        const html = `
+            <div class="card">
+                <button class="btn-save ${savedClass}" onclick="openSaveMenu('${item.id}', event)">${savedClass ? '★' : '☆'}</button>
+                <img src="${img}" class="card-img" onerror="this.style.display='none'">
+                <div class="card-body">
+                    <div class="meta"><span>${item.sourceCountry||''} ${item.source}</span><span>${new Date(item.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span></div>
+                    <a href="${item.link}" target="_blank" class="card-title">${displayTitle}</a>
+                    <div class="scoop">${displayText}</div>
+                    ${savedInfo}
+                    ${bulletsHtml}
+                </div>
+                ${variantsHtml}
+                <div class="actions"><a href="${item.link}" target="_blank" class="btn-link">Artikel lesen →</a>${toggleBtn}</div>
+            </div>
+        `;
+        container.innerHTML += html;
+    });
+}
+        
     </script>
 </body>
 </html>
