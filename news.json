@@ -1,5 +1,49 @@
 [
   {
+    "id": "4hn2pqgo5",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Schweiz richtet nationalen Trauertag wegen Bar-Brand in Crans-Montana ein",
+    "originalTitle": "Nationaler Trauertag nach Brandkatastrophe in Crans-Montana",
+    "link": "https://www.tagesschau.de/ausland/europa/schweiz-trauertag-nach-unglueck-crans-montana-100.html",
+    "img": null,
+    "date": "2026-01-09T09:46:37.000Z",
+    "text": "Ein nationaler Trauertag wird nach der Brandkatastrophe in einer Bar in Crans-Montana ausgerufen, während die Staatsanwaltschaft mögliche Versäumnisse im Brandschutz untersucht.",
+    "bullets": [
+      "Die Brandkatastrophe forderte 23 Todesopfer und 12 Verletzte",
+      "Die Bar befand sich im 6. Stock eines Hotels im bekannten Skigebiet Crans-Montana",
+      "Die Schweiz entschied im frühen Morgen nach dem Ernstfall, den 29. August als nationalen Trauertag zu bezeichnen",
+      "Die Staatsanwaltschaft eröffnet ein Ermittlungsverfahren, um mögliche Versäumnisse im Brandschutz zu prüfen",
+      "Kontrolle erfolgt über lokale Sicherheitsbestimmungen, Haftung und Präventionsmaßnahmen"
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
+    "id": "8pw5jfz7c",
+    "source": "Tagesschau",
+    "sourceCountry": "🇩🇪",
+    "title": "Russland setzt neue Oreschnik‑Rakete gegen die Ukraine ein",
+    "originalTitle": "Russland greift Ukraine an - auch mit neuer Oreschnik-Rakete",
+    "link": "https://www.tagesschau.de/ausland/europa/russland-ukraine-angriffe-108.html",
+    "img": null,
+    "date": "2026-01-09T09:40:09.000Z",
+    "text": "Die russische Armee griff während eines Angriffs auf Westukraine die neue Mittelstreckenrakete Oreschnik ein, wobei mehrere Personen ums Leben kamen.",
+    "bullets": [
+      "Laut ukrainischen Behörden wurden mehrere Oreschnik‑Mittelstreckenraketen auf Ziele im Westen der Ukraine abgeworfen.",
+      "Die Oreschnik‑Konstruktion ist ein Update des älteren Orel‑Serienaufbaus und verspricht größere Reichweite und Präzision.",
+      "Der Einsatz führte zu mehreren Toten und Verletzten, darunter mindestens drei Zivilisten.",
+      "Die Angriffe fielen zusammen mit einem zahlreichen Drohnen‑ und Raketenfeldzug der russischen Streitkräfte ein.",
+      "Ukrainische Luftverteidigung setzt verstärkt Anti‑Raketen‑ und Drohnenabwehr ein, während internationale Friedensgespräche über die weitere Beschränkung der Angriffe geführt werden."
+    ],
+    "tags": [
+      "Tagesschau",
+      "News"
+    ]
+  },
+  {
     "id": "fdeutrby8",
     "source": "Tagesschau",
     "sourceCountry": "🇩🇪",
@@ -18,28 +62,8 @@
       "Tagesschau",
       "News"
     ],
-    "related": []
-  },
-  {
-    "id": "bavucehxd",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Tief \"Elli\" bringt Sturm und Neuschnee in Deutschland",
-    "originalTitle": "Eisige \"Elli\" bringt Sturm und Schnee",
-    "link": "https://www.tagesschau.de/inland/gesellschaft/winterwetter-mit-sturmtief-100.html",
-    "img": null,
-    "date": "2026-01-09T08:52:54.000Z",
-    "text": "Ein Tiefdruckgebiet verursacht heftigen Schneesturm, der den Fernverkehr im Norden Deutschlands stoppt und bereits Unfälle ausgelöst hat.",
-    "bullets": [
-      "Tief \"Elli\": Schneefall und Wind bis 100 km/h in großen Teilen Deutschlands",
-      "Die Deutsche Bahn hat den Fernverkehr im Norden eingestellt, nachdem bereits mehrere Unfälle gemeldet wurden",
-      "Meteorologen entwarnen für Berlin und Brandenburg, wo die mit erwarteten Niederschlägen kaum Auswirkungen drohen"
-    ],
-    "tags": [
-      "Tagesschau",
-      "News"
-    ],
-    "related": []
+    "related": [],
+    "lastUpdated": "2026-01-09T09:51:34.679Z"
   },
   {
     "id": "scw22m9pc",
@@ -60,7 +84,8 @@
       "ZDF",
       "News"
     ],
-    "related": []
+    "related": [],
+    "lastUpdated": "2026-01-09T09:51:36.715Z"
   },
   {
     "id": "eq0bowqsr",
@@ -81,7 +106,8 @@
       "ZDF",
       "News"
     ],
-    "related": []
+    "related": [],
+    "lastUpdated": "2026-01-09T09:51:36.715Z"
   },
   {
     "id": "95ngx3u3j",
@@ -102,7 +128,8 @@
       "ZDF",
       "News"
     ],
-    "related": []
+    "related": [],
+    "lastUpdated": "2026-01-09T09:51:36.715Z"
   },
   {
     "id": "bntsidpwd",
@@ -124,23 +151,8 @@
       "Tagesschau",
       "News"
     ],
-    "related": []
-  },
-  {
-    "id": "sghlwfzeh",
-    "source": "Tagesschau",
-    "sourceCountry": "🇩🇪",
-    "title": "Medizinisches Problem: NASA bricht ISS-Mission vorzeitig ab",
-    "originalTitle": "Medizinisches Problem: NASA bricht ISS-Mission vorzeitig ab",
-    "link": "https://www.tagesschau.de/ausland/amerika/iss-nasa-missionsabbruch-100.html",
-    "img": null,
-    "date": "2026-01-09T05:55:11.000Z",
-    "text": "Medizinisches Problem: NASA bricht ISS-Mission vorzeitig ab",
-    "bullets": [],
-    "tags": [
-      "Tagesschau"
-    ],
-    "related": []
+    "related": [],
+    "lastUpdated": "2026-01-09T09:51:34.679Z"
   },
   {
     "id": "ml9d9wd4l",
@@ -161,6 +173,7 @@
       "ZDF",
       "News"
     ],
-    "related": []
+    "related": [],
+    "lastUpdated": "2026-01-09T09:51:36.715Z"
   }
 ]
