@@ -1,7 +1,7 @@
 {
-  "name": "news-grabber-raw",
-  "version": "3.0.0",
-  "description": "Raw API Calls",
+  "name": "news-grabber-final",
+  "version": "4.0.0",
+  "description": "News Grabber",
   "main": "grabber.js",
   "scripts": {
     "start": "node grabber.js"
