@@ -3,11 +3,6 @@ const axios = require('axios');
 const fs = require('fs');
 
 const parser = new Parser();
-
-// MODELL: Microsoft Phi-3. Klein, schnell, wird nicht gelöscht.
-const AI_MODEL = "microsoft/Phi-3-mini-4k-instruct"; 
-const HF_TOKEN = process.env.HF_TOKEN; 
-
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 function loadExistingNews() {
@@ -17,73 +12,43 @@ function loadExistingNews() {
     return [];
 }
 
-async function analyzeWithAI(title, content, sourceName) {
-    // Fallback wenn kein Token
-    if (!HF_TOKEN) return { summary: title, context: "", tags: [sourceName] };
-
+async function analyzeWithPollinations(title, content, sourceName) {
+    // Sicherheit: Text kürzen
     const safeContent = (content || "").substring(0, 1000).replace(/<[^>]*>/g, "");
 
-    // Phi-3 Prompt Format
-    const prompt = `<|user|>
-Du bist ein Nachrichten-Redakteur. Fasse diesen Text in einem einzigen deutschen Satz zusammen:
-"${title} - ${safeContent}"
-<|end|>
-<|assistant|>`;
+    // Der Prompt muss teil der URL sein
+    const instruction = `Du bist News-Redakteur. Fasse diesen Text in einem einzigen deutschen Satz zusammen: "${title} - ${safeContent}"`;
+    
+    // URL Encoding ist wichtig!
+    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai`;
 
-    let retries = 3;
-    while (retries > 0) {
-        try {
-            const response = await axios.post(
-                `https://api-inference.huggingface.co/models/${AI_MODEL}`,
-                { 
-                    inputs: prompt,
-                    parameters: { 
-                        max_new_tokens: 150, 
-                        return_full_text: false 
-                    } 
-                },
-                { 
-                    headers: { Authorization: `Bearer ${HF_TOKEN}` },
-                    timeout: 30000
-                }
-            );
+    try {
+        // Einfacher GET Request. Wie eine Webseite öffnen.
+        const response = await axios.get(url, { timeout: 10000 });
+        
+        let summary = response.data; // Der Text kommt direkt zurück
+        
+        // Aufräumen
+        if (typeof summary !== 'string') summary = JSON.stringify(summary);
+        summary = summary.trim().replace(/^["']|["']$/g, '');
 
-            let summary = response.data[0]?.generated_text || "";
-            summary = summary.trim().replace(/^["']|["']$/g, '');
+        if (summary.length < 5) throw new Error("Zu kurz");
 
-            if (summary.length < 5) throw new Error("Leere Antwort");
+        return { 
+            summary: summary, 
+            context: "", 
+            tags: [sourceName, "News"] 
+        };
 
-            return { 
-                summary: summary, 
-                context: "", 
-                tags: [sourceName, "News"] 
-            };
-
-        } catch (error) {
-            const errData = error.response?.data;
-            
-            // Wenn Phi-3 lädt (passiert beim ersten mal oft), warten wir
-            if (errData && JSON.stringify(errData).includes("loading")) {
-                const wait = (errData.estimated_time || 20);
-                console.log(`⏳ Modell lädt (${wait}s)...`);
-                await sleep((wait + 2) * 1000);
-                retries--;
-                continue;
-            }
-            
-            // Bei 503 (Service Unavailable) oder anderen Fehlern: Kurz warten, retry
-            console.log(`⚠️ Fehler: ${error.message}. Retry...`);
-            await sleep(2000);
-            retries--;
-        }
+    } catch (error) {
+        console.error(`⚠️ Fehler bei "${title.substring(0, 15)}...":`, error.message);
+        // Fallback
+        return { summary: title, context: "", tags: [sourceName] };
     }
-
-    // Wenn alles scheitert: Titel zurückgeben, damit das Script durchläuft
-    return { summary: title, context: "", tags: [sourceName] };
 }
 
 async function run() {
-    console.log("🚀 Starte News-Abruf (Phi-3)...");
+    console.log("🚀 Starte News-Abruf (Pollinations No-Key)...");
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } 
@@ -101,7 +66,7 @@ async function run() {
             for (const item of items) {
                 const cached = existingNews.find(n => n.link === item.link);
                 
-                // Cache nutzen wenn gültig
+                // Cache Check
                 if (cached && cached.text && cached.text !== cached.title) {
                     newNewsFeed.push({ ...cached, lastUpdated: new Date() });
                     continue;
@@ -110,7 +75,7 @@ async function run() {
                 console.log(`🤖 Generiere: ${item.title.substring(0, 30)}...`);
                 
                 const rawContent = item.contentSnippet || item.content || "";
-                const ai = await analyzeWithAI(item.title, rawContent, source.name);
+                const ai = await analyzeWithPollinations(item.title, rawContent, source.name);
                 
                 newNewsFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
@@ -125,7 +90,8 @@ async function run() {
                     tags: ai.tags
                 });
                 
-                await sleep(1500); 
+                // Kurze Pause, um den Server nicht zu ärgern
+                await sleep(2000); 
             }
         } catch (e) { console.error(`❌ Fehler ${source.name}:`, e.message); }
     }
