@@ -450,37 +450,80 @@
         .part-label { font-size:0.8rem; color:var(--accent); text-transform:uppercase; font-weight:700; letter-spacing:1px; margin-bottom:4px; }
         .part-info { font-size: 0.9rem; color: #aaa; display:flex; align-items:center; gap:8px; }
         .part-temp { font-size: 1.8rem; font-weight: 800; color: #fff; }
-/* --- RADAR OVERLAY --- */
+/* --- RADAR 2.0 STYLES --- */
         #radar-overlay {
             position: fixed; inset: 0; z-index: 6000; background: #000;
             display: none; flex-direction: column;
         }
         #radar-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
 
-        #radar-map { flex-grow: 1; width: 100%; background: #111; }
+        #radar-map { width: 100%; height: 100%; background: #111; }
 
+        /* Controls */
         .radar-controls {
-            background: rgba(20, 20, 25, 0.9); border-top: 1px solid #333;
+            background: rgba(20, 20, 25, 0.95); border-top: 1px solid #333;
             padding: 15px 20px 30px 20px; color: #fff;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); z-index: 6002;
         }
-
         #radar-play {
             background: var(--accent); color: white; border: none;
             width: 40px; height: 40px; border-radius: 50%;
             font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
-
         #radar-slider {
-            width: 100%; -webkit-appearance: none; background: #333; height: 4px; border-radius: 2px; outline: none;
+            width: 100%; -webkit-appearance: none; background: #333; height: 4px; border-radius: 2px; outline: none; margin-top:5px;
         }
         #radar-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 16px; height: 16px; background: #fff; border-radius: 50%; cursor: pointer;
+            -webkit-appearance: none; width: 18px; height: 18px; background: #fff; border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
-        
-        /* Leaflet Dark Mode Anpassungen */
+
+        /* Layer Switcher */
+        .radar-layer-switch {
+            display: flex; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 2px;
+        }
+        .radar-layer-switch button {
+            background: transparent; border: none; color: #aaa; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; border-radius: 6px; font-weight: 600;
+        }
+        .radar-layer-switch button.active { background: #fff; color: #000; }
+
+        /* Pulsierender Standort Punkt */
+        .user-location-dot {
+            width: 16px; height: 16px; background: #3b82f6; border: 2px solid #fff; border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        /* Loading Spinner */
+        #radar-loader {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 6001;
+            display: none; align-items: center; justify-content: center; flex-direction: column;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1);
+            border-left-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Legend */
+        .radar-legend {
+            position: absolute; bottom: 20px; right: 10px; z-index: 500;
+            background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 8px;
+            font-size: 0.65rem; color: #fff; backdrop-filter: blur(4px);
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .legend-bar {
+            width: 80px; height: 6px; border-radius: 3px;
+            /* Universal Blue Gradient (RainViewer Style) */
+            background: linear-gradient(to right, #d3eafc, #4a90e2, #7c3f9c, #ffe900);
+        }
+        /* Leaflet Fixes */
         .leaflet-bar a { background-color: #222 !important; color: #fff !important; border-bottom: 1px solid #444 !important; }
-        .leaflet-control-attribution { background: rgba(0,0,0,0.5) !important; color: #888 !important; }
 /* --- HEADER OPTIMIERUNG (Mobile) --- */
         .brand { 
             cursor: pointer; transition: opacity 0.2s; 
@@ -525,27 +568,50 @@
 </head>
 <body>
 
-    <!-- RADAR OVERLAY -->
+  <!-- RADAR OVERLAY (2.0) -->
     <div id="radar-overlay">
         <div class="reader-header" style="background:rgba(0,0,0,0.8);">
-            <span style="font-size:0.8rem; color:#fff; font-weight:700">REGENRADAR</span>
-            <button class="reader-close-btn" onclick="closeRadar()">✕ Schließen</button>
+            <span style="font-size:0.8rem; color:#fff; font-weight:700">WETTERKARTE</span>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <!-- Layer Switcher -->
+                <div class="radar-layer-switch">
+                    <button id="btn-layer-radar" class="active" onclick="switchRadarLayer('radar')">🌧️ Radar</button>
+                    <button id="btn-layer-sat" onclick="switchRadarLayer('satellite')">☁️ Sat</button>
+                </div>
+                <button class="reader-close-btn" onclick="closeRadar()">✕</button>
+            </div>
         </div>
         
-        <div id="radar-map"></div>
+        <div style="position:relative; flex-grow:1; width:100%;">
+            <div id="radar-map"></div>
+            
+            <!-- Preloader -->
+            <div id="radar-loader">
+                <div class="spinner"></div>
+                <div style="margin-top:10px; font-size:0.8rem; color:#ccc;">Lade Bilder...</div>
+            </div>
 
-        <!-- RADAR CONTROLS -->
+            <!-- Legende (Nur für Radar sichtbar) -->
+            <div id="radar-legend" class="radar-legend">
+                <span>Leicht</span>
+                <div class="legend-bar"></div>
+                <span>Extrem</span>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
         <div class="radar-controls">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <button id="radar-play" onclick="toggleRadarAnim()">▶</button>
-                <div id="radar-time" style="font-variant-numeric:tabular-nums; font-weight:bold; color:#fff;">Lade...</div>
-                <button onclick="centerRadar()" style="font-size:1.2rem;">⌖</button>
+                <div id="radar-time" style="font-variant-numeric:tabular-nums; font-weight:bold; color:#fff;">--:--</div>
+                <button onclick="centerRadar()" style="font-size:1.2rem; background:none; border:none; color:#fff; cursor:pointer;">⌖</button>
             </div>
-            <input type="range" id="radar-slider" min="0" max="0" value="0" step="1" oninput="updateRadarFrame(this.value)">
+            <!-- Scrubbing pausiert jetzt automatisch (oninput) -->
+            <input type="range" id="radar-slider" min="0" max="0" value="0" step="1" 
+                   oninput="stopRadarAnim(); updateRadarFrame(this.value)">
             <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:#888; margin-top:5px;">
-                <span>-2 Std.</span>
-                <span>JETZT</span>
-                <span>+30 Min.</span>
+                <span id="radar-start-label">-2 Std.</span>
+                <span id="radar-end-label">+30 Min.</span>
             </div>
         </div>
     </div>
@@ -1827,27 +1893,26 @@ async function openDebug() {
             return '🌡️';
         }
 
-// --- RADAR LOGIC (LEAFLET + RAINVIEWER) ---
+// --- RADAR LOGIC 2.0 (High Performance) ---
         let radarMap = null;
         let radarInterval = null;
-        let radarLayers = {}; // Cache für die Kacheln
+        let radarLayers = {}; 
         let radarTimestamps = [];
         let currentFrame = 0;
         let isPlaying = false;
+        let currentLayerType = 'radar'; // 'radar' oder 'satellite'
+        let apiData = null; // Speichert die rohe RainViewer Antwort
 
         function openRadar() {
             if(!weatherLocation) return;
             document.getElementById('radar-overlay').classList.add('active');
             
-            // Map erst initialisieren, wenn Container sichtbar ist (Leaflet Bug Prevention)
             if (!radarMap) initRadarMap();
-            else {
-                // Resize triggern falls Fenstergröße geändert
-                setTimeout(() => radarMap.invalidateSize(), 100);
-            }
+            else setTimeout(() => radarMap.invalidateSize(), 100);
             
             centerRadar();
-            loadRainViewerData();
+            // Starte mit Radar
+            switchRadarLayer('radar');
         }
 
         function closeRadar() {
@@ -1857,60 +1922,106 @@ async function openDebug() {
 
         function initRadarMap() {
             radarMap = L.map('radar-map', { zoomControl: false }).setView([weatherLocation.lat, weatherLocation.lon], 7);
-            
-            // Zoom Control oben rechts
             L.control.zoom({ position: 'topright' }).addTo(radarMap);
 
-            // Dark Matter Base Map (Kostenlos via CartoDB)
+            // Dark Matter Base Map
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO',
-                subdomains: 'abcd',
-                maxZoom: 19
+                attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
             }).addTo(radarMap);
 
-            // Marker für Standort
-            L.marker([weatherLocation.lat, weatherLocation.lon]).addTo(radarMap);
+            // Pulsierender Marker (Custom HTML Icon)
+            const pulseIcon = L.divIcon({
+                className: 'user-location-dot',
+                iconSize: [16, 16],
+                iconAnchor: [8, 8] // Mitte
+            });
+            L.marker([weatherLocation.lat, weatherLocation.lon], { icon: pulseIcon }).addTo(radarMap);
         }
 
         function centerRadar() {
             if(radarMap && weatherLocation) {
-                radarMap.flyTo([weatherLocation.lat, weatherLocation.lon], 8, { duration: 1.5 });
+                radarMap.flyTo([weatherLocation.lat, weatherLocation.lon], 7, { duration: 1.5 });
             }
         }
 
-        async function loadRainViewerData() {
-            try {
-                const r = await fetch('https://api.rainviewer.com/public/weather-maps.json');
-                const data = await r.json();
-                
-                // Daten sammeln: Past + Nowcast
-                // Wir nehmen die letzten 10 Frames der Vergangenheit + alle Forecasts
-                radarTimestamps = [
-                    ...data.radar.past.slice(-10), 
-                    ...data.radar.nowcast
-                ];
+        // Lädt Meta-Daten und startet Preload
+        async function switchRadarLayer(type) {
+            currentLayerType = type;
+            
+            // Buttons umschalten
+            document.getElementById('btn-layer-radar').classList.toggle('active', type === 'radar');
+            document.getElementById('btn-layer-sat').classList.toggle('active', type === 'satellite');
+            
+            // Legende nur bei Radar zeigen
+            document.getElementById('radar-legend').style.display = type === 'radar' ? 'flex' : 'none';
 
-                // Slider konfigurieren
+            // Reset
+            stopRadarAnim();
+            Object.values(radarLayers).forEach(l => radarMap.removeLayer(l));
+            radarLayers = {};
+            
+            // Loader anzeigen
+            document.getElementById('radar-loader').style.display = 'flex';
+
+            try {
+                // API Daten holen (oder Cache nutzen)
+                if (!apiData) {
+                    const r = await fetch('https://api.rainviewer.com/public/weather-maps.json');
+                    apiData = await r.json();
+                }
+
+                // Timestamps wählen je nach Typ
+                if (type === 'radar') {
+                    // Radar: Past + Nowcast
+                    radarTimestamps = [...apiData.radar.past, ...apiData.radar.nowcast];
+                    document.getElementById('radar-start-label').innerText = '-2 Std.';
+                    document.getElementById('radar-end-label').innerText = '+30 Min.';
+                } else {
+                    // Satellit: Nur Past (Infrared)
+                    radarTimestamps = apiData.satellite.infrared;
+                    document.getElementById('radar-start-label').innerText = '-2 Std.';
+                    document.getElementById('radar-end-label').innerText = 'Jetzt';
+                }
+
+                // Slider Setup
                 const slider = document.getElementById('radar-slider');
                 slider.max = radarTimestamps.length - 1;
-                slider.value = radarTimestamps.length - 1; // Start am Ende (Vorschau)
+                slider.value = radarTimestamps.length - 1;
+
+                // PRELOADER LOGIK
+                // Wir fügen alle Layer hinzu, aber mit Opacity 0. Der Browser lädt sie dann.
+                let loadedCount = 0;
                 
-                // Layer vorladen (Preload)
                 radarTimestamps.forEach(ts => {
-                    if (!radarLayers[ts.time]) {
-                        radarLayers[ts.time] = L.tileLayer(`${data.host}${ts.path}/256/{z}/{x}/{y}/2/1_1.png`, {
-                            opacity: 0.0, // Erstmal unsichtbar
-                            zIndex: 100
-                        }).addTo(radarMap);
-                    }
+                    const path = ts.path;
+                    // Color 6 = Universal Blue (gut für Schnee/Regen Unterscheidung)
+                    // Bei Satellit: Keine Farbeinstellung nötig
+                    const url = type === 'radar' 
+                        ? `${apiData.host}${path}/256/{z}/{x}/{y}/6/1_1.png`
+                        : `${apiData.host}${path}/256/{z}/{x}/{y}/0/1_1.png`;
+
+                    const layer = L.tileLayer(url, { opacity: 0, zIndex: 100 });
+                    
+                    // Event Listener für "Load" wäre sauberer, aber Leaflet feuert das pro Tile.
+                    // Wir vertrauen auf den Browser-Cache und geben ihm 1.5 Sekunden Zeit.
+                    layer.addTo(radarMap);
+                    radarLayers[ts.time] = layer;
                 });
 
-                // Start Frame setzen (Aktuelle Zeit = letzter Past Frame)
-                currentFrame = data.radar.past.length - 1;
-                updateRadarFrame(currentFrame);
-                startRadarAnim();
+                // Künstliche Pause für den Preload (damit es smooth läuft)
+                setTimeout(() => {
+                    document.getElementById('radar-loader').style.display = 'none';
+                    // Letzten Frame anzeigen
+                    currentFrame = radarTimestamps.length - 1;
+                    updateRadarFrame(currentFrame);
+                    // Automatisch abspielen
+                    startRadarAnim();
+                }, 1500);
 
-            } catch(e) { console.error("Radar Error", e); }
+            } catch(e) { 
+                console.error("Radar Load Error", e); 
+                document.getElementById('radar-loader').style.display = 'none';
+            }
         }
 
         function updateRadarFrame(index) {
@@ -1925,13 +2036,16 @@ async function openDebug() {
             const date = new Date(ts.time * 1000);
             const timeStr = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
             
-            // Ist es Zukunft?
-            const isForecast = currentFrame >= (radarTimestamps.length - (radarTimestamps.length > 10 ? 3 : 0)); // Grobe Schätzung
-            document.getElementById('radar-time').innerHTML = `${timeStr} ${isForecast ? '<span style="color:var(--accent); font-size:0.7em">PROGNOSE</span>' : ''}`;
+            // Info Text
+            let info = timeStr;
+            if (currentLayerType === 'radar' && ts.path.includes('nowcast')) {
+                info += ' <span style="color:var(--accent); font-size:0.7em">PROGNOSE</span>';
+            }
+            document.getElementById('radar-time').innerHTML = info;
 
-            // Layer umschalten
+            // Layer switchen (Effizient: Nur Opacity ändern)
             Object.keys(radarLayers).forEach(k => {
-                if (parseInt(k) === ts.time) radarLayers[k].setOpacity(0.8);
+                if (parseInt(k) === ts.time) radarLayers[k].setOpacity(0.8); // 80% Deckkraft sieht gut aus
                 else radarLayers[k].setOpacity(0);
             });
         }
@@ -1946,11 +2060,14 @@ async function openDebug() {
             isPlaying = true;
             document.getElementById('radar-play').innerText = '⏸';
             
+            // Wenn wir am Ende sind, starte von vorne
+            if (currentFrame >= radarTimestamps.length - 1) currentFrame = 0;
+
             radarInterval = setInterval(() => {
                 currentFrame++;
                 if (currentFrame >= radarTimestamps.length) currentFrame = 0; // Loop
                 updateRadarFrame(currentFrame);
-            }, 800); // Speed: 800ms pro Frame
+            }, 600); // 600ms ist ein guter Speed
         }
 
         function stopRadarAnim() {
@@ -1959,6 +2076,7 @@ async function openDebug() {
             clearInterval(radarInterval);
         }
 
+    //Ende Radarlogik
     
         function loadSavedItems() {
             const raw = localStorage.getItem('my_saved_news');
