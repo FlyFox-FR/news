@@ -16,15 +16,15 @@
   {
     "name": "Spiegel",
     "url": "https://www.spiegel.de/index.rss",
-    "count": 4,
+    "count": 2,
     "country": "🇩🇪",
-    "scrape": false
+    "scrape": true
   },
     {
     "name": "rbb24",
     "url": "https://www.rbb24.de/index.xml/feed=rss.xml",
-    "count": 4,
+    "count": 2,
     "country": "🇩🇪",
-    "scrape": false
+    "scrape": true
   }
 ]
