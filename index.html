@@ -312,6 +312,43 @@
         .btn-confirm.cancel:hover { background: rgba(255,255,255,0.1); }
         .btn-confirm.ok { background: var(--accent); color: #fff; }
         .btn-confirm.ok:hover { filter: brightness(1.1); }
+/* Related Items Styling */
+        .related-item-row {
+            display: flex; flex-direction: column; gap: 8px;
+            padding: 12px; margin-bottom: 10px;
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--border); border-radius: 12px;
+            transition: 0.2s;
+        }
+        .related-item-row:hover { 
+            background: rgba(255,255,255,0.07); 
+            border-color: #555;
+        }
+
+        /* Der Titel ist jetzt der Trigger */
+        .related-title {
+            font-weight: 700; font-size: 0.95rem; color: #fff; 
+            cursor: pointer; line-height: 1.4;
+        }
+        .related-title:hover { color: var(--accent); }
+
+        /* Button Container unten */
+        .related-actions {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 4px;
+        }
+
+        /* Der neue Fokus Button */
+        .btn-focus {
+            background: rgba(59, 130, 246, 0.15); color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 4px 10px; border-radius: 8px; 
+            font-size: 0.75rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+            transition: 0.2s;
+        }
+        .btn-focus:hover { background: var(--accent); color: #fff; }
+        
     </style>
 </head>
 <body>
@@ -1035,19 +1072,32 @@ function render() {
                         </div>
                     </div>
 
-                    <div id="vars-${item.id}" class="variants-container" style="display:none; padding:20px; background:#121214; border-top:1px solid var(--border)">
+
+
+<div id="vars-${item.id}" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
+                        <div style="font-size:0.7rem; color:#666; margin-bottom:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px;">Weitere Quellen</div>
                         ${(item.related || []).map(r => {
                             const isReadable = r.content && r.content.length > 200;
                             return `
-                            <div class="related-item-row" style="display:flex; gap:12px; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px; align-items:center;">
-                                <button class="btn-promote" onclick="promoteArticle('${item.id}', '${r.id}')" title="Nach oben holen" style="background: rgba(255,255,255,0.1); border: 1px solid #444; color: var(--accent); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; flex-shrink:0;">▲</button>
-                                <div class="related-content" style="flex-grow:1">
-                                    <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
-                                    <div style="font-weight:bold; font-size:0.95rem; margin-bottom:6px; color:#fff">${r.title}</div>
-                                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                                        <!-- SICHERER LINK IM CLUSTER -->
-                                        <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link" style="font-size:0.75rem">Original ↗</a>
-                                        ${isReadable ? `<span style="font-size:0.65rem; color:#fff; background:rgba(74, 222, 128, 0.2); border:1px solid #4ade80; padding:2px 8px; border-radius:10px; font-weight:600;">📖 In App lesbar</span>` : ''}
+                            <div class="related-item-row">
+                                <!-- TITEL KLICKBAR -->
+                                <div class="related-title" onclick="promoteArticle('${item.id}', '${r.id}')" title="Diesen Artikel nach oben holen">
+                                    ${r.title}
+                                </div>
+                                
+                                <div class="related-actions">
+                                    <div style="display:flex; gap:10px; align-items:center;">
+                                        <div class="meta" style="margin:0;">${r.source} • ${getRelativeTime(r.date)}</div>
+                                        ${isReadable ? `<span style="font-size:0.65rem; color:#4ade80;">● Lesbar</span>` : ''}
+                                    </div>
+
+                                    <div style="display:flex; gap:8px;">
+                                        <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link" style="font-size:0.75rem; border:1px solid #333; padding:4px 8px; border-radius:6px;">Original ↗</a>
+                                        
+                                        <!-- FOKUS BUTTON -->
+                                        <button class="btn-focus" onclick="promoteArticle('${item.id}', '${r.id}')">
+                                            ✨ Fokus
+                                        </button>
                                     </div>
                                 </div>
                             </div>
