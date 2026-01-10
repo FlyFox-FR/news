@@ -481,6 +481,45 @@
         /* Leaflet Dark Mode Anpassungen */
         .leaflet-bar a { background-color: #222 !important; color: #fff !important; border-bottom: 1px solid #444 !important; }
         .leaflet-control-attribution { background: rgba(0,0,0,0.5) !important; color: #888 !important; }
+/* --- HEADER OPTIMIERUNG (Mobile) --- */
+        .brand { 
+            cursor: pointer; transition: opacity 0.2s; 
+            /* Verhindert Umbruch auf sehr kleinen Screens */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;
+        }
+        .brand:hover { opacity: 0.8; }
+
+        /* Kompaktere Buttons für Mobile */
+        .header-btn {
+            padding: 8px 10px; /* Weniger Padding */
+            font-size: 0.7rem; /* Etwas kleinere Schrift */
+            gap: 4px;
+        }
+        
+        .header-right { gap: 6px; }
+
+        /* --- NEUER ZEN BUTTON STYLE --- */
+        #zen-toggle {
+            background: var(--surface); 
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 46px; /* Quadratisch */
+            flex-shrink: 0; /* Darf nicht gequetscht werden */
+            border-radius: 14px; /* Passt zur Searchbox */
+            font-size: 1.2rem; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        #zen-toggle:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        
+        /* Im Zen-Mode den Button aktiv aussehen lassen */
+        body.zen-mode #zen-toggle {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Search Box nimmt den Rest Platz */
+        .search-box { flex-grow: 1; }
         
     </style>
 </head>
@@ -568,13 +607,14 @@
     
 <header>
         <div class="header-main">
-            <div class="header-left" style="display:flex; align-items:center; gap:15px;">
-                <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:1.8rem; cursor:pointer">☰</button>
-                <div class="brand">Nachrichten</div>
+            <div class="header-left" style="display:flex; align-items:center; gap:10px;">
+                <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:1.6rem; cursor:pointer; padding:0;">☰</button>
+                <!-- TITEL JETZT KLICKBAR -->
+                <div class="brand" onclick="resetToHome()" title="Zum Start">Nachrichten</div>
             </div>
             
             <div class="header-right">
-                <button id="zen-toggle" onclick="toggleZenMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; padding:5px; margin-right:5px">📖</button>
+                <!-- ZEN BUTTON IST WEG (jetzt unten) -->
 
                 <!-- SORTIEREN -->
                 <div style="position:relative">
@@ -593,23 +633,17 @@
                         Filtern <span id="global-filter-badge" class="filter-badge" style="display:none; margin-left:4px">0</span> ▾
                     </button>
                     <div id="menu-filter" class="header-dropdown">
-                   
-                        <!-- NEU: Modus Sektion -->
                         <div class="dropdown-section-title" style="margin-top:0">Ansicht</div>
                         <div id="btn-filter-readable" class="dropdown-item" onclick="toggleReadableFilter()">
                             <span>📖 In App lesbar</span>
                             <span id="check-readable" style="display:none">✔</span>
                         </div>
 
-                        <!-- Datum Sektion -->
                         <div class="dropdown-section-title" style="margin-top:15px; border-top:1px solid #333; padding-top:10px">Zeitraum</div>
                         <div id="filter-date-list"></div>
 
-                        <!-- Quellen Sektion -->
                         <div class="dropdown-section-title" style="margin-top:15px; border-top:1px solid #333; padding-top:10px">Quellen</div>
                         <div id="filter-source-list"></div>
-                    </div>
-                    
                     </div>
                 </div>
             </div>
@@ -617,7 +651,11 @@
 
         <div class="search-area">
             <div class="search-wrapper">
+                <!-- SUCHFELD -->
                 <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="triggerSearch()">
+                
+                <!-- ZEN BUTTON (Hier neu!) -->
+                <button id="zen-toggle" onclick="toggleZenMode()" title="Ansicht umschalten">📖</button>
             </div>
         </div>
     </header>
@@ -729,6 +767,23 @@
             updateFilterBadges(); // Rote Zahl oben aktualisieren (FIX)
             render();             // Liste neu bauen
         }
+
+// --- NAVIGATION HELPER ---
+        function resetToHome() {
+            // 1. Tab wechseln
+            switchTab('feed');
+            
+            // 2. Suche leeren
+            const searchInput = document.getElementById('search');
+            searchInput.value = '';
+            
+            // 3. Nach oben scrollen
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // 4. Neu rendern (um Suchfilter zu entfernen)
+            render();
+        }
+    
         function updateReadableUI() {
             const btn = document.getElementById('btn-filter-readable');
             const check = document.getElementById('check-readable');
