@@ -483,19 +483,19 @@
         });
 
         // --- SORT LOGIC ---
-        function setSort(s) { 
+    function setSort(s) { 
             currentSort = s; 
-            localStorage.setItem('current_sort', s); // Speichern
+            localStorage.setItem('current_sort', s);
             
-            // UI Update
+            // UI Update (Häkchen/Farbe setzen)
             document.getElementById('opt-time').classList.toggle('active', s === 'time');
             document.getElementById('opt-trend').classList.toggle('active', s === 'trend');
             
-            // Menü zu
+            // WICHTIG: Menü sofort schließen & Feed neu bauen
             document.getElementById('menu-sort').classList.remove('show');
             render(); 
         }
-
+    
         // --- FILTER LOGIC: DATE ---
         function initDateFilterOptions() {
             const days = new Set();
@@ -535,11 +535,20 @@
             });
         }
 
-        function setDateFilter(dayStr) {
+       function setDateFilter(dayStr) {
             selectedDateFilter = dayStr; 
             localStorage.setItem('date_filter', dayStr || '');
+            
+            // Badges & Label updaten
             updateFilterBadges();
-            initDateFilterOptions(); // Re-render um "active" Klasse zu setzen
+            
+            // WICHTIG: Menü sofort schließen & Feed neu bauen
+            document.getElementById('menu-filter').classList.remove('show');
+            
+            // Optionen neu rendern (damit beim nächsten Öffnen der richtige Tag fett ist)
+            initDateFilterOptions(); 
+            
+            // Feed aktualisieren
             render();
         }
 
