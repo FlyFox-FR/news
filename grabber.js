@@ -1,6 +1,8 @@
 const Parser = require('rss-parser');
 const axios = require('axios');
 const fs = require('fs');
+const { JSDOM } = require('jsdom');
+const { Readability } = require('@mozilla/readability');
 
 const parser = new Parser();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -22,7 +24,7 @@ let currentRunLog = {
 function logEvent(source, type, detail) {
     if (!currentRunLog.sources[source]) currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, error: 0, details: [] };
     const s = currentRunLog.sources[source];
-    if (type === 'added' || type === 'added_full' || type === 'added_fallback') s.added++;
+    if (type.startsWith('added')) s.added++;
     if (type === 'cache') s.skipped_cache++;
     if (type === 'content') s.skipped_content++;
     if (type === 'error') s.error++;
@@ -30,55 +32,23 @@ function logEvent(source, type, detail) {
 }
 
 // --- HELPER ---
-function decodeEntities(text) {
-    if (!text) return "";
-    return text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&szlig;/g, 'ß').replace(/&auml;/g, 'ä').replace(/&ouml;/g, 'ö').replace(/&uuml;/g, 'ü').replace(/&Auml;/g, 'Ä').replace(/&Ouml;/g, 'Ö').replace(/&Uuml;/g, 'Ü').replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
-}
-function stripTags(html) { return html.replace(/<[^>]+>/g, "").trim(); }
 function cleanString(str) { return str ? str.replace(/\s+/g, ' ').trim() : ""; }
 
-// --- CUSTOM EXTRACTOR LOGIC ---
-function applyCustomExtractor(html, sourceName) {
-    // 1. SPIEGEL
-    if (sourceName.toLowerCase().includes("spiegel")) {
-        // Paywall Check
-        if (html.includes('data-paywall="true"') || html.includes('spiegel-plus-logo')) {
-            // null zurückgeben signalisiert: Paywall erkannt, breche Scraping ab (nutze RSS Fallback)
-            return null; 
-        }
-        // Container
-        const match = html.match(/<div[^>]*class="[^"]*rich-text[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
-        if (match) return match[1];
-    }
-
-    // 2. RBB24
-    if (sourceName.toLowerCase().includes("rbb")) {
-        const match = html.match(/<section[^>]*class="[^"]*textsection[^"]*"[^>]*>([\s\S]*?)<\/section>/i);
-        if (match) return match[1];
-    }
-
-    // 3. TAGESSCHAU (Optional)
-    if (sourceName.toLowerCase().includes("tagesschau")) {
-        const match = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
-        if (match) return match[1];
-    }
-
-    return null;
-}
-
-// --- SCRAPER ---
+// --- SCRAPER (MOZILLA READABILITY ENGINE) ---
 async function fetchArticleText(url, sourceName) {
     try {
-        const { data } = await axios.get(url, { timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
+        // 1. Download
+        const { data } = await axios.get(url, { 
+            timeout: 10000, 
+            headers: { 
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' 
+            } 
+        });
         let html = data;
 
-        // Cleanup generisch
-        ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption', 'style'].forEach(tag => {
-            html = html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
-        });
-
-        // --- SPIEGEL SPEZIAL-CHECK (Die Gift-Liste) ---
-        // Bevor wir irgendwas extrahieren: Wenn diese Sätze vorkommen, ist es eine Fehler- oder Abo-Seite.
+        // 2. GIFT-LISTE (Poison Check)
+        // Bevor wir parsen: Prüfen auf Paywall-Marker oder Fehlerseiten.
+        // Besonders wichtig für Spiegel, da Readability sonst den "Leider kein Abo"-Text extrahiert.
         if (sourceName.toLowerCase().includes("spiegel")) {
             const poisonPhrases = [
                 'data-paywall="true"',
@@ -86,76 +56,50 @@ async function fetchArticleText(url, sourceName) {
                 'Zugriff auf Artikel nicht mehr möglich',
                 'Diesen Artikel weiterlesen mit SPIEGEL+',
                 'Sie haben bereits ein Digital-Abo',
-                'isMonthlyProductLoading' // Code-Schnipsel aus deinem Fehler-Text
+                'Freier Zugriff auf alle S+-Artikel',
+                'isMonthlyProductLoading',
+                '€ 4,49 pro Woche',
+                'Nur für Neukunden'
             ];
             
             if (poisonPhrases.some(p => html.includes(p))) {
-                // Sofort abbrechen -> Bot nutzt dann den RSS-Teaser als Fallback
-                return ""; 
+                return null; // Null bedeutet: Fallback auf RSS nutzen
             }
         }
 
-        // A) CUSTOM EXTRACTOR
-        let contentScope = applyCustomExtractor(html, sourceName);
+        // 3. JSDOM & READABILITY
+        // Wir erstellen ein virtuelles DOM, damit Readability arbeiten kann
+        const doc = new JSDOM(html, { url: url });
+        const reader = new Readability(doc.window.document);
+        const article = reader.parse();
 
-        // B) FALLBACK (Standard)
-        if (!contentScope) {
-            const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
-            if (!containerMatch) return ""; 
-            contentScope = containerMatch[1];
-        }
+        // 4. VALIDIERUNG
+        if (!article || !article.textContent) return null;
 
-        let paragraphs = extractParagraphs(contentScope);
-        let fullText = paragraphs.join('\n\n');
+        let fullText = article.textContent;
 
-        // Notfall-Extraktion
-        if (fullText.length < 600) {
-            let rawText = contentScope.replace(/<\/(div|p|section|h[1-6]|li)>/gi, '\n\n');
-            rawText = stripTags(rawText);
-            let lines = rawText.split('\n').map(l => l.trim()).filter(l => isValidParagraph(l));
-            fullText = lines.join('\n\n');
-        }
-
-        fullText = decodeEntities(fullText);
-
-        // --- END-POLITUR ---
-        fullText = fullText.replace(/\n\s*\n/g, '\n\n'); 
-        fullText = fullText.replace(/[ \t]+/g, ' ');      
+        // 5. CLEANUP (Die "Waschmaschine")
+        // Readability lässt oft viele Leerzeilen übrig.
+        fullText = fullText.replace(/\n\s*\n/g, '\n\n'); // Max 1 Leerzeile am Stück
+        fullText = fullText.replace(/[ \t]+/g, ' ');      // Keine doppelten Leerzeichen
         fullText = fullText.trim();
+
+        // 6. SANITY CHECK
+        // Wenn der Text extrem kurz ist (z.B. nur "Impressum"), war es kein Artikel.
+        if (fullText.length < 300) return null;
+
+        // Sicherheitscheck: Hat sich Spiegel-Werbung trotzdem eingeschlichen?
+        if (sourceName.toLowerCase().includes("spiegel") && fullText.includes("Freier Zugriff auf alle S+-Artikel")) {
+            return null;
+        }
 
         if (fullText.length > MAX_CHARS_SAVE) fullText = fullText.substring(0, MAX_CHARS_SAVE);
         return fullText;
-    } catch (e) { return ""; }
-}
 
-function extractParagraphs(htmlContent) {
-    const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
-    let paragraphs = [];
-    let match;
-    while ((match = pRegex.exec(htmlContent)) !== null) {
-        let cleanText = stripTags(match[1]);
-        if (isValidParagraph(cleanText)) paragraphs.push(cleanText);
+    } catch (e) { 
+        // Bei Timeout oder Parse-Fehlern -> null zurückgeben für Fallback
+        return null; 
     }
-    return paragraphs;
-}
-
-function isValidParagraph(text) {
-    text = text.trim();
-    // Strenger bei sehr kurzen Texten
-    if (text.length < 30) return false; 
-
-    const lower = text.toLowerCase();
-    const blacklist = ["alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", "melden sie sich an", "newsletter", "anzeige", "datenschutz", "impressum", "quelle:", "bild:", "foto:", "video:", "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang", "copyright", "©", "image\">", "e-mail"];
-    
-    if (blacklist.some(bad => lower.includes(bad))) return false;
-
-    // Social Media Junk Filter (für kurze Zeilen wie "X.com")
-    if (text.length < 100) {
-        const socialJunk = ["x.com", "facebook", "whatsapp", "messenger", "instagram", "linkedin", "pinterest", "pocket"];
-        if (socialJunk.some(s => lower.includes(s))) return false;
-    }
-    
-    return true;
 }
 
 // --- LOGIC ---
@@ -221,7 +165,7 @@ async function analyzeArticle(title, fullText, sourceName) {
                     { role: "system", content: systemPrompt },
                     { role: "user", content: `Titel: "${safeTitle}". Inhalt: "${safeContext}"` }
                 ],
-                temperature: 0.1, // Sehr streng, keine Halluzinationen
+                temperature: 0.1, 
                 response_format: { type: "json_object" }
             }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
             
@@ -233,8 +177,7 @@ async function analyzeArticle(title, fullText, sourceName) {
 
         } catch (e) { 
             console.error(`❌ OpenAI Error bei "${title.substring(0,20)}...":`, e.message);
-            // SKIP bei Fehler, kein Fallback auf schlechte KI
-            return null; 
+            return null; // Skip bei Fehler
         }
     }
 
@@ -270,7 +213,6 @@ async function clusterBatchWithAI(batchArticles, batchIndex) {
     Antworte NUR mit einem JSON Array von Arrays mit IDs: [[0, 2], [1], [3, 4]].
     Jede ID muss genau einmal vorkommen.`;
 
-    // A) OPENAI
     if (process.env.OPENAI_API_KEY) {
         try {
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
@@ -284,18 +226,15 @@ async function clusterBatchWithAI(batchArticles, batchIndex) {
             }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
 
             if(response.data.usage) currentRunLog.total_tokens += response.data.usage.total_tokens;
-
             const content = JSON.parse(response.data.choices[0].message.content);
             let groups = Array.isArray(content) ? content : Object.values(content)[0];
             return processGroups(groups, batchArticles);
-
         } catch (e) { 
             console.error("OpenAI Cluster Error:", e.message);
             return batchArticles.map(a => { a.related = []; return a; });
         }
     }
 
-    // B) POLLINATIONS
     const url = `https://text.pollinations.ai/${encodeURIComponent(systemPrompt + " Liste:\n" + listForAI)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
     try {
         const response = await axios.get(url, { timeout: 60000 });
@@ -330,7 +269,6 @@ function processGroups(groups, batchArticles) {
 async function runClusteringPipeline(allArticles) {
     const BATCH_SIZE = process.env.OPENAI_API_KEY ? 60 : 15;
     console.log(`🧩 Clustering Batch Size: ${BATCH_SIZE}`);
-    
     let finalClusters = [];
     for (let i = 0; i < allArticles.length; i += BATCH_SIZE) {
         const batch = allArticles.slice(i, i + BATCH_SIZE);
@@ -353,7 +291,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log(`🚀 Start News-Bot v5.5 (Debug Talkative)...`);
+    console.log(`🚀 Start News-Bot v5.6 (Readability Edition)...`);
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -376,7 +314,7 @@ async function run() {
 
             for (const item of feed.items) {
                 if (addedCount >= source.count) {
-                    console.log(`   🏁 Ziel erreicht (${addedCount}/${source.count}). Gehe zur nächsten Quelle.`);
+                    console.log(`   🏁 Ziel erreicht (${addedCount}/${source.count}).`);
                     break;
                 }
 
@@ -395,7 +333,7 @@ async function run() {
                 let scrapedLength = 0;
                 let usedFallback = false;
 
-                // 2. SCRAPING
+                // 2. SCRAPING (MOZILLA READABILITY)
                 if (source.scrape !== false) {
                     let scrapedText = await fetchArticleText(item.link, source.name);
                     scrapedLength = scrapedText ? scrapedText.length : 0;
@@ -405,10 +343,10 @@ async function run() {
                         fullText = scrapedText;
                         process.stdout.write(`   ✅ [SCRAPE] "${cleanTitle}" geladen (${scrapedLength} Zeichen). `);
                     } else {
-                        // B) Scrape fehlgeschlagen/zu kurz -> Fallback
+                        // B) Scrape fehlgeschlagen/Paywall/zu kurz -> Fallback
                         usedFallback = true;
                         fullText = (item.contentSnippet || item.content || "").trim();
-                        process.stdout.write(`   ⚠️ [FALLBACK] "${cleanTitle}" Scrape zu kurz (${scrapedLength}). Nutze RSS-Text (${fullText.length} Zeichen). `);
+                        process.stdout.write(`   ⚠️ [FALLBACK] "${cleanTitle}" Scrape null/kurz. Nutze RSS (${fullText.length} Zeichen). `);
                     }
                 } else {
                     // C) Scrape aus
@@ -418,7 +356,7 @@ async function run() {
 
                 // 3. CHECK EMPTY
                 if (!fullText || fullText.length < 50) {
-                    console.log(`❌ LEER. Auch RSS gab nichts her. Skip.`);
+                    console.log(`❌ LEER. Skip.`);
                     logEvent(source.name, 'error', 'Empty content');
                     continue;
                 }
@@ -432,7 +370,6 @@ async function run() {
                     continue; 
                 }
 
-                // Logging
                 const logType = usedFallback ? 'added_fallback' : 'added_full';
                 logEvent(source.name, logType, `${item.title} (${fullText.length} chars)`);
                 
@@ -452,7 +389,7 @@ async function run() {
                     tags: ai.tags,
                     content: fullText, 
                     related: [],
-                    isScraped: !usedFallback // Info für dich
+                    isScraped: !usedFallback
                 });
                 
                 addedCount++;
@@ -460,7 +397,7 @@ async function run() {
             }
             
             if (addedCount === 0 && checkedCount > 0) {
-                console.log(`   ⚠️ Warnung: ${checkedCount} Artikel geprüft, aber 0 hinzugefügt (Alle Cache oder Fehler).`);
+                console.log(`   ⚠️ Warnung: ${checkedCount} Artikel geprüft, 0 hinzugefügt.`);
             }
 
         } catch (e) { 
@@ -471,7 +408,6 @@ async function run() {
 
     flatFeed = pruneNews(flatFeed);
     flatFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
     if (flatFeed.length > MAX_ITEMS) flatFeed = flatFeed.slice(0, MAX_ITEMS);
 
     const finalFeed = await runClusteringPipeline(flatFeed);
