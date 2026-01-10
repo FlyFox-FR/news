@@ -405,6 +405,46 @@
             display: block;
             font-family: var(--font-main);
         }
+
+/* --- WEATHER MODULE --- */
+        .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+        
+        .weather-card {
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 20px 10px; border-radius: 20px; text-align: center;
+            cursor: pointer; transition: all 0.2s; 
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .weather-card:hover { transform: translateY(-3px); border-color: var(--accent); background: rgba(255,255,255,0.03); }
+        .weather-card.today { border: 2px solid var(--accent); background: rgba(59, 130, 246, 0.08); }
+        
+        .w-day { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing:0.5px; }
+        .w-icon { font-size: 2.8rem; margin: 5px 0; display:block; }
+        .w-temp { font-weight: 800; font-size: 1.1rem; color:var(--text); }
+        .w-min { font-weight: 400; font-size: 0.8em; color:var(--text-muted); margin-left:4px; }
+        .w-rain { font-size: 0.75rem; color: #60a5fa; background: rgba(96, 165, 250, 0.1); padding: 3px 8px; border-radius: 10px; font-weight:600; margin-top:5px; }
+
+        /* Search Results */
+        .search-result-item { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; color: #ccc; font-size:0.9rem; text-align:left; }
+        .search-result-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .search-result-item:last-child { border-bottom:none; }
+
+        /* Weather Overlay */
+        #weather-overlay {
+            position: fixed; inset: 0; z-index: 5000; background: #111; color: #e0e0e0;
+            display: none; flex-direction: column; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            overflow-y:auto;
+        }
+        #weather-overlay.active { display: flex; }
+
+        .day-parts-grid { display: grid; grid-template-columns: 1fr; gap: 15px; max-width:500px; margin:0 auto; }
+        .part-card {
+            background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 16px; padding: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .part-label { font-size:0.8rem; color:var(--accent); text-transform:uppercase; font-weight:700; letter-spacing:1px; margin-bottom:4px; }
+        .part-info { font-size: 0.9rem; color: #aaa; display:flex; align-items:center; gap:8px; }
+        .part-temp { font-size: 1.8rem; font-weight: 800; color: #fff; }
         
     </style>
 </head>
@@ -456,6 +496,8 @@
         </div>
         <div class="nav-item active" id="nav-feed" onclick="switchTab('feed')"><span>🗞️</span> Feed</div>
         <div class="nav-item" id="nav-saved" onclick="switchTab('saved')"><span>🔖</span> Gemerkt</div>
+        <!-- NEU: WETTER BUTTON -->
+        <div class="nav-item" id="nav-weather" onclick="switchTab('weather')"><span>🌤️</span> Wetter</div>
         <div class="admin-card">
             <button class="update-btn" onclick="triggerUpdate()" id="update-btn">🔄 Update starten</button>
             <button class="debug-btn" onclick="openDebug()">🪲 Debug Log</button>
@@ -521,6 +563,56 @@
 
     <div class="container" id="feed"></div>
 
+    <!-- WETTER HAUPTANSICHT -->
+    <div class="container" id="weather-view" style="display:none;">
+        
+        <!-- STATE A: ORT SUCHEN -->
+        <div id="weather-search-state" style="display:none; text-align:center; padding-top:60px;">
+            <div style="font-size:3rem; margin-bottom:10px;">🌍</div>
+            <h2 style="font-family: 'Merriweather', serif; margin-bottom:10px; color:var(--text)">Wo bist du?</h2>
+            <p style="color:var(--text-muted); margin-bottom:30px;">Gib eine Stadt ein, um das Wetter zu laden.</p>
+            
+            <div style="position:relative; max-width:400px; margin:0 auto;">
+                <input type="text" id="city-search" placeholder="Stadt suchen (z.B. Berlin)..." 
+                       oninput="debounceSearch()" 
+                       style="width:100%; padding:16px; border-radius:16px; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:1rem; outline:none; text-align:center; box-sizing: border-box;">
+                <div id="search-results" style="position:absolute; top:100%; left:0; right:0; background:#161618; border:1px solid var(--border); border-radius:12px; margin-top:8px; z-index:10; display:none; max-height:250px; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.8);"></div>
+            </div>
+        </div>
+
+        <!-- STATE B: DASHBOARD -->
+        <div id="weather-dashboard-state" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; border-bottom:1px solid var(--border); padding-bottom:15px;">
+                <div>
+                    <h2 id="weather-city-name" style="font-family:'Merriweather'; margin:0; font-size:1.5rem; color:var(--text)">Lade...</h2>
+                    <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">7-Tage Trend</span>
+                </div>
+                <button onclick="resetLocation()" style="background:var(--surface-variant); border:1px solid var(--border); color:var(--text-muted); padding:8px 14px; border-radius:12px; cursor:pointer; font-weight:600; font-size:0.8rem; transition:0.2s;">✏️ Ändern</button>
+            </div>
+            
+            <div id="weather-grid" class="weather-grid">
+                <!-- Kacheln werden hier generiert -->
+            </div>
+        </div>
+    </div>
+
+    <!-- WETTER DETAIL OVERLAY -->
+    <div id="weather-overlay">
+        <div class="reader-header">
+            <span id="weather-overlay-date" style="font-size:0.9rem; color:#aaa; font-weight:700; text-transform:uppercase; letter-spacing:1px;">DETAILS</span>
+            <button class="reader-close-btn" onclick="closeWeatherOverlay()">✕ Schließen</button>
+        </div>
+        <div class="reader-container" style="padding-top:30px;">
+            <div style="text-align:center; margin-bottom:30px;">
+                <h1 id="w-detail-title" style="font-family:'Merriweather'; font-size:1.8rem; margin:0 0 10px 0;">Montag</h1>
+                <div style="color:var(--text-muted); font-size:0.9rem;">Tagesverlauf</div>
+            </div>
+            <div id="weather-day-parts" class="day-parts-grid">
+                <!-- 4 Phasen -->
+            </div>
+        </div>
+    </div>
+    
     <!-- TOAST CONTAINER -->
     <div id="toast-container"></div>
 
@@ -1108,8 +1200,27 @@ async function openDebug() {
         // --- SIDEBAR & CORE ---
         function toggleVars(id) { const el = document.getElementById('vars-' + id); el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
-        function switchTab(t) { currentTab = t; document.getElementById('nav-feed').classList.toggle('active', t === 'feed'); document.getElementById('nav-saved').classList.toggle('active', t === 'saved'); toggleMenu(); render(); }
-        
+function switchTab(t) { 
+            currentTab = t; 
+            
+            // Buttons
+            document.getElementById('nav-feed').classList.toggle('active', t === 'feed'); 
+            document.getElementById('nav-saved').classList.toggle('active', t === 'saved'); 
+            document.getElementById('nav-weather').classList.toggle('active', t === 'weather');
+            
+            // Views
+            document.getElementById('feed').style.display = (t === 'feed' || t === 'saved') ? 'flex' : 'none';
+            document.getElementById('weather-view').style.display = t === 'weather' ? 'block' : 'none';
+            
+            // Search Bar Logik (Im Wetter Tab brauchen wir die News-Suche nicht)
+            document.querySelector('.search-area').style.display = (t === 'feed' || t === 'saved') ? 'block' : 'none';
+
+            toggleMenu(); 
+            
+            if(t === 'feed' || t === 'saved') render();
+            if(t === 'weather') initWeather();
+        }
+    
         async function triggerUpdate() {
             let t = localStorage.getItem('gh_token') || prompt("GitHub Token:");
             if(!t) return; localStorage.setItem('gh_token', t);
@@ -1374,6 +1485,219 @@ async function openDebug() {
             document.getElementById("scroll-progress").style.width = scrolled + "%";
             document.getElementById('back-to-top').style.display = winScroll > 500 ? 'flex' : 'none';
         };
+
+    // --- WEATHER LOGIC ---
+        let weatherLocation = null;
+        let weatherCache = null;
+        let weatherSearchTimeout = null;
+
+        function initWeather() {
+            const saved = localStorage.getItem('weather_loc');
+            if (saved) {
+                weatherLocation = JSON.parse(saved);
+                document.getElementById('weather-search-state').style.display = 'none';
+                document.getElementById('weather-dashboard-state').style.display = 'block';
+                document.getElementById('weather-city-name').innerText = weatherLocation.name;
+                fetchWeatherData();
+            } else {
+                document.getElementById('weather-dashboard-state').style.display = 'none';
+                document.getElementById('weather-search-state').style.display = 'block';
+                document.getElementById('city-search').value = '';
+                document.getElementById('city-search').focus();
+            }
+        }
+
+        function resetLocation() {
+            localStorage.removeItem('weather_loc');
+            weatherLocation = null;
+            weatherCache = null;
+            // Cache löschen
+            const keys = Object.keys(localStorage);
+            keys.forEach(k => { if(k.startsWith('w_cache_')) localStorage.removeItem(k); });
+            initWeather();
+        }
+
+        // --- ORT SUCHE ---
+        function debounceSearch() {
+            clearTimeout(weatherSearchTimeout);
+            weatherSearchTimeout = setTimeout(doWeatherSearch, 500);
+        }
+
+        async function doWeatherSearch() {
+            const query = document.getElementById('city-search').value;
+            const resContainer = document.getElementById('search-results');
+            
+            if (query.length < 3) {
+                resContainer.style.display = 'none';
+                return;
+            }
+            
+            resContainer.style.display = 'block';
+            resContainer.innerHTML = '<div style="padding:15px; color:#666; text-align:center;">Suche...</div>';
+
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+                const r = await fetch(url);
+                const data = await r.json();
+                
+                resContainer.innerHTML = '';
+                if(data.length === 0) {
+                    resContainer.innerHTML = '<div style="padding:15px; color:#666; text-align:center;">Nichts gefunden.</div>';
+                    return;
+                }
+
+                data.slice(0, 5).forEach(place => {
+                    const div = document.createElement('div');
+                    div.className = 'search-result-item';
+                    // Name etwas aufräumen (nur Stadt, Land)
+                    const parts = place.display_name.split(',');
+                    const shortName = parts[0] + (parts.length > 1 ? ', ' + parts[parts.length - 1] : '');
+                    
+                    div.innerText = shortName; // place.display_name für voll
+                    div.onclick = () => {
+                        const loc = { name: parts[0], lat: place.lat, lon: place.lon };
+                        localStorage.setItem('weather_loc', JSON.stringify(loc));
+                        resContainer.style.display = 'none';
+                        initWeather();
+                    };
+                    resContainer.appendChild(div);
+                });
+            } catch(e) { resContainer.innerHTML = '<div style="padding:10px; color:#f87171">Fehler bei Suche.</div>'; }
+        }
+
+        // --- API & RENDER ---
+        async function fetchWeatherData() {
+            if(!weatherLocation) return;
+            
+            const cacheKey = `w_cache_${weatherLocation.lat}_${weatherLocation.lon}`;
+            const cached = localStorage.getItem(cacheKey);
+            if(cached) {
+                const c = JSON.parse(cached);
+                if (Date.now() - c.ts < 1800000) { // 30 min
+                    weatherCache = c.data;
+                    renderWeatherGrid();
+                    return;
+                }
+            }
+
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${weatherLocation.lat}&longitude=${weatherLocation.lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=temperature_2m,weathercode,precipitation_probability&timezone=auto`;
+                const r = await fetch(url);
+                const data = await r.json();
+                weatherCache = data;
+                localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data: data }));
+                renderWeatherGrid();
+            } catch(e) { console.error("Wetter Fehler", e); }
+        }
+
+        function renderWeatherGrid() {
+            const grid = document.getElementById('weather-grid');
+            grid.innerHTML = '';
+            if(!weatherCache) return;
+
+            const daily = weatherCache.daily;
+            
+            for(let i=0; i<7; i++) {
+                const date = new Date(daily.time[i]);
+                const dayName = i === 0 ? "Heute" : date.toLocaleDateString('de-DE', { weekday: 'short' });
+                const icon = getWeatherIcon(daily.weathercode[i]);
+                const max = Math.round(daily.temperature_2m_max[i]);
+                const min = Math.round(daily.temperature_2m_min[i]);
+                const rain = daily.precipitation_probability_max[i];
+
+                const card = document.createElement('div');
+                card.className = `weather-card ${i===0 ? 'today' : ''}`;
+                card.onclick = () => openWeatherDetail(i);
+                card.innerHTML = `
+                    <div class="w-day">${dayName}</div>
+                    <div class="w-icon">${icon}</div>
+                    <div class="w-temp">${max}° <span class="w-min">${min}°</span></div>
+                    ${rain > 20 ? `<div class="w-rain">💧 ${rain}%</div>` : '<div style="height:20px"></div>'}
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        function openWeatherDetail(dayIndex) {
+            if(!weatherCache) return;
+            const dateStr = weatherCache.daily.time[dayIndex];
+            const date = new Date(dateStr);
+            
+            document.getElementById('w-detail-title').innerText = dayIndex === 0 ? "Heute" : date.toLocaleDateString('de-DE', { weekday: 'long' });
+            document.getElementById('weather-overlay-date').innerText = date.toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            const container = document.getElementById('weather-day-parts');
+            container.innerHTML = '';
+
+            const startHour = dayIndex * 24;
+            const parts = [
+                { name: "Vormittag", sub:"06 - 12 Uhr", start: 6, end: 11 },
+                { name: "Nachmittag", sub:"12 - 18 Uhr", start: 12, end: 17 },
+                { name: "Abend", sub:"18 - 24 Uhr", start: 18, end: 23 },
+                { name: "Nacht", sub:"00 - 06 Uhr", start: 0, end: 5 }
+            ];
+
+            parts.forEach(p => {
+                let temps = [];
+                let codes = [];
+                let rainProb = 0;
+
+                for(let h=p.start; h<=p.end; h++) {
+                    const idx = startHour + h;
+                    // Daten können fehlen wenn API nicht weit genug in Zukunft reicht (selten)
+                    if (weatherCache.hourly.temperature_2m[idx] !== undefined) {
+                        temps.push(weatherCache.hourly.temperature_2m[idx]);
+                        codes.push(weatherCache.hourly.weathercode[idx]);
+                        rainProb = Math.max(rainProb, weatherCache.hourly.precipitation_probability[idx]);
+                    }
+                }
+
+                if (temps.length > 0) {
+                    const avgTemp = Math.round(temps.reduce((a,b)=>a+b,0)/temps.length);
+                    // Den "schlimmsten" Code finden (höchste Zahl ist oft Regen/Gewitter)
+                    // Codes: 0-3 Sonne/Wolken, 45+ Nebel/Regen.
+                    // Einfache Heuristik: Max Code nehmen.
+                    const worstCode = Math.max(...codes); 
+                    const icon = getWeatherIcon(worstCode);
+
+                    const card = document.createElement('div');
+                    card.className = 'part-card';
+                    card.innerHTML = `
+                        <div>
+                            <div class="part-label">${p.name}</div>
+                            <div class="part-info">${icon} • Regen: ${rainProb}%</div>
+                        </div>
+                        <div class="part-temp">${avgTemp}°</div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+
+            document.getElementById('weather-overlay').classList.add('active');
+        }
+
+        function closeWeatherOverlay() {
+            document.getElementById('weather-overlay').classList.remove('active');
+        }
+
+        function getWeatherIcon(code) {
+            // WMO Weather interpretation codes (WW)
+            if (code === 0) return '☀️'; // Clear sky
+            if (code === 1) return '🌤️'; // Mainly clear
+            if (code === 2) return '⛅'; // Partly cloudy
+            if (code === 3) return '☁️'; // Overcast
+            if (code >= 45 && code <= 48) return '🌫️'; // Fog
+            if (code >= 51 && code <= 55) return '🌦️'; // Drizzle
+            if (code >= 56 && code <= 57) return '❄️'; // Freezing Drizzle
+            if (code >= 61 && code <= 65) return '🌧️'; // Rain
+            if (code >= 66 && code <= 67) return '🥶'; // Freezing Rain
+            if (code >= 71 && code <= 75) return '🌨️'; // Snow fall
+            if (code === 77) return '❄️'; // Snow grains
+            if (code >= 80 && code <= 82) return '⛈️'; // Rain showers
+            if (code >= 85 && code <= 86) return '🌨️'; // Snow showers
+            if (code >= 95) return '⚡'; // Thunderstorm
+            return '🌡️';
+        }
 
         function loadSavedItems() {
             const raw = localStorage.getItem('my_saved_news');
