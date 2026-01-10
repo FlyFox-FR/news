@@ -1,5 +1,120 @@
 [
   {
+    "timestamp": "2026-01-10T08:23:22.723Z",
+    "sources": {
+      "Tagesschau": {
+        "added": 4,
+        "skipped_cache": 0,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "Die Linkspartei stellt die politischen Weichen für 2026 (8655 chars)",
+          "Nordrhein-Westfalen: Sechs verwahrloste Kinder in Obhut genommen (2006 chars)",
+          "Trotz Euro immer noch mehr als zwölf Milliarden D-Mark im Umlauf (3704 chars)",
+          "Massenproteste im Iran reißen nicht ab (2284 chars)"
+        ]
+      },
+      "ZDF": {
+        "added": 4,
+        "skipped_cache": 16,
+        "skipped_content": 38,
+        "error": 0,
+        "details": [
+          "Bahn will Fernverkehr im Norden wieder aufnehmen",
+          "Hier warnt der DWD aktuell vor Schnee, Glätte und Sturm",
+          "Diese Karte zeigt, wie viel es geschneit hat (221 chars)",
+          "Sturm \"Elli\" bringt Chaos - \"Jahrhundert-Event\" bleibt aus",
+          "Trump wirbt um Investitionen in Venezuelas Ölsektor",
+          "Politologin: US-Drohung ist Antrieb für Iran-Proteste",
+          "Schlagzeilen (0 chars)",
+          "\"Sie kommen her, schaffen eine unsichere Umgebung\" (263 chars)",
+          "Schneeschleuder sorgt für freie Bahngleise (248 chars)",
+          "Hochwasser in Albanien und Nordmazedonien (256 chars)",
+          "Kuscheltier-Regen auf Eishockey-Feld (175 chars)",
+          "Müllberg auf Philippinen eingestürzt (228 chars)",
+          "Ozeane 2025 so warm wie nie (142 chars)",
+          "Bürgermeister: \"Verpisst euch aus Minneapolis\" (220 chars)",
+          "Hamburgs Schwanenretter proben den Ernstfall (201 chars)",
+          "Außergewöhnliche Hitzewelle in Australien (215 chars)",
+          "Klettern in der Kirche (173 chars)",
+          "Deutschland erkennt kleinen Inselstaat an (221 chars)",
+          "50 Schafe stürmen Supermarkt (150 chars)",
+          "Selenskyj: Russland will Städte \"vollständig ausschalten\" (0 chars)",
+          "Rotes Kreuz: Dramatische Lage im Gazastreifen im Winter (232 chars)",
+          "Fakes zu Minnesota entfachen eine Hexenjagd im Internet",
+          "Crans-Montana: Einer der Bar-Besitzer in Untersuchungshaft (232 chars)",
+          "\"Guter Populismus\" und ein altes Problem",
+          "David Bowie - immer noch ein Superstar",
+          "Eiskalter Winter: Gasspeicher schon stark geleert",
+          "Rennfahrer-Ikone Hans Herrmann gestorben",
+          "Das Jahr der Wahrheit für Friedrich Merz",
+          "Aktuelle Sendungs-Videos (0 chars)",
+          "Berichte über Dutzende Tote nach Protesten in Iran",
+          "Iran in \"kritischer Transitionsphase\" (70 chars)",
+          "Iran-Experte sieht \"neue Qualität\" der Proteste (165 chars)",
+          "Proteste im Iran: \"Angst hier im Land sehr groß\" (208 chars)",
+          "\"Keine Unterstützung der Opposition\" (70 chars)",
+          "Moskau: Mittelstreckenrakete auf Westukraine abgefeuert (166 chars)",
+          "Bereitet Ihnen die Grenze zu Russland Sorge, Frau Valtonen?",
+          "Warum Putin seine Soldaten preist",
+          "Krieg in der Ukraine: 2026 ein Ende in Sicht?  (166 chars)",
+          "Aktuelles zum Krieg in der Ukraine (527 chars)",
+          "Autoscheiben enteisen: Welche Methoden am effektivsten sind (172 chars)",
+          "Wie Sie Obdachlosen im Winter helfen können (234 chars)",
+          "Mercosur: Der lange Weg zum Abkommen (167 chars)",
+          "Mercosur: Was bringt der Deal Wirtschaft und Verbrauchern? ",
+          "Bedeutung von Freihandelsabkommen \"ist enorm\" (63 chars)",
+          "Mercosur-Abkommen: Was deutsche Bauern fürchten",
+          "Frankfurt und BVB liefern furiosen Bundesliga-Neustart (0 chars)",
+          "Keine Bundesliga auf St. Pauli und in Bremen (0 chars)",
+          "Das WM-Quartier, ein Hauch von fränkischer Idylle (0 chars)",
+          "Knorr: \"Ich will neugierig bleiben\" (158 chars)",
+          "Streitthema Videobeweis: Wie geht es weiter mit dem VAR? (0 chars)",
+          "Matchbar - Bundesliga (0 chars)",
+          "Spannende Dokus rund um die Uhr (0 chars)",
+          "Politische Debatten und aktuelle Dokus (0 chars)",
+          "Schoko-Schwindel: Warum der Preis explodiert (663 chars)",
+          "Böller als Bomben – tödliche Pyrotechnik (3328 chars)",
+          "Toll! Der satirische Jahresrückblick (390 chars)",
+          "Teures Heizen: Preissteigerung bei Fernwärme (214 chars)",
+          "Die Scamming-Mafia (849 chars)"
+        ]
+      },
+      "Spiegel": {
+        "added": 4,
+        "skipped_cache": 8,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "Sturmtief soll bis zu 50 Zentimeter Neuschnee bringen (220 chars)",
+          "Deutsche Bahn: Warum Züge heute im Winter bei Schnee und Eis schnell still stehen",
+          "News: Proteste in Iran, Opfer in Crans-Montana, Sturmtief »Elli«",
+          "Fehlerhafte Behandlungen: Wenn schlechte Mediziner trotzdem weiterarbeiten (206 chars)",
+          "Crans-Montana: Eine Ärztin im Kantonsspital Wallis berichtet über die Nacht des Unglücks",
+          "Donald Trump: Öl-Konzerne skeptisch gegenüber Investitionen in Venezuela",
+          "USA: Bundesweite Proteste nach tödlichem ICE-Einsatz in Minneapolis",
+          "AfD zu Venezuela: Warum Alice Weidel und Tino Chrupalla zum US-Angriff auf Venezuela schweigen",
+          "Gelsenkirchen: Innenminister Reul kritisiert Informationsfluss nach Sparkassen-Coup",
+          "Haushaltspolitik: Was einen guten Finanzminister ausmacht. Und einen miserablen",
+          "Hartmut Rosa über Bullshit-Jobs, Bürokratie-Wahnsinn und die Brandmauer: »Diese Festlegung ist strunzblöd« (201 chars)",
+          "Aktienmärkte weltweit: 2026 droht die Mutter aller Krisen (166 chars)"
+        ]
+      },
+      "rbb24": {
+        "added": 4,
+        "skipped_cache": 0,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "BSR räumt auch zukünftig keine Geh- und Radwege (240 chars)",
+          "Lagerhalle brennt in Neukölln - Feuer unter Kontrolle (0 chars)",
+          "A13 nach LKW-Unfall Richtung Berlin gesperrt (0 chars)",
+          "In Schipkau wird am Sonntag das Bürgermeister-Amt neu vergeben (194 chars)"
+        ]
+      }
+    }
+  },
+  {
     "timestamp": "2026-01-10T06:27:25.518Z",
     "sources": {
       "Tagesschau": {
