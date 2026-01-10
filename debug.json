@@ -1,5 +1,111 @@
 [
   {
+    "timestamp": "2026-01-10T10:18:22.671Z",
+    "sources": {
+      "Tagesschau": {
+        "added": 4,
+        "skipped_cache": 0,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "Nach Schüssen durch ICE-Agenten: Wut und Trauer in Minneapolis (3862 chars)",
+          "Klitschko rät nach Angriffen zum vorübergehenden Verlassen Kiews (3491 chars)",
+          "Parteien in den Niederlanden einigen sich auf Minderheitsregierung (2166 chars)",
+          "Warum Polens Wirtschaft boomt - anders als die deutsche (6465 chars)"
+        ]
+      },
+      "ZDF": {
+        "added": 4,
+        "skipped_cache": 14,
+        "skipped_content": 25,
+        "error": 0,
+        "details": [
+          "Schnee zieht nach Süden - Norden räumt auf",
+          "Hier warnt der DWD aktuell vor Schnee, Glätte und Sturm",
+          "Diese Karte zeigt, wie viel es geschneit hat (221 chars)",
+          "Sturm \"Elli\" bringt Chaos - \"Jahrhundert-Event\" bleibt aus",
+          "Politologin: US-Drohung ist Antrieb für Iran-Proteste",
+          "Proteste nach ICE-Einsatz halten an - Weitere Demos geplant (3535 chars)",
+          "Schlagzeilen (0 chars)",
+          "Brand zerstört bis zu 3.000 Hektar Wald (243 chars)",
+          "\"Sie kommen her, schaffen eine unsichere Umgebung\" (263 chars)",
+          "Höhere Steuern auf alkoholische Getränke gefordert (233 chars)",
+          "Schneeschleuder sorgt für freie Bahngleise (248 chars)",
+          "Hochwasser in Albanien und Nordmazedonien (256 chars)",
+          "Kuscheltier-Regen auf Eishockey-Feld (175 chars)",
+          "Müllberg auf Philippinen eingestürzt (228 chars)",
+          "Ozeane 2025 so warm wie nie (142 chars)",
+          "Bürgermeister: \"Verpisst euch aus Minneapolis\" (220 chars)",
+          "Selenskyj: Russland will Städte \"vollständig ausschalten\" (0 chars)",
+          "Rotes Kreuz: Dramatische Lage im Gazastreifen im Winter (232 chars)",
+          "Macht der Klimaschutz eine Pause? (178 chars)",
+          "Trump wirbt um Investitionen in Venezuelas Ölsektor",
+          "Niederländer erobern deutsche Innenstädte (3149 chars)",
+          "Unglaubliche OneCoin-Story und die Rückkehr der Minions (5421 chars)",
+          "David Bowie - immer noch ein Superstar",
+          "Fakes zu Minnesota entfachen eine Hexenjagd im Internet",
+          "\"Guter Populismus\" und ein altes Problem",
+          "Crans-Montana: Einer der Bar-Besitzer in Untersuchungshaft (232 chars)",
+          "Rennfahrer-Ikone Hans Herrmann gestorben",
+          "Aktuelle Sendungs-Videos (0 chars)",
+          "Autoscheiben enteisen: Welche Methoden am effektivsten sind (172 chars)",
+          "Eiskalter Winter: Gasspeicher schon stark geleert",
+          "Berichte über Dutzende Tote nach Protesten in Iran",
+          "Iran in \"kritischer Transitionsphase\" (70 chars)",
+          "Iran-Experte sieht \"neue Qualität\" der Proteste (165 chars)",
+          "Proteste im Iran: \"Angst hier im Land sehr groß\" (208 chars)",
+          "\"Keine Unterstützung der Opposition\" (70 chars)",
+          "Moskau: Mittelstreckenrakete auf Westukraine abgefeuert (166 chars)",
+          "Bereitet Ihnen die Grenze zu Russland Sorge, Frau Valtonen?",
+          "Warum Putin seine Soldaten preist",
+          "Krieg in der Ukraine: 2026 ein Ende in Sicht?  (166 chars)",
+          "Aktuelles zum Krieg in der Ukraine",
+          "Frankfurt und BVB liefern furiosen Bundesliga-Neustart (0 chars)",
+          "Das Sportjahr 2026: Das sind die Highlights (58 chars)",
+          "Riesenslalom der Männer in Adelboden (11004 chars)"
+        ]
+      },
+      "Spiegel": {
+        "added": 4,
+        "skipped_cache": 1,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "ADHS bei Erwachsenen: Randolf Jorbergs Weg vom Millionär zum Neuanfang (207 chars)",
+          "Donald Trump will Friedensnobelpreis von Machado annehmen – obwohl das nicht geht (213 chars)",
+          "Grönland: Nato-Staaten besorgt über Pläne von Donald Trump (219 chars)",
+          "Donald Trump: Öl-Konzerne skeptisch gegenüber Investitionen in Venezuela",
+          "Iran: Schah-Sohn fordert Unterstützung von Donald Trump (218 chars)"
+        ]
+      },
+      "rbb24": {
+        "added": 4,
+        "skipped_cache": 13,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "Brandenburg verstärkt Deichkontrollen an der Oder (0 chars)",
+          "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+          "Oberspreewald-Lausitz wählt neuen Landrat (213 chars)",
+          "So läuft die Weihnachtsbaum-Entsorgung in Berlin und Brandenburg (154 chars)",
+          "Lagerhalle brennt in Neukölln - Feuer unter Kontrolle",
+          "BSR lehnt Räumung von Geh- und Radwegen ab",
+          "A13 nach LKW-Unfall Richtung Berlin gesperrt",
+          "In Schipkau wird am Sonntag das Bürgermeister-Amt neu vergeben",
+          "Prignitz: Wildkatze im Elbe-Naturschutzgebiet nachgewiesen",
+          "Fußball: Hertha verliert Testspiel gegen Standard Lüttich",
+          "BSW nach dem Koalitionsbruch: Bündnis für Selbstentzauberung und Wählertäuschung",
+          "\"Ich weiß von vielen Senioren, die an ihre Wohnung gefesselt sind\"",
+          "Landtag lehnt Antrag auf Auflösung ab - BSW-Abgeordnete stimmen mit AfD",
+          "Vietnamesischer Großmarkt: BVG nennt Tram-Halt in \"Herzbergstr./Dong-Xuan\" um",
+          "20. Todestag: Spandau will Grabstelle von Hatun Sürücü dauerhaft erhalten ",
+          "Nach drei Jahren Pause: Erika-Heß-Eisstadion im Wedding öffnet wieder Außenfläche",
+          "Eishockey: Eisiger Freiluft-Auftritt für die Eisbären (248 chars)"
+        ]
+      }
+    }
+  },
+  {
     "timestamp": "2026-01-10T08:23:22.723Z",
     "sources": {
       "Tagesschau": {
