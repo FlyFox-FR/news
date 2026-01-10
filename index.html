@@ -929,24 +929,55 @@
 
 
         // --- DEBUG OVERLAY ---
-        async function openDebug() {
+async function openDebug() {
             document.getElementById('debug-overlay').classList.add('active');
             const area = document.getElementById('debug-content-area');
             try {
                 const r = await fetch('debug.json?t=' + Date.now());
                 const logs = await r.json();
                 let html = '';
+                
                 logs.forEach((run, index) => {
                     const date = new Date(run.timestamp).toLocaleString();
-                    html += `<div class="debug-run"><div class="debug-run-header" onclick="toggleDebugRun(${index})"><span>${date}</span><span>▼</span></div><div class="debug-content" id="run-${index}" style="display:none; padding:10px; background:#050505; border-top:1px solid #333;">`;
+                    // Neue Header Infos: Provider & Tokens
+                    const provider = run.ai_provider || 'Unbekannt';
+                    const tokens = run.total_tokens ? `(${run.total_tokens} Tokens)` : '';
+                    
+                    html += `
+                        <div class="debug-run">
+                            <div class="debug-run-header" onclick="toggleDebugRun(${index})">
+                                <div style="display:flex; flex-direction:column; gap:2px">
+                                    <span>${date}</span>
+                                    <span style="font-size:0.7rem; color:#aaa; font-weight:normal;">${provider} ${tokens}</span>
+                                </div>
+                                <span>▼</span>
+                            </div>
+                            <div class="debug-content" id="run-${index}" style="display:none; padding:10px; background:#050505; border-top:1px solid #333;">
+                    `;
+                    
                     for (const [src, stats] of Object.entries(run.sources)) {
-                        html += `<div class="debug-source" style="margin-bottom:15px; border-left:2px solid #333; padding-left:10px;"><div style="font-weight:bold; color:#fff; margin-bottom:5px;">${src}</div><div><span class="stat-good" style="color:#4ade80; margin-right:15px;">Added: ${stats.added}</span><span class="stat-warn" style="color:#fbbf24; margin-right:15px;">Cache: ${stats.skipped_cache}</span><span class="stat-bad" style="color:#f87171;">Short: ${stats.skipped_content}</span></div><ul class="debug-list" style="margin-top:5px; font-size:0.75rem; color:#888; list-style:none; padding:0;">${stats.details.map(d => `<li style="margin-bottom:2px;">${d}</li>`).join('')}</ul></div>`;
+                        html += `
+                            <div class="debug-source" style="margin-bottom:15px; border-left:2px solid #333; padding-left:10px;">
+                                <div style="font-weight:bold; color:#fff; margin-bottom:5px;">${src}</div>
+                                <div>
+                                    <span class="stat-good" style="color:#4ade80; margin-right:15px;">Added: ${stats.added}</span>
+                                    <span class="stat-warn" style="color:#fbbf24; margin-right:15px;">Cache: ${stats.skipped_cache}</span>
+                                    <span class="stat-bad" style="color:#f87171;">Short: ${stats.skipped_content}</span>
+                                </div>
+                                <ul class="debug-list" style="margin-top:5px; font-size:0.75rem; color:#888; list-style:none; padding:0;">
+                                    ${stats.details.map(d => `<li style="margin-bottom:2px;">${d}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
                     }
                     html += `</div></div>`;
                 });
                 area.innerHTML = html;
-            } catch(e) { area.innerHTML = "Keine Logs gefunden."; }
+            } catch(e) {
+                area.innerHTML = "Keine Logs gefunden oder Fehler beim Laden.";
+            }
         }
+    
         function toggleDebugRun(index) { const el = document.getElementById(`run-${index}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
         function closeDebug() { document.getElementById('debug-overlay').classList.remove('active'); }
 
