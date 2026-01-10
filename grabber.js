@@ -22,11 +22,12 @@ let currentRunLog = {
 };
 
 function logEvent(source, type, detail) {
-    if (!currentRunLog.sources[source]) currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, error: 0, details: [] };
+    if (!currentRunLog.sources[source]) currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, skipped_paywall: 0, error: 0, details: [] };
     const s = currentRunLog.sources[source];
     if (type.startsWith('added')) s.added++;
     if (type === 'cache') s.skipped_cache++;
     if (type === 'content') s.skipped_content++;
+    if (type === 'paywall') s.skipped_paywall++;
     if (type === 'error') s.error++;
     if (detail) s.details.push(detail);
 }
@@ -46,9 +47,8 @@ async function fetchArticleText(url, sourceName) {
         });
         let html = data;
 
-        // 2. GIFT-LISTE (Poison Check)
-        // Bevor wir parsen: Prüfen auf Paywall-Marker oder Fehlerseiten.
-        // Besonders wichtig für Spiegel, da Readability sonst den "Leider kein Abo"-Text extrahiert.
+        // 2. GIFT-LISTE (Paywall/Abo Check)
+        // Wenn wir das finden, wollen wir den Artikel GAR NICHT haben.
         if (sourceName.toLowerCase().includes("spiegel")) {
             const poisonPhrases = [
                 'data-paywall="true"',
@@ -63,12 +63,11 @@ async function fetchArticleText(url, sourceName) {
             ];
             
             if (poisonPhrases.some(p => html.includes(p))) {
-                return null; // Null bedeutet: Fallback auf RSS nutzen
+                return "PAYWALL"; // Signalwort für den Main-Loop
             }
         }
 
         // 3. JSDOM & READABILITY
-        // Wir erstellen ein virtuelles DOM, damit Readability arbeiten kann
         const doc = new JSDOM(html, { url: url });
         const reader = new Readability(doc.window.document);
         const article = reader.parse();
@@ -78,27 +77,24 @@ async function fetchArticleText(url, sourceName) {
 
         let fullText = article.textContent;
 
-        // 5. CLEANUP (Die "Waschmaschine")
-        // Readability lässt oft viele Leerzeilen übrig.
-        fullText = fullText.replace(/\n\s*\n/g, '\n\n'); // Max 1 Leerzeile am Stück
-        fullText = fullText.replace(/[ \t]+/g, ' ');      // Keine doppelten Leerzeichen
+        // 5. CLEANUP
+        fullText = fullText.replace(/\n\s*\n/g, '\n\n'); 
+        fullText = fullText.replace(/[ \t]+/g, ' ');      
         fullText = fullText.trim();
 
-        // 6. SANITY CHECK
-        // Wenn der Text extrem kurz ist (z.B. nur "Impressum"), war es kein Artikel.
+        // 6. SANITY CHECK 
         if (fullText.length < 300) return null;
 
-        // Sicherheitscheck: Hat sich Spiegel-Werbung trotzdem eingeschlichen?
+        // Sicherheitscheck nach Parsing
         if (sourceName.toLowerCase().includes("spiegel") && fullText.includes("Freier Zugriff auf alle S+-Artikel")) {
-            return null;
+            return "PAYWALL";
         }
 
         if (fullText.length > MAX_CHARS_SAVE) fullText = fullText.substring(0, MAX_CHARS_SAVE);
         return fullText;
 
     } catch (e) { 
-        // Bei Timeout oder Parse-Fehlern -> null zurückgeben für Fallback
-        return null; 
+        return null; // Technischer Fehler -> Fallback OK
     }
 }
 
@@ -291,7 +287,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log(`🚀 Start News-Bot v5.6 (Readability Edition)...`);
+    console.log(`🚀 Start News-Bot v5.7 (Strict Anti-Paywall)...`);
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -333,9 +329,18 @@ async function run() {
                 let scrapedLength = 0;
                 let usedFallback = false;
 
-                // 2. SCRAPING (MOZILLA READABILITY)
+                // 2. SCRAPING
                 if (source.scrape !== false) {
+                    // ACHTUNG: Hier kann jetzt "PAYWALL" zurückkommen
                     let scrapedText = await fetchArticleText(item.link, source.name);
+                    
+                    // --- NEU: HARTE ABSAGE BEI PAYWALL ---
+                    if (scrapedText === "PAYWALL") {
+                        console.log(`   ⛔ [PAYWALL] "${cleanTitle}" erkannt. Skip.`);
+                        logEvent(source.name, 'paywall', item.title);
+                        continue; // Wir überspringen diesen Artikel komplett!
+                    }
+
                     scrapedLength = scrapedText ? scrapedText.length : 0;
                     
                     if (scrapedLength >= 500) {
@@ -343,7 +348,8 @@ async function run() {
                         fullText = scrapedText;
                         process.stdout.write(`   ✅ [SCRAPE] "${cleanTitle}" geladen (${scrapedLength} Zeichen). `);
                     } else {
-                        // B) Scrape fehlgeschlagen/Paywall/zu kurz -> Fallback
+                        // B) Scrape fehlgeschlagen oder zu kurz -> Fallback
+                        // ABER NUR WENN ES KEINE PAYWALL WAR (das haben wir oben abgefangen)
                         usedFallback = true;
                         fullText = (item.contentSnippet || item.content || "").trim();
                         process.stdout.write(`   ⚠️ [FALLBACK] "${cleanTitle}" Scrape null/kurz. Nutze RSS (${fullText.length} Zeichen). `);
