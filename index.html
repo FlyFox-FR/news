@@ -563,20 +563,47 @@
 
         /* Search Box nimmt den Rest Platz */
         .search-box { flex-grow: 1; }
+
+        /* --- RADAR UPGRADES --- */
+        
+        /* Der neue Floating Locate Button */
+        .btn-locate-float {
+            position: absolute; 
+            bottom: 30px; /* Abstand zur Control-Leiste */
+            right: 20px; 
+            z-index: 400; /* Über der Karte, unter Controls */
+            width: 50px; height: 50px; 
+            border-radius: 50%; 
+            background: #fff; 
+            color: #000; 
+            border: none;
+            font-size: 1.8rem; 
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .btn-locate-float:active { transform: scale(0.9); }
+
+        /* Wenn Zeit in der Zukunft (Prognose) ist */
+        .radar-time-future {
+            color: #3b82f6 !important; /* Neon Blau */
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+        }
         
     </style>
 </head>
 <body>
 
-  <!-- RADAR OVERLAY (2.0) -->
+    <!-- RADAR OVERLAY (2.1) -->
     <div id="radar-overlay">
         <div class="reader-header" style="background:rgba(0,0,0,0.8);">
             <span style="font-size:0.8rem; color:#fff; font-weight:700">WETTERKARTE</span>
             <div style="display:flex; gap:10px; align-items:center;">
                 <!-- Layer Switcher -->
                 <div class="radar-layer-switch">
-                    <button id="btn-layer-radar" class="active" onclick="switchRadarLayer('radar')">🌧️ Radar</button>
-                    <button id="btn-layer-sat" onclick="switchRadarLayer('satellite')">☁️ Sat</button>
+                    <button id="btn-layer-radar" class="active" onclick="switchRadarLayer('radar')">🌧️ Regen</button>
+                    <button id="btn-layer-sat" onclick="switchRadarLayer('satellite')">☁️ Wolken</button>
                 </div>
                 <button class="reader-close-btn" onclick="closeRadar()">✕</button>
             </div>
@@ -585,13 +612,16 @@
         <div style="position:relative; flex-grow:1; width:100%;">
             <div id="radar-map"></div>
             
+            <!-- Der neue Floating Button (Google Maps Style) -->
+            <button class="btn-locate-float" onclick="centerRadar()" title="Mein Standort">⌖</button>
+
             <!-- Preloader -->
             <div id="radar-loader">
                 <div class="spinner"></div>
                 <div style="margin-top:10px; font-size:0.8rem; color:#ccc;">Lade Bilder...</div>
             </div>
 
-            <!-- Legende (Nur für Radar sichtbar) -->
+            <!-- Legende -->
             <div id="radar-legend" class="radar-legend">
                 <span>Leicht</span>
                 <div class="legend-bar"></div>
@@ -603,12 +633,14 @@
         <div class="radar-controls">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <button id="radar-play" onclick="toggleRadarAnim()">▶</button>
-                <div id="radar-time" style="font-variant-numeric:tabular-nums; font-weight:bold; color:#fff;">--:--</div>
-                <button onclick="centerRadar()" style="font-size:1.2rem; background:none; border:none; color:#fff; cursor:pointer;">⌖</button>
+                <div id="radar-time" style="font-variant-numeric:tabular-nums; font-weight:bold; font-size:1.1rem; color:#fff;">--:--</div>
+                <!-- Platzhalter rechts damit Zeit mittig bleibt -->
+                <div style="width:40px;"></div> 
             </div>
-            <!-- Scrubbing pausiert jetzt automatisch (oninput) -->
+            
             <input type="range" id="radar-slider" min="0" max="0" value="0" step="1" 
                    oninput="stopRadarAnim(); updateRadarFrame(this.value)">
+                   
             <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:#888; margin-top:5px;">
                 <span id="radar-start-label">-2 Std.</span>
                 <span id="radar-end-label">+30 Min.</span>
@@ -2024,7 +2056,7 @@ async function openDebug() {
             }
         }
 
-        function updateRadarFrame(index) {
+    function updateRadarFrame(index) {
             currentFrame = parseInt(index);
             const slider = document.getElementById('radar-slider');
             slider.value = currentFrame;
@@ -2035,17 +2067,22 @@ async function openDebug() {
             // Zeit anzeigen
             const date = new Date(ts.time * 1000);
             const timeStr = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            const timeEl = document.getElementById('radar-time');
             
-            // Info Text
-            let info = timeStr;
-            if (currentLayerType === 'radar' && ts.path.includes('nowcast')) {
-                info += ' <span style="color:var(--accent); font-size:0.7em">PROGNOSE</span>';
+            // Ist es Zukunft?
+            const isForecast = currentLayerType === 'radar' && ts.path.includes('nowcast');
+            
+            if (isForecast) {
+                timeEl.innerHTML = `${timeStr} <span style="font-size:0.5em; vertical-align:middle; margin-left:4px;">PROGNOSE</span>`;
+                timeEl.classList.add('radar-time-future');
+            } else {
+                timeEl.innerHTML = timeStr;
+                timeEl.classList.remove('radar-time-future');
             }
-            document.getElementById('radar-time').innerHTML = info;
 
-            // Layer switchen (Effizient: Nur Opacity ändern)
+            // Layer umschalten
             Object.keys(radarLayers).forEach(k => {
-                if (parseInt(k) === ts.time) radarLayers[k].setOpacity(0.8); // 80% Deckkraft sieht gut aus
+                if (parseInt(k) === ts.time) radarLayers[k].setOpacity(0.8);
                 else radarLayers[k].setOpacity(0);
             });
         }
