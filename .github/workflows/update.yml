@@ -27,6 +27,8 @@ jobs:
       run: npm install
 
     - name: Run Grabber
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: node grabber.js
 
     - name: Create Config File
@@ -37,7 +39,6 @@ jobs:
       run: |
         git config --global user.name 'NewsBot'
         git config --global user.email 'bot@noreply.github.com'
-        # HIER WURDE debug.json HINZUGEFÜGT:
         git add news.json config.json debug.json
         git commit -m "Update News, Config, Debug & Pruning" || echo "Keine Änderungen"
         git push
