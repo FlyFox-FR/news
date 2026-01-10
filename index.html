@@ -73,45 +73,7 @@
     /* Z-Index Fixes für Sticky Header während der Tour */
     body.tour-active header { z-index: 10 !important; } 
     body.tour-active .sidebar { z-index: 9999 !important; }
-
-    /* --- ZUSATZ FÜR FAKE WETTER & RADAR --- */
-
-/* Die verschiedenen "Folien" der Tour */
-.tour-view { display: none; animation: fadeIn 0.3s ease; }
-.tour-view.active { display: block; }
-
-/* Fake Wetter Grid */
-.fake-weather-grid {
-    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;
-}
-.fake-w-card {
-    min-width: 100px; background: #18181b; border: 1px solid #333; 
-    border-radius: 16px; padding: 15px; text-align: center;
-}
-
-/* Fake Detail Overlay (simuliert #weather-overlay) */
-#tour-fake-detail {
-    position: fixed; inset: 0; background: #111; z-index: 11000;
-    display: none; flex-direction: column; align-items: center; padding-top: 50px;
-}
-
-/* Fake Radar Overlay (simuliert #radar-overlay) */
-#tour-fake-radar {
-    position: fixed; inset: 0; background: #000; z-index: 11000;
-    display: none; flex-direction: column;
-}
-#tour-fake-map-img {
-    width: 100%; height: 100%; object-fit: cover; opacity: 0.6;
-}
-.fake-radar-controls {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: rgba(20,20,20,0.9); padding: 20px; border-top: 1px solid #333;
-}
-/* Ende Onboarding CSS */
-    
 </style>
-
-   
     
     <style>
         :root {
@@ -2259,139 +2221,112 @@ async function openDebug() {
     //Ende Radarlogik
 
 // ==========================================
-// ONBOARDING MODUL: LOGIC & CONTENT (V2)
+// ONBOARDING MODUL: LOGIC & CONTENT
 // ==========================================
 
 // 1. DER FAKE CONTENT (HTML String)
-// Wir bauen mehrere "Views" in den Container, die wir an- und ausschalten.
-const fakeContentHTML = `
-    <!-- VIEW 1: NEWS FEED (Start) -->
-    <div id="tour-view-feed" class="tour-view active">
-        <!-- FAKE NEWS CLUSTER (Wie vorher) -->
-        <div class="card" id="tour-card-news">
-            <button class="btn-save" id="tour-btn-save">☆</button>
-            <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1000&auto=format&fit=crop" class="card-img">
-            <div class="card-body">
-                <div class="meta">TechDaily • vor 12 Min.</div>
-                <a href="#" class="card-title" onclick="return false;">Revolutionäre KI verändert Web-Entwicklung</a>
-                <div class="scoop">Neue Algorithmen ermöglichen es, Webseiten in Sekunden zu erstellen.</div>
-                <ul class="bullets"><li>KI schreibt Code schneller.</li><li>Design wird optimiert.</li></ul>
+// Wir nutzen feste IDs (tour-...), um die Elemente sicher zu treffen.
+const fakeClusterHTML = `
+    <!-- FAKE NEWS CLUSTER -->
+    <div class="card" id="tour-card-news">
+        <button class="btn-save" id="tour-btn-save">☆</button>
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000&auto=format&fit=crop" class="card-img" style="height:200px; object-fit:cover;">
+        
+        <div class="card-body">
+            <div class="meta">
+                <span style="display:flex; align-items:center; gap:8px;">
+                    <img src="https://www.google.com/s2/favicons?sz=64&domain=techcrunch.com" class="source-logo">
+                    TechDaily • vor 12 Min.
+                </span>
             </div>
-            <div class="actions">
-                <div class="action-left"><a href="#" class="btn-link">Original ↗</a></div>
-                <div class="action-center"><button class="btn-reader" id="tour-btn-reader">📖 Lesen</button></div>
-                <div class="action-right">
-                    <button class="btn-toggle" id="tour-btn-toggle"><span>📚 2</span></button>
-                </div>
+            <a href="#" class="card-title" onclick="return false;">Revolutionäre KI verändert Web-Entwicklung</a>
+            <div class="scoop">Neue Algorithmen ermöglichen es, Webseiten in Sekunden zu erstellen. Entwickler sind begeistert.</div>
+            <ul class="bullets">
+                <li>KI schreibt Code schneller als Menschen.</li>
+                <li>Design wird automatisch optimiert.</li>
+            </ul>
+        </div>
+        
+        <div class="actions">
+            <div class="action-left">
+                <a href="#" class="btn-link" id="tour-btn-original" onclick="return false;">Original ↗</a>
             </div>
-            <!-- Hidden Dropdown -->
-            <div id="vars-tour-fake" class="variants-container" style="display:none; padding:15px; background:#121214;">
-                 <div class="related-item-row" id="tour-related-1">
-                    <div class="related-title">Die KI Debatte: Fluch oder Segen?</div>
-                    <div class="related-footer">
-                        <div class="related-meta-group"><span class="badge-readable">● Lesbar</span></div>
+            <div class="action-center">
+                <button class="btn-reader" id="tour-btn-reader">📖 Lesen</button>
+            </div>
+            <div class="action-right">
+                <button class="btn-toggle" id="tour-btn-toggle">
+                    <span>📚 2</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- FAKE DROPDOWN (Versteckt) -->
+        <div id="vars-tour-fake" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
+             <div style="font-size:0.65rem; color:#555; margin-bottom:10px; text-transform:uppercase; font-weight:800; letter-spacing:1px;">Weitere Quellen</div>
+             
+             <!-- Item 1: Lesbar & Pin -->
+             <div class="related-item-row" id="tour-related-1">
+                <div class="related-title">Die KI Debatte: Fluch oder Segen?</div>
+                <div class="related-footer">
+                    <div class="related-meta-group">
+                        <img src="https://www.google.com/s2/favicons?sz=64&domain=zeit.de" style="width:14px; height:14px; border-radius:3px; opacity:0.7">
+                        <span>vor 1 Std.</span>
+                        <span class="badge-readable" id="tour-badge-readable">● Lesbar</span>
+                    </div>
+                    <div class="related-actions-group">
+                        <span class="btn-link-small">Original</span>
                         <button class="btn-pin" id="tour-btn-pin">📌</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Platzhalter unten -->
-        <div style="height:100px"></div>
-    </div>
 
-    <!-- VIEW 2: WETTER SUCHE (Simuliert den leeren State) -->
-    <div id="tour-view-search" class="tour-view" style="text-align:center; padding-top:40px;">
-        <div style="font-size:3rem; margin-bottom:10px;">🌍</div>
-        <h2 style="font-family:'Merriweather'; color:#fff;">Wo bist du?</h2>
-        <div style="max-width:300px; margin:0 auto; position:relative;">
-            <input type="text" id="tour-input-city" placeholder="Stadt suchen..." 
-                   style="width:100%; padding:15px; border-radius:15px; background:#222; border:1px solid #444; color:#fff; text-align:center;">
-        </div>
-    </div>
-
-    <!-- VIEW 3: WETTER DASHBOARD (Simuliert das Ergebnis) -->
-    <div id="tour-view-dash" class="tour-view">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:15px;">
-            <div>
-                <h2 style="font-family:'Merriweather'; margin:0; font-size:1.5rem; color:#fff;">Berlin</h2>
-                <span style="font-size:0.75rem; color:#888;">7-TAGE TREND</span>
+            <!-- Item 2: Nur Link -->
+            <div class="related-item-row" id="tour-related-2">
+                <div class="related-title">Video: Experteninterview zur Zukunft</div>
+                <div class="related-footer">
+                    <div class="related-meta-group">
+                        <img src="https://www.google.com/s2/favicons?sz=64&domain=youtube.com" style="width:14px; height:14px; border-radius:3px; opacity:0.7">
+                        <span>vor 30 Min.</span>
+                    </div>
+                    <div class="related-actions-group">
+                        <span class="btn-link-small">Original</span>
+                    </div>
+                </div>
             </div>
-            <button id="tour-radar-trigger" style="background:var(--accent); border:none; color:#fff; padding:8px 14px; border-radius:12px; font-weight:700;">🗺️ Radar</button>
-        </div>
-        
-        <div class="fake-weather-grid" id="tour-w-grid">
-            <!-- Fake Tag 1 -->
-            <div class="fake-w-card" id="tour-day-1" style="background:rgba(59, 130, 246, 0.1); border-color:#3b82f6;">
-                <div style="font-size:0.8rem; color:#aaa;">HEUTE</div>
-                <div style="font-size:2rem;">⛅</div>
-                <div style="font-weight:bold; font-size:1.2rem;">22°</div>
-            </div>
-            <div class="fake-w-card"><div style="font-size:0.8rem; color:#aaa;">DI</div><div style="font-size:2rem;">☀️</div><div>24°</div></div>
-            <div class="fake-w-card"><div style="font-size:0.8rem; color:#aaa;">MI</div><div style="font-size:2rem;">🌧️</div><div>18°</div></div>
-            <div class="fake-w-card"><div style="font-size:0.8rem; color:#aaa;">DO</div><div style="font-size:2rem;">☁️</div><div>19°</div></div>
         </div>
     </div>
 
-    <!-- OVERLAY 1: WETTER DETAIL -->
-    <div id="tour-fake-detail">
-        <h2 style="font-family:'Merriweather'; color:#fff;">Montag</h2>
-        <p style="color:#888;">Tagesverlauf</p>
-        <div style="display:grid; gap:10px; width:90%; max-width:400px;">
-            <div style="background:#222; padding:15px; border-radius:10px; display:flex; justify-content:space-between;">
-                <span>Vormittag</span><span>18° ☀️</span>
-            </div>
-            <div style="background:#222; padding:15px; border-radius:10px; display:flex; justify-content:space-between;">
-                <span>Nachmittag</span><span>22° ⛅</span>
-            </div>
-        </div>
-        <button id="tour-close-detail" style="margin-top:30px; background:#333; color:#fff; border:none; padding:10px 20px; border-radius:20px;">Schließen</button>
+    <!-- FAKE WEATHER WIDGET (Damit wir nicht den Tab wechseln müssen) -->
+    <div class="card" id="tour-card-weather" style="padding:20px; text-align:center; border:1px solid var(--accent);">
+        <h3 style="margin:0; font-family:'Merriweather'">Wetter Vorschau</h3>
+        <div style="font-size:3rem; margin:10px 0;">🌤️</div>
+        <div style="font-size:1.5rem; font-weight:bold;">22° Berlin</div>
+        <p style="color:#888; font-size:0.8rem;">Hier siehst du normalerweise das Wetter für deinen Standort.</p>
+        <button style="background:var(--accent); color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:bold; margin-top:10px;" id="tour-btn-radar">🗺️ Radar öffnen</button>
     </div>
-
-    <!-- OVERLAY 2: RADAR MAP -->
-    <div id="tour-fake-radar">
-        <!-- Statisches Bild einer Karte (Dunkel) -->
-        <img id="tour-fake-map-img" src="https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/6/32/21.png">
-        
-        <!-- Fake Pin -->
-        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:red; font-size:2rem;">📍</div>
-        
-        <!-- Controls -->
-        <div class="fake-radar-controls" id="tour-radar-controls">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#fff;">
-                <button style="background:var(--accent); color:#fff; border:none; width:40px; height:40px; border-radius:50%;">▶</button>
-                <span style="font-size:1.2rem; font-weight:bold;">14:30</span>
-                <button style="background:#333; color:#fff; border:none; width:40px; height:40px; border-radius:50%;">⌖</button>
-            </div>
-            <div style="height:4px; background:#333; width:100%; border-radius:2px;">
-                <div style="height:4px; background:#fff; width:60%;"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#888; margin-top:5px;">
-                <span>Vergangenheit</span><span>Prognose</span>
-            </div>
-        </div>
-        <button id="tour-close-radar" style="position:absolute; top:20px; right:20px; background:#000; color:#fff; border:1px solid #333; padding:5px 10px; border-radius:15px;">✕ Schließen</button>
-    </div>
+    
+    <div style="height:100px;"></div>
 `;
-
-// Helper: Views umschalten
-function switchTourView(viewId) {
-    document.querySelectorAll('.tour-view').forEach(el => el.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
-}
 
 // 2. DIE TOUR STARTEN
 function startOnboarding() {
-    // A) Setup UI Reset
-    document.getElementById('sidebar').classList.remove('active');
-    document.getElementById('sidebar-overlay').classList.remove('active');
+    // A) Setup UI
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
     
-    // Echten Feed verstecken, Sandbox zeigen
+    // Sidebar schließen, falls offen
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    
+    // Feed verstecken, Sandbox zeigen
     document.getElementById('feed').style.display = 'none';
     const stage = document.getElementById('tour-stage');
-    stage.innerHTML = fakeContentHTML;
-    stage.style.display = 'block'; // Block damit wir Views switchen können
+    stage.innerHTML = fakeClusterHTML;
+    stage.style.display = 'flex';
     document.body.classList.add('tour-active');
     
+    // Scroll nach oben
     window.scrollTo(0,0);
 
     // B) Driver Konfiguration
@@ -2401,106 +2336,163 @@ function startOnboarding() {
         allowClose: true,
         popoverClass: 'driverjs-theme',
         nextBtnText: 'Weiter →',
-        prevBtnText: 'Zurück',
-        doneBtnText: 'Fertig',
+        prevBtnText: '← Zurück',
+        doneBtnText: 'Fertig!',
         
+        // Aufräumen, wenn Tour endet
         onDestroyed: () => {
-            // Aufräumen
             document.getElementById('feed').style.display = 'flex';
             document.getElementById('tour-stage').style.display = 'none';
-            document.getElementById('tour-stage').innerHTML = ''; 
+            document.getElementById('tour-stage').innerHTML = ''; // Clean
             document.body.classList.remove('tour-active');
             
-            // Overlays sicher schließen
-            const r = document.getElementById('radar-overlay'); if(r) r.classList.remove('active');
-            const w = document.getElementById('weather-overlay'); if(w) w.classList.remove('active');
+            // Sidebar sicherstellen dass zu
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('sidebar-overlay').classList.remove('active');
         },
         
         steps: [
-            // --- PART 1: NEWS FEED ---
-            { element: '#tour-stage', popover: { title: 'Willkommen!', description: 'Kurze Tour durch deine neue Nachrichten-App.' } },
-            { element: '#tour-card-news', popover: { title: 'News Cluster', description: 'Artikel zum gleichen Thema werden gebündelt.' } },
-            { element: '#tour-btn-reader', popover: { title: 'Lese-Modus', description: 'Artikel direkt in der App lesen – ohne Werbung.' } },
-            { element: '#tour-btn-toggle', popover: { title: 'Varianten', description: 'Hier findest du weitere Quellen.' },
-              onHighlightStarted: () => { document.getElementById('vars-tour-fake').style.display = 'block'; },
-              onDeselected: () => { document.getElementById('vars-tour-fake').style.display = 'none'; }
+            { 
+                element: '#tour-stage', 
+                popover: { 
+                    title: 'Willkommen!', 
+                    description: 'In dieser kurzen Tour zeigen wir dir die wichtigsten Funktionen deiner neuen Nachrichten-App.' 
+                } 
             },
-            { element: '#tour-btn-pin', popover: { title: 'Pinnen', description: 'Tausche Quellen nach oben, wenn sie dir besser gefallen.' } },
-            
-            // --- PART 2: SIDEBAR & NAVIGATION ---
-            { element: '.header-left button', popover: { title: 'Menü', description: 'Öffnen wir das Menü...' },
-              onHighlightStarted: () => { 
-                  document.getElementById('sidebar').classList.add('active'); 
-                  document.getElementById('sidebar-overlay').classList.add('active');
-              }
+            // --- MAIN CARD ---
+            { 
+                element: '#tour-card-news', 
+                popover: { 
+                    title: 'Themen-Cluster', 
+                    description: 'Wir fassen mehrere Artikel zum gleichen Thema intelligent in einer Karte zusammen. Das spart Platz und Übersicht.' 
+                } 
             },
-            { element: '#nav-saved', popover: { title: 'Gemerkt', description: 'Deine gespeicherten Artikel.' } },
-            
-            // --- PART 3: WETTER FLOW ---
-            { element: '#nav-weather', popover: { title: 'Wetter', description: 'Wechseln wir zum Wetter-Bereich...' },
-              onHighlightStarted: () => {
-                   // Sidebar bleibt offen fürs Highlighting, aber wir bereiten im Hintergrund den View vor
-              }
+            { 
+                element: '#tour-btn-reader', 
+                popover: { 
+                    title: 'Lese-Modus', 
+                    description: 'Der wichtigste Button! Öffnet den Artikel direkt in der App – ohne Werbung, Cookie-Banner oder Ablenkung.' 
+                } 
             },
-            
-            // TRANSITION: Feed -> Search View
-            { element: '#tour-input-city', popover: { title: 'Standort wählen', description: 'Beim ersten Mal: Gib deine Stadt ein (z.B. Berlin).' },
-              onHighlightStarted: () => {
-                  // Sidebar zu
-                  document.getElementById('sidebar').classList.remove('active');
-                  document.getElementById('sidebar-overlay').classList.remove('active');
-                  // View umschalten
-                  switchTourView('tour-view-search');
-              }
+            { 
+                element: '#tour-btn-original', 
+                popover: { 
+                    title: 'Original-Quelle', 
+                    description: 'Mit "Original" gelangst du jederzeit zur Webseite des Verlags im Browser.' 
+                } 
             },
-            
-            // TRANSITION: Search -> Dashboard (Fake Input)
-            { element: '#tour-view-dash', popover: { title: 'Wetter Dashboard', description: 'Hier siehst du den 7-Tage Trend.' },
-              onHighlightStarted: () => {
-                  // Simuliere Eingabe
-                  const input = document.getElementById('tour-input-city');
-                  if(input) input.value = "Berlin";
-                  
-                  // Kurze Verzögerung für Effekt, dann Switch
-                  setTimeout(() => {
-                      switchTourView('tour-view-dash');
-                  }, 300);
-              }
+            { 
+                element: '#tour-btn-save', 
+                popover: { 
+                    title: 'Merken', 
+                    description: 'Speichere Artikel für später. Du kannst wählen, ob für 24 Stunden, eine Woche oder für immer.' 
+                } 
             },
-            
-            // DETIAL VIEW
-            { element: '#tour-day-1', popover: { title: 'Details', description: 'Klicke auf einen Tag für den Tagesverlauf (Morgens, Mittags, Abends).' } },
-            
-            { element: '#tour-fake-detail', popover: { title: 'Tagesansicht', description: 'Hier siehst du Temperaturen und Regenwahrscheinlichkeit im Detail.' },
-               onHighlightStarted: () => { document.getElementById('tour-fake-detail').style.display = 'flex'; },
-               onDeselected: () => { document.getElementById('tour-fake-detail').style.display = 'none'; }
+            // --- DROPDOWN LOGIC ---
+            { 
+                element: '#tour-btn-toggle', 
+                popover: { 
+                    title: 'Mehr Perspektiven', 
+                    description: 'Hier verstecken sich weitere Artikel zum gleichen Thema. Wir öffnen das mal...' 
+                },
+                // Magie: Dropdown automatisch öffnen
+                onHighlightStarted: () => {
+                   const dropdown = document.getElementById('vars-tour-fake');
+                   dropdown.style.display = 'block';
+                   // Simuliere Scrollen, falls nötig
+                   dropdown.scrollIntoView({behavior: "smooth", block: "center"});
+                }
             },
-            
-            // RADAR
-            { element: '#tour-radar-trigger', popover: { title: 'Regenradar', description: 'Die interaktive Karte für Wolken und Regen.' } },
-            
-            { element: '#tour-fake-radar', popover: { title: 'Radar Karte', description: 'Zoome und bewege dich auf der Karte.' },
-               onHighlightStarted: () => { document.getElementById('tour-fake-radar').style.display = 'flex'; }
+            { 
+                element: '#tour-related-1', 
+                popover: { 
+                    title: 'Alternative Quellen', 
+                    description: 'Hier siehst du, wer noch darüber berichtet hat.' 
+                } 
             },
-            
-            { element: '#tour-radar-controls', popover: { title: 'Zeitsteuerung', description: 'Spiele den Verlauf ab: Vergangenheit bis 30 Min. Zukunft.' },
-               onDeselected: () => { document.getElementById('tour-fake-radar').style.display = 'none'; }
+            { 
+                element: '#tour-badge-readable', 
+                popover: { 
+                    title: 'Lesbarkeits-Check', 
+                    description: 'Achte auf den grünen Punkt "Lesbar". Das heißt: Auch dieser Artikel funktioniert im schnellen Lese-Modus.' 
+                } 
             },
-            
-            // ABSCHLUSS
-            { element: '.search-area', popover: { title: 'Fertig!', description: 'Viel Spaß mit der App!' },
-               onHighlightStarted: () => { 
-                   switchTourView('tour-view-feed'); // Zurück zum Startbild
-               }
+            { 
+                element: '#tour-btn-pin', 
+                popover: { 
+                    title: 'Promoten / Anpinnen', 
+                    description: 'Gefällt dir diese Quelle besser als der Hauptartikel? Klicke die Nadel, um sie nach oben zu tauschen. Die App merkt sich deine bevorzugten Quellen!' 
+                },
+                // Beim Verlassen Dropdown wieder zu machen
+                onDeselected: () => {
+                    document.getElementById('vars-tour-fake').style.display = 'none';
+                }
+            },
+            // --- WEATHER ---
+            { 
+                element: '#tour-card-weather', 
+                popover: { 
+                    title: 'Wetter & Radar', 
+                    description: 'Unten oder im Menü findest du das Wetter. Klicke auf eine Karte für den Stundenverlauf.' 
+                } 
+            },
+            { 
+                element: '#tour-btn-radar', 
+                popover: { 
+                    title: 'Regenradar', 
+                    description: 'Das Radar zeigt dir aktuelle Wolken und Regenprognosen für die nächsten 30 Minuten.' 
+                } 
+            },
+            // --- HEADER TOOLS ---
+            { 
+                element: '.search-area', 
+                popover: { 
+                    title: 'Suche & Zen', 
+                    description: 'Suche nach Stichworten. Tipp: Der Button rechts (📖/👁️) schaltet den "Zen-Modus" an – reiner Text, keine Bilder.' 
+                },
+                onHighlightStarted: () => {
+                    window.scrollTo(0,0);
+                }
+            },
+            { 
+                element: '#btn-filter-main', 
+                popover: { 
+                    title: 'Smarte Filter', 
+                    description: 'Hier kannst du nach Datum filtern oder dir nur Artikel anzeigen lassen, die den Lese-Modus unterstützen.' 
+                } 
+            },
+            // --- SIDEBAR ---
+            { 
+                element: '.header-left button', // Hamburger Icon
+                popover: { 
+                    title: 'Das Menü', 
+                    description: 'Hier findest du alles Weitere.' 
+                },
+                // Sidebar öffnen
+                onHighlightStarted: () => {
+                    document.getElementById('sidebar').classList.add('active');
+                    document.getElementById('sidebar-overlay').classList.add('active');
+                }
+            },
+            { 
+                element: '#nav-saved', 
+                popover: { 
+                    title: 'Deine Sammlung', 
+                    description: 'Hier landen deine gespeicherten Artikel.' 
+                } 
+            },
+            { 
+                element: '#nav-weather', 
+                popover: { 
+                    title: 'Wetter Tab', 
+                    description: 'Hier kannst du deinen Standort für das Wetter festlegen.' 
+                } 
             }
         ]
     });
 
     driverObj.drive();
 }
-    
     //Ende Onboarding
 
 
