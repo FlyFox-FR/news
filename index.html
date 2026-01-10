@@ -73,6 +73,37 @@
     /* Z-Index Fixes für Sticky Header während der Tour */
     body.tour-active header { z-index: 10 !important; } 
     body.tour-active .sidebar { z-index: 9999 !important; }
+
+    /* --- ZUSATZ FÜR NEUE ONBOARDING VIEWS --- */
+.tour-view { display: none; animation: fadeIn 0.3s ease; }
+.tour-view.active { display: block; }
+
+/* Fake Wetter Grid */
+.fake-weather-grid {
+    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;
+}
+.fake-w-card {
+    min-width: 100px; background: #18181b; border: 1px solid #333; 
+    border-radius: 16px; padding: 15px; text-align: center;
+}
+
+/* Fake Overlays */
+#tour-fake-detail {
+    position: fixed; inset: 0; background: #111; z-index: 11000;
+    display: none; flex-direction: column; align-items: center; padding-top: 50px;
+}
+#tour-fake-radar {
+    position: fixed; inset: 0; background: #000; z-index: 11000;
+    display: none; flex-direction: column;
+}
+#tour-fake-map-img {
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.6;
+}
+.fake-radar-controls {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(20,20,20,0.9); padding: 20px; border-top: 1px solid #333;
+}
+    
 </style>
     
     <style>
