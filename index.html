@@ -381,6 +381,30 @@
             background: var(--accent); color: #fff; border-color: var(--accent);
             box-shadow: 0 2px 8px var(--accent-glow);
         }
+
+        /* --- SEARCH SNIPPET (Context Box) --- */
+        .search-snippet {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: #ccc;
+            font-family: var(--font-serif);
+            line-height: 1.5;
+            font-style: italic;
+        }
+        .snippet-label {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
+            font-family: var(--font-main);
+        }
         
     </style>
 </head>
@@ -480,7 +504,7 @@
 
         <div class="search-area">
             <div class="search-wrapper">
-                <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="render()">
+                <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="triggerSearch()">
             </div>
         </div>
     </header>
@@ -529,7 +553,37 @@
         }
 
 
+// --- SEARCH HELPERS ---
+        let searchTimeout = null;
 
+        // 1. Debounce: Wartet 300ms, bevor die Suche startet (Performance!)
+        function triggerSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                render();
+            }, 300);
+        }
+
+        // 2. Snippet Generator: Schneidet Text um das Suchwort herum aus
+        function generateSearchSnippet(text, term) {
+            if (!text) return null;
+            const lowerText = text.toLowerCase();
+            const index = lowerText.indexOf(term);
+            
+            if (index === -1) return null;
+
+            // 60 Zeichen davor und danach
+            const start = Math.max(0, index - 60);
+            const end = Math.min(text.length, index + term.length + 60);
+            
+            let snippet = text.substring(start, end);
+            
+            // "..." hinzufügen, wenn Text abgeschnitten wurde
+            if (start > 0) snippet = "..." + snippet;
+            if (end < text.length) snippet = snippet + "...";
+            
+            return snippet;
+        }
     
        // --- STATS UPDATE ---
         function updateSidebarStats() {
@@ -1050,63 +1104,130 @@ async function openDebug() {
         }
 
         // --- MAIN RENDER ---
-function render() {
+
+
+
+    function render() {
             const container = document.getElementById('feed');
             const searchTerm = document.getElementById('search').value.trim().toLowerCase();
             container.innerHTML = '';
 
-            let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
-
-         // 1. DATE FILTER (mit Sticky-Ausnahme)
-            if(currentTab === 'feed' && selectedDateFilter) {
-                baseData = baseData.filter(item => {
-                    // Zeigen, wenn Datum passt ODER wenn es der gerade gepinnte Artikel ist
-                    return getLocalDateString(item.date) === selectedDateFilter || item.id === stickyClusterId;
-                });
-            }
-    
-
             let data = [];
-            if (selectedSources.length > 0) {
-                baseData.forEach(item => {
-                    if (selectedSources.includes(item.source)) data.push({ ...item, related: [] });
-                    item.related?.forEach(rel => { if (selectedSources.includes(rel.source)) data.push(rel); });
-                });
-            } else { data = baseData; }
 
-            if (searchTerm) {
-                data = data.filter(i => 
-                    i.title.toLowerCase().includes(searchTerm) || 
-                    (i.text && i.text.toLowerCase().includes(searchTerm)) ||
-                    (i.bullets && i.bullets.some(b => b.toLowerCase().includes(searchTerm)))
-                );
+            // --- MODUS A: SUCHE AKTIV (FLAT MODE) ---
+            if (searchTerm.length > 0) {
+                
+                // 1. Flattening: Alles in einen Topf (Parents & Children)
+                let flatList = [];
+                allNewsData.forEach(item => {
+                    // Hauptartikel (Kopie, um Original nicht zu verändern)
+                    flatList.push({ ...item, isSearchChild: false });
+                    // Kinder (falls vorhanden)
+                    if (item.related && item.related.length > 0) {
+                        item.related.forEach(child => {
+                            flatList.push({ ...child, isSearchChild: true });
+                        });
+                    }
+                });
+
+                // 2. Filtern & Bewerten & Snippets bauen
+                data = flatList.reduce((acc, item) => {
+                    let score = 0;
+                    let snippet = null;
+
+                    // Check Titel (Höchste Priorität)
+                    if (item.title.toLowerCase().includes(searchTerm)) score += 10;
+                    
+                    // Check Intro/Bullets (Mittlere Priorität)
+                    if (item.text && item.text.toLowerCase().includes(searchTerm)) score += 5;
+                    if (item.bullets && item.bullets.some(b => b.toLowerCase().includes(searchTerm))) score += 3;
+
+                    // Check Content (Niedrigste Prio, aber wichtig für Deep Search)
+                    if (item.content && item.content.toLowerCase().includes(searchTerm)) {
+                        score += 1;
+                        // Wenn noch kein Treffer im Titel/Intro war, generieren wir das Snippet
+                        // (oder wir generieren es immer, um zu zeigen wo es steht)
+                        if (!snippet) {
+                            snippet = generateSearchSnippet(item.content, searchTerm);
+                        }
+                    }
+
+                    // Wenn Treffer -> ab in die Liste
+                    if (score > 0) {
+                        // Speichere Snippet temporär im Item für die Anzeige
+                        item.searchSnippet = snippet; 
+                        item.searchScore = score;
+                        acc.push(item);
+                    }
+                    return acc;
+                }, []);
+
+                // 3. Sortieren nach Relevanz (Score), dann Datum
+                data.sort((a, b) => {
+                    if (b.searchScore !== a.searchScore) return b.searchScore - a.searchScore;
+                    return new Date(b.date) - new Date(a.date);
+                });
+
+            } 
+            // --- MODUS B: STANDARD FEED (CLUSTER MODE) ---
+            else {
+                let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+
+                // Date Filter
+                if(currentTab === 'feed' && selectedDateFilter) {
+                    baseData = baseData.filter(item => {
+                        return getLocalDateString(item.date) === selectedDateFilter || item.id === stickyClusterId;
+                    });
+                }
+
+                // Source Filter
+                if (selectedSources.length > 0) {
+                    baseData.forEach(item => {
+                        if (selectedSources.includes(item.source)) {
+                            // Wenn Main matcht, nimm ganzes Cluster (filtere Kinder)
+                            const filteredRelated = item.related?.filter(r => selectedSources.includes(r.source)) || [];
+                            data.push({ ...item, related: filteredRelated });
+                        } else {
+                            // Wenn nur Kinder matchen -> als einzelne Items anzeigen
+                            const matchChildren = item.related?.filter(r => selectedSources.includes(r.source)) || [];
+                            matchChildren.forEach(child => data.push({ ...child, related: [] }));
+                        }
+                    });
+                } else { 
+                    data = baseData; 
+                }
+
+                // Sortierung
+                if (currentSort === 'time') data.sort((a,b) => new Date(b.date) - new Date(a.date));
+                else data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
             }
 
-            if (currentSort === 'time') data.sort((a,b) => new Date(b.date) - new Date(a.date));
-            else data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
-
+            // --- RENDERING ---
             document.getElementById('nav-saved').innerHTML = `<span>🔖</span> Gemerkt (${savedNews.length})`;
 
-            if (data.length === 0) { container.innerHTML = `<div style="text-align:center; padding:100px 20px; color:var(--text-muted)">Keine Ergebnisse gefunden.</div>`; return; }
+            if (data.length === 0) { 
+                container.innerHTML = `<div style="text-align:center; padding:100px 20px; color:var(--text-muted)">
+                    ${searchTerm ? 'Keine Treffer für "' + searchTerm + '"' : 'Keine Nachrichten vorhanden.'}
+                </div>`; 
+                return; 
+            }
 
             data.forEach((item, index) => {
                 const savedObj = savedNews.find(s => s.news.id === item.id);
                 const relTime = getRelativeTime(item.date);
                 const isNew = (new Date() - new Date(item.date)) < 3600000;
                 const hasContent = item.content && item.content.length > 200;
+                
                 const card = document.createElement('div');
                 card.className = 'card animate-fade';
                 card.id = `card-${item.id}`;
-                card.style.animationDelay = (index * 0.05) + 's';
+                card.style.animationDelay = (index * 0.05) + 's'; // Kleiner Delay
                 
-                let metaExtra = '';
-                if(currentTab === 'saved' && savedObj) { metaExtra = `<span class="expiry-info" onclick="toggleSave('${item.id}')">${getExpiryLabel(savedObj.expiresAt)}</span>`; }
-
-                // --- SICHERE LINKS ---
-                // Hier ersetzen wir direkte Links durch confirmExit()
+                // HTML Aufbau
                 card.innerHTML = `
                     <button class="btn-save ${savedObj ? 'saved' : ''}" onclick="toggleSave('${item.id}')">${savedObj ? '★' : '☆'}</button>
                     ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
+                    
                     <div class="card-body">
                         <div class="meta">
                             <span style="display:flex; align-items:center; gap:8px;">
@@ -1114,27 +1235,39 @@ function render() {
                                 <img src="${getSourceLogo(item.source)}" class="source-logo">
                                 ${item.source} • ${relTime}
                             </span>
-                            ${metaExtra}
+                            ${currentTab === 'saved' && savedObj ? `<span class="expiry-info">${getExpiryLabel(savedObj.expiresAt)}</span>` : ''}
                         </div>
-                        <!-- SICHERER TITEL LINK -->
+                        
+                        <!-- TITEL LINK (SICHER) -->
                         <a href="#" onclick="confirmExit('${item.link}'); return false;" class="card-title">${highlightText(item.title, searchTerm)}</a>
+                        
+                        <!-- CONTENT -->
                         <div class="scoop">${highlightText(item.text, searchTerm)}</div>
                         <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
+
+                        <!-- SEARCH SNIPPET (NUR IM SUCHMODUS WENN VORHANDEN) -->
+                        ${searchTerm && item.searchSnippet ? `
+                            <div class="search-snippet">
+                                <span class="snippet-label">🔍 Gefunden im Text:</span>
+                                ${highlightText(item.searchSnippet, searchTerm)}
+                            </div>
+                        ` : ''}
                     </div>
                     
                     <div class="actions">
                         <div class="action-left">
-                            <!-- SICHERER ORIGINAL BUTTON -->
                             <a href="#" onclick="confirmExit('${item.link}'); return false;" class="btn-link">Original ↗</a>
                         </div>
                         <div class="action-center">
                             ${hasContent ? `<button class="btn-reader" onclick="openReader('${item.id}')">📖 Lesen</button>` : ''}
                         </div>
                         <div class="action-right">
-                            ${selectedSources.length === 0 && item.related?.length ? `
+                            <!-- CLUSTER BUTTON NUR WENN NICHT SUCHE UND RELATED VORHANDEN -->
+                            ${!searchTerm && selectedSources.length === 0 && item.related?.length ? `
                                 <button class="btn-toggle" onclick="toggleVars('${item.id}')">
                                     <span>📚 ${item.related.length}</span>
                                 </button>` : ''}
+                            
                             <button id="btn-menu-${item.id}" class="btn-menu" onclick="toggleCardMenu(event, '${item.id}')">⋮</button>
                             <div id="menu-${item.id}" class="action-dropdown">
                                 <div class="menu-option" onclick="shareArticle('${item.id}')"><span>📤</span> Teilen</div>
@@ -1142,33 +1275,25 @@ function render() {
                         </div>
                     </div>
 
-
-
-<div id="vars-${item.id}" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
+                    <!-- RELATED ITEMS (NUR IM NORMALEN FEED ANZEIGEN) -->
+                    <div id="vars-${item.id}" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
                         <div style="font-size:0.65rem; color:#555; margin-bottom:10px; text-transform:uppercase; font-weight:800; letter-spacing:1px;">Weitere Quellen</div>
                         ${(item.related || []).map(r => {
                             const isReadable = r.content && r.content.length > 200;
                             return `
                             <div class="related-item-row">
-                                <!-- ZEILE 1: TITEL (Klickbar zum Pinnen) -->
                                 <div class="related-title" onclick="promoteArticle('${item.id}', '${r.id}')" title="Diesen Artikel nach oben holen">
                                     ${r.title}
                                 </div>
-                                
-                                <!-- ZEILE 2: META & ACTIONS -->
                                 <div class="related-footer">
                                     <div class="related-meta-group">
                                         <img src="${getSourceLogo(r.source)}" style="width:14px; height:14px; border-radius:3px; opacity:0.7">
                                         <span>${getRelativeTime(r.date)}</span>
                                         ${isReadable ? `<span class="badge-readable">● Lesbar</span>` : ''}
                                     </div>
-
                                     <div class="related-actions-group">
                                         <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link-small">Original</a>
-                                        
-                                        <button class="btn-pin" onclick="promoteArticle('${item.id}', '${r.id}')" title="Anpinnen (Nach oben)">
-                                            📌
-                                        </button>
+                                        <button class="btn-pin" onclick="promoteArticle('${item.id}', '${r.id}')" title="Anpinnen">📌</button>
                                     </div>
                                 </div>
                             </div>
