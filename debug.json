@@ -1,5 +1,115 @@
 [
   {
+    "timestamp": "2026-01-10T01:04:17.954Z",
+    "sources": {
+      "Tagesschau": {
+        "added": 4,
+        "skipped_cache": 10,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "Venezuela-Öl: Trump hofft auf Engagement der US-Konzerne",
+          "US-Griff nach Grönland: Europas Scheu vor einer starken Antwort",
+          "Proteste im Iran: Demonstrationen weiten sich aus",
+          "Obdachlosen droht Kältetod - Gefahr steigt mit Sturm \"Elli\"",
+          "Marktbericht: DAX in Rekordlaune",
+          "Gedenkfeier in der Schweiz für die Toten der Brandkatastrophe",
+          "Was wollte Putin mit dem Einsatz der Hyperschallrakete erreichen?",
+          "Trotz Protesten: EU macht Weg frei für Mercosur-Abkommen",
+          "Liveblog zum Sturmtief: ++ Bahn rechnet bis Samstag mit Einschränkungen ++",
+          "US-Einheiten beschlagnahmen erneut Öltanker in der Karibik",
+          "Darum kämpfen in Syrien Kurden und Armee gegeneinander (7345 chars)",
+          "Massive Stromausfälle in Großbritannien und Frankreich nach Wintersturm (3271 chars)",
+          "Atommülltransporte durch NRW dürfen stattfinden (3665 chars)",
+          "Warum Mercosur trotz aller Skepsis beschlossen werden konnte (4763 chars)"
+        ]
+      },
+      "ZDF": {
+        "added": 4,
+        "skipped_cache": 8,
+        "skipped_content": 14,
+        "error": 0,
+        "details": [
+          "Verkehrs-Chaos im Norden - weniger Schnee am Wochenende",
+          "Diese Karte zeigt, wie viel es geschneit hat (221 chars)",
+          "Sturm \"Elli\" bringt Chaos - \"Jahrhundert-Event\" bleibt aus",
+          "Hier warnt der DWD aktuell vor Schnee, Glätte und Sturm",
+          "Berichte über Dutzende Tote nach Protesten im Iran",
+          "\"Sie kommen her, schaffen eine unsichere Umgebung\" (263 chars)",
+          "Schneeschleuder sorgt für freie Bahngleise (248 chars)",
+          "Hochwasser in Albanien und Nordmazedonien (256 chars)",
+          "Kuscheltier-Regen auf Eishockey-Feld (175 chars)",
+          "Müllberg auf Philippinen eingestürzt (228 chars)",
+          "Ozeane 2025 so warm wie nie (142 chars)",
+          "Bürgermeister: \"Verpisst euch aus Minneapolis\" (220 chars)",
+          "Hamburgs Schwanenretter proben den Ernstfall (201 chars)",
+          "Außergewöhnliche Hitzewelle in Australien (215 chars)",
+          "Klettern in der Kirche (173 chars)",
+          "Deutschland erkennt kleinen Inselstaat an (221 chars)",
+          "50 Schafe stürmen Supermarkt (150 chars)",
+          "Rennfahrer-Ikone Hans Herrmann gestorben",
+          "Crans-Montana: Einer der Bar-Besitzer in Untersuchungshaft (232 chars)",
+          "Schweiz nimmt Abschied von 40 Opfern",
+          "Fakes zu Minnesota entfachen eine Hexenjagd im Internet",
+          "Das Jahr der Wahrheit für Friedrich Merz",
+          "\"Guter Populismus\" und ein altes Problem (4369 chars)",
+          "Eiskalter Winter: Gasspeicher schon stark geleert (3335 chars)",
+          "Linnemann pocht auf Reformpaket: \"Chance zu einem Aufbruch\"  (2438 chars)",
+          "Ozeane speichern immer mehr Wärme - neue Rekordwerte (4258 chars)"
+        ]
+      },
+      "Spiegel": {
+        "added": 4,
+        "skipped_cache": 11,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "Deutscher Wetterdienst erwartet Entspannung der Schneelage (221 chars)",
+          "Deutsche Bahn: Warum Züge heute im Winter bei Schnee und Eis schnell still stehen",
+          "Sturm »Elli«: Mit dem Winterdienst im Räumeinsatz",
+          "Donald Trumps neuer Imperialismus: Drohen weitere Attacken in Lateinamerika?",
+          "AfD zu Venezuela: Warum Alice Weidel und Tino Chrupalla zum US-Angriff auf Venezuela schweigen",
+          "USA: Bundesweite Proteste nach tödlichem ICE-Einsatz in Minneapolis (203 chars)",
+          "Börse: Trump veröffentlicht Arbeitsmarktdaten vor offizieller Bekanntgabe",
+          "Iran: So breiten sich die regimekritischen Proteste aus",
+          "Iran: Brennende Autos und zerrissene Flaggen bei Protesten in Teheran",
+          "Iran: Friedrich Merz, Emmanuel Macron und Keir Starmer rufen Teheran zu Gewaltverzicht auf",
+          "CSU-Forderung nach mehr Abschiebungen: Das erwartet Syrer in ihrer Heimat",
+          "Syrien: Experte über Kämpfe in Aleppo - »Gegenseitiges Vertrauen ist nicht vorhanden.«",
+          "Crans-Montana: Trauerfeier für die Opfer",
+          "Der große Gehaltsvergleich: Bekommen Sie, was Sie verdienen? (162 chars)",
+          "Warum Oldtimer plötzlich out sind (174 chars)"
+        ]
+      },
+      "rbb24": {
+        "added": 4,
+        "skipped_cache": 14,
+        "skipped_content": 0,
+        "error": 0,
+        "details": [
+          "Stromausfall im Berliner Südwesten: Aktuelle Entwicklungen im Liveticker",
+          "Präsident des Berliner Ski-Verbandes: \"Der Grenzstreifen bietet sich wunderbar an\"",
+          "Schnee und Sturm in Berlin und Brandenburg: Die aktuellen Entwicklungen im Liveticker",
+          "Prignitz: Wildkatze im Elbe-Naturschutzgebiet nachgewiesen",
+          "Fußball: Hertha verliert Testspiel gegen Standard Lüttich",
+          "BSW nach dem Koalitionsbruch: Bündnis für Selbstentzauberung und Wählertäuschung",
+          "\"Ich weiß von vielen Senioren, die an ihre Wohnung gefesselt sind\"",
+          "Fußball: Warum Wintertrainingslager (keinen) Sinn machen",
+          "Landtag lehnt Antrag auf Auflösung ab - BSW-Abgeordnete stimmen mit AfD",
+          "Vietnamesischer Großmarkt: BVG nennt Tram-Halt in \"Herzbergstr./Dong-Xuan\" um",
+          "20. Todestag: Spandau will Grabstelle von Hatun Sürücü dauerhaft erhalten ",
+          "Nach drei Jahren Pause: Erika-Heß-Eisstadion im Wedding öffnet wieder Außenfläche",
+          "Transfer-Coup perfekt: Füchse Berlin holen Weltklasse-Spieler Dika Mem",
+          "Übung offenbart Lücken im Potsdamer Katastrophenschutz",
+          "Nach Stromausfall: Deutliche Kritik am Berliner Krisenmanagement (264 chars)",
+          "Bedrohte Art: Sumatra-Tiger-Nachwuchs im Tierpark Berlin   (0 chars)",
+          "Wegners Tennisspiel während Stromausfall: \"Wenn es zu einer solchen Krise kommt, sollte man als politischer Akteur vor Ort sein\" (250 chars)",
+          "\"Egal\" an der Berliner Schaubühne thematisiert Gleichberechtigung (186 chars)"
+        ]
+      }
+    }
+  },
+  {
     "timestamp": "2026-01-10T00:24:41.396Z",
     "sources": {
       "Tagesschau": {
