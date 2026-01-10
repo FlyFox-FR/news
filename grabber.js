@@ -9,7 +9,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const MAX_DAYS = 4; 
 const MAX_ITEMS = 600; 
 const MAX_CHARS_SAVE = 30000; 
-const MAX_CHARS_AI = 5500;    
+// Limits: Pollinations mag keine zu langen URLs, OpenAI schafft locker 128k Context.
+const MAX_CHARS_AI = process.env.OPENAI_API_KEY ? 15000 : 5500;    
 
 // --- LOGGER STATE ---
 let currentRunLog = { timestamp: new Date().toISOString(), sources: {} };
@@ -31,36 +32,26 @@ function decodeEntities(text) {
 function stripTags(html) { return html.replace(/<[^>]+>/g, "").trim(); }
 function cleanString(str) { return str ? str.replace(/\s+/g, ' ').trim() : ""; }
 
-// --- SCRAPER (V5 - Multi-Stage) ---
+// --- SCRAPER ---
 async function fetchArticleText(url) {
     try {
         const { data } = await axios.get(url, { timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         let html = data;
-
-        // 1. Müll raus
         ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption', 'style'].forEach(tag => {
             html = html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
         });
-
-        // 2. Container finden
         const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
         if (!containerMatch) return ""; 
         let contentScope = containerMatch[1];
-
-        // 3. STAGE 1: Saubere P-Tags
         let paragraphs = extractParagraphs(contentScope);
         let fullText = paragraphs.join('\n\n');
 
-        // 4. STAGE 2: Fallback (Container Strip)
+        // Fallback Stage 2
         if (fullText.length < 600) {
             let rawText = contentScope.replace(/<\/(div|p|section|h[1-6]|li)>/gi, '\n\n');
             rawText = stripTags(rawText);
             let lines = rawText.split('\n').map(l => l.trim()).filter(l => isValidParagraph(l));
             fullText = lines.join('\n\n');
-            
-            if (fullText.length > 600) {
-                // console.log(`      ⚠️ Stage 2 Rescue (${fullText.length} Zeichen)`);
-            }
         }
 
         fullText = decodeEntities(fullText);
@@ -121,25 +112,61 @@ function loadExistingNews() {
     return [];
 }
 
+// --- HYBRID AI ENGINE (OpenAI + Pollinations) ---
 async function analyzeWithPollinations(title, fullText, sourceName) {
     const context = fullText && fullText.length > 200 ? fullText.substring(0, MAX_CHARS_AI) : title;
-    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${context.replace(/"/g, "'")}"
-    Antworte NUR mit validem JSON.
-    ANWEISUNG:
-    1. Sprache: ZWINGEND DEUTSCH.
-    2. ERFINDE NICHTS! Versuche dich an den Kontext der Artikel zu halten.
-    3. Suche nach harten Fakten (Zahlen, Orte).
-    4. Wenn Du wirklich keine harten Fakten, Orte, Namen etc. findest, dann schreibe kein Bulletpoint mit "Keine Orte, Fakten etc... im Text gefunden", sondern dann schreibe etwas zum Inhalt/Kontext des Artikels.
-    5. Schreibe 2-4 Bulletpoints.
+    const safeTitle = title.replace(/"/g, "'");
+    const safeContext = context.replace(/"/g, "'");
 
-    Format:
-    {
-      "newTitle": "Sachliche Überschrift",
-      "scoop": "Kernaussage in einem Satz.",
-      "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
-    }`;
+    // PROMPT ENGINEERING (Verbesserte Grammatik)
+    const systemPrompt = `Du bist Chefredakteur einer deutschen Qualitätszeitung (wie FAZ oder Zeit).
+    Deine Aufgabe: Erstelle eine prägnante Zusammenfassung basierend auf dem Text.
+    WICHTIG:
+    1. Schreibe in perfektem, natürlichem Deutsch. Vermeide "Denglisch" oder wörtliche Übersetzungen.
+    2. Achte penibel auf korrekte Grammatik und Satzbau.
+    3. Sei sachlich und neutral.
+    4. Wenn Fakten fehlen, erfinde nichts.
     
-    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
+    Antworte NUR mit diesem JSON Format:
+    {
+      "newTitle": "Ein sachlicher, kurzer Titel (max 80 Zeichen)",
+      "scoop": "Die Kernaussage in 1-2 Sätzen. Was ist passiert und warum ist es wichtig?",
+      "bullets": ["Wichtiges Detail 1", "Wichtiges Detail 2", "Wichtiges Detail 3"]
+    }`;
+
+    // A) OPENAI ROUTE (Wenn Key vorhanden)
+    if (process.env.OPENAI_API_KEY) {
+        // console.log("   ✨ Nutze OpenAI (GPT-4o-mini)...");
+        try {
+            const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+                model: "gpt-4o-mini",
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: `Analysiere diesen Text: Titel: "${safeTitle}". Inhalt: "${safeContext}"` }
+                ],
+                temperature: 0.3, // Geringe Kreativität für mehr Faktentreue
+                response_format: { type: "json_object" }
+            }, {
+                headers: { 
+                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                    'Content-Type': 'application/json' 
+                }
+            });
+            const data = JSON.parse(response.data.choices[0].message.content);
+            if (!data.bullets) data.bullets = [];
+            return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
+        } catch (e) {
+            console.error("OpenAI Error:", e.response?.data || e.message);
+            // Fallback to Pollinations below if OpenAI fails? Or return default. Let's return default to be safe.
+            return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
+        }
+    }
+
+    // B) POLLINATIONS ROUTE (Fallback/Kostenlos)
+    // Wir packen den Prompt in die URL, müssen ihn aber stark kürzen für Pollinations
+    const shortPrompt = `Du bist Redakteur. Schreibe perfektes Deutsch. JSON Format: {"newTitle": "...", "scoop": "...", "bullets": ["..."]}. Analysiere: ${safeTitle} - ${safeContext}`;
+    
+    const url = `https://text.pollinations.ai/${encodeURIComponent(shortPrompt)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
     
     let retries = 2;
     while (retries > 0) {
@@ -162,8 +189,11 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
 async function clusterBatchWithAI(batchArticles, batchIndex) {
     console.log(`📦 Batch ${batchIndex + 1}: KI sortiert ${batchArticles.length} Artikel...`);
     const listForAI = batchArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
-    const instruction = `Gruppiere gleiche Events. Antworte NUR JSON: [[ID, ID], [ID]]. Liste:\n${listForAI}`;
+    
+    // Einfache Cluster-Logik bleibt bei Pollinations (kostenlos & schnell genug für einfache IDs)
+    const instruction = `Gruppiere Nachrichten zum EXAKT gleichen Ereignis. Antworte NUR JSON: [[ID, ID], [ID]]. Liste:\n${listForAI}`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
+    
     try {
         const response = await axios.get(url, { timeout: 60000 });
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
@@ -214,7 +244,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log(`🚀 Start News-Bot v5.1 (No Abort)...`);
+    console.log(`🚀 Start News-Bot v5.2 (Hybrid AI + Better Prompts)...`);
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -233,7 +263,6 @@ async function run() {
             console.log(`\n📡 ${source.name} (Ziel: ${source.count})...`);
             const feed = await parser.parseURL(source.url);
             let added = 0;
-            // KEIN errorSkips COUNTER MEHR!
 
             for (const item of feed.items) {
                 if (added >= source.count) break;
@@ -252,8 +281,7 @@ async function run() {
                     if (fullText.length < 500) {
                         console.log(`❌ Zu kurz (${fullText.length}). Skip.`);
                         logEvent(source.name, 'content', `${item.title} (${fullText.length} chars)`);
-                        // WIR MACHEN EINFACH WEITER (CONTINUE), BRECHEN ABER NICHT DIE SOURCE AB
-                        await sleep(2000); // Kurz warten (Höflichkeit), aber weitermachen
+                        await sleep(2000);
                         continue; 
                     } else {
                         console.log(`✅ OK (${fullText.length} Zeichen).`);
@@ -298,7 +326,6 @@ async function run() {
     
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
     
-    // LOG SAVE
     let debugLog = [];
     try { if (fs.existsSync('debug.json')) debugLog = JSON.parse(fs.readFileSync('debug.json', 'utf8')); } catch (e) {}
     debugLog.unshift(currentRunLog); 
