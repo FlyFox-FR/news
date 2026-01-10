@@ -865,8 +865,10 @@
             updateSourceDropdown(); render();
         }
 
-        function updateFilterBadges() {
-            const count = selectedSources.length + (selectedDateFilter ? 1 : 0);
+    function updateFilterBadges() {
+            // Zähle: Anzahl Quellen + (Datum gesetzt?) + (Lesbar-Modus an?)
+            const count = selectedSources.length + (selectedDateFilter ? 1 : 0) + (filterReadableOnly ? 1 : 0);
+            
             const badge = document.getElementById('global-filter-badge');
             const btn = document.getElementById('btn-filter-main');
             
@@ -881,17 +883,18 @@
         }
 
         // --- FETCH DATA & INITIALISIERUNG ---
-        async function fetchData() {
+
+    async function fetchData() {
             try {
                 const r = await fetch('news.json?t=' + Date.now());
                 allNewsData = await r.json();
-
-                updateSidebarStats();
                 
+                // Stats in Sidebar
+                updateSidebarStats();
+
                 // 1. Restore Sort
                 const savedSort = localStorage.getItem('current_sort');
                 if(savedSort) currentSort = savedSort;
-                // UI für Sort setzen
                 document.getElementById('opt-time').classList.toggle('active', currentSort === 'time');
                 document.getElementById('opt-trend').classList.toggle('active', currentSort === 'trend');
 
@@ -902,11 +905,16 @@
                 const savedDate = localStorage.getItem('date_filter');
                 if(savedDate) selectedDateFilter = savedDate;
 
-                // 3. Init UI Lists
+                // NEU: Restore Readable Filter
+                const savedReadable = localStorage.getItem('filter_readable');
+                if(savedReadable === 'true') filterReadableOnly = true;
+
+                // 3. Init UI Lists & Badges
                 applyPromotedArticles(); 
                 updateSourceDropdown();
                 initDateFilterOptions();
-                updateFilterBadges();
+                updateReadableUI();   // Setzt Haken im Menü
+                updateFilterBadges(); // Setzt rote Zahl
 
                 // 4. Deep Link Check
                 const urlParams = new URLSearchParams(window.location.search);
