@@ -2428,7 +2428,7 @@ function startOnboarding() {
             },
             { 
                 element: '#vars-tour-fake', 
-                popover: { title: 'Quellen Auswahl', description: 'Hier siehst du Alternativen. Manche sind lesbar (grüner Punkt), andere sind nur Links.' }
+                popover: { title: 'Quellen Auswahl', description: 'Hier siehst du Alternativen. Bei manchen ist der Gesamtartikel direkt in der App lesbar (grüner Punkt), andere sind nur Links zum Originalartikel.' }
             },
             { 
                 element: '#tour-btn-pin', 
@@ -2438,8 +2438,8 @@ function startOnboarding() {
             },
 
             // --- PART 2: UI ---
-            { element: '.search-area', popover: { title: 'Suche & Zen', description: 'Suche oben. Tipp: Der Zen-Button (📖) blendet Bilder aus.' }, onHighlightStarted: () => { window.scrollTo(0,0); }},
-            { element: '#btn-filter-main', popover: { title: 'Filter', description: 'Filtere nach Datum oder nur lesbaren Artikeln.' } },
+            { element: '.search-area', popover: { title: 'Suche & Zen', description: 'Suche oben. Tipp: Der Zen-Button (📖) Fokus-Modus fürs fokussierte Lesen.' }, onHighlightStarted: () => { window.scrollTo(0,0); }},
+            { element: '#btn-filter-main', popover: { title: 'Filter', description: 'Filtere nach Datum, Quellen oder direkt lesbaren Artikeln.' } },
             { element: '.header-left button', popover: { title: 'Menü', description: 'Öffne das Menü für mehr Funktionen.' }, onHighlightStarted: () => { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').classList.add('active'); }},
             { element: '#nav-saved', popover: { title: 'Gemerkt', description: 'Deine gespeicherten Artikel.' } },
             
