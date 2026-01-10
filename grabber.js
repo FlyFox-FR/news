@@ -8,24 +8,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // --- KONFIGURATION ---
 const MAX_DAYS = 4; 
 const MAX_ITEMS = 600; 
+const MAX_CHARS_SAVE = 30000; 
+const MAX_CHARS_AI = 5500;    
 
 // --- LOGGER STATE ---
-let currentRunLog = {
-    timestamp: new Date().toISOString(),
-    sources: {}
-};
-
+let currentRunLog = { timestamp: new Date().toISOString(), sources: {} };
 function logEvent(source, type, detail) {
-    if (!currentRunLog.sources[source]) {
-        currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, error: 0, details: [] };
-    }
+    if (!currentRunLog.sources[source]) currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, error: 0, details: [] };
     const s = currentRunLog.sources[source];
-    
     if (type === 'added') s.added++;
     if (type === 'cache') s.skipped_cache++;
     if (type === 'content') s.skipped_content++;
     if (type === 'error') s.error++;
-    
     if (detail) s.details.push(detail);
 }
 
@@ -34,25 +28,43 @@ function decodeEntities(text) {
     if (!text) return "";
     return text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&szlig;/g, 'ß').replace(/&auml;/g, 'ä').replace(/&ouml;/g, 'ö').replace(/&uuml;/g, 'ü').replace(/&Auml;/g, 'Ä').replace(/&Ouml;/g, 'Ö').replace(/&Uuml;/g, 'Ü').replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
 }
-
 function stripTags(html) { return html.replace(/<[^>]+>/g, "").trim(); }
 function cleanString(str) { return str ? str.replace(/\s+/g, ' ').trim() : ""; }
 
-// --- SCRAPER ---
+// --- SCRAPER (V5 - Multi-Stage) ---
 async function fetchArticleText(url) {
     try {
         const { data } = await axios.get(url, { timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         let html = data;
-        ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption'].forEach(tag => {
+
+        // 1. Müll raus
+        ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption', 'style'].forEach(tag => {
             html = html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
         });
+
+        // 2. Container finden
         const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
         if (!containerMatch) return ""; 
-        let paragraphs = extractParagraphs(containerMatch[1]);
-        let totalLength = paragraphs.join(" ").length;
-        if (totalLength < 800) paragraphs = extractParagraphs(html); // Fallback
-        let fullText = decodeEntities(paragraphs.join('\n\n'));
-        if (fullText.length > 30000) fullText = fullText.substring(0, 30000);
+        let contentScope = containerMatch[1];
+
+        // 3. STAGE 1: Saubere P-Tags
+        let paragraphs = extractParagraphs(contentScope);
+        let fullText = paragraphs.join('\n\n');
+
+        // 4. STAGE 2: Fallback (Container Strip)
+        if (fullText.length < 600) {
+            let rawText = contentScope.replace(/<\/(div|p|section|h[1-6]|li)>/gi, '\n\n');
+            rawText = stripTags(rawText);
+            let lines = rawText.split('\n').map(l => l.trim()).filter(l => isValidParagraph(l));
+            fullText = lines.join('\n\n');
+            
+            if (fullText.length > 600) {
+                // console.log(`      ⚠️ Stage 2 Rescue (${fullText.length} Zeichen)`);
+            }
+        }
+
+        fullText = decodeEntities(fullText);
+        if (fullText.length > MAX_CHARS_SAVE) fullText = fullText.substring(0, MAX_CHARS_SAVE);
         return fullText;
     } catch (e) { return ""; }
 }
@@ -72,7 +84,7 @@ function isValidParagraph(text) {
     text = text.trim();
     if (text.length < 50) return false; 
     const lower = text.toLowerCase();
-    const blacklist = ["alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", "melden sie sich an", "newsletter", "anzeige", "datenschutz", "impressum", "quelle:", "bild:", "foto:", "video:", "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang"];
+    const blacklist = ["alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", "melden sie sich an", "newsletter", "anzeige", "datenschutz", "impressum", "quelle:", "bild:", "foto:", "video:", "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang", "copyright", "©"];
     if (blacklist.some(bad => lower.includes(bad))) return false;
     return true;
 }
@@ -110,8 +122,8 @@ function loadExistingNews() {
 }
 
 async function analyzeWithPollinations(title, fullText, sourceName) {
-    const context = fullText && fullText.length > 500 ? fullText.substring(0, 5000) : title;
-    const instruction = `Du bist News-Redakteur. Analysiere: "${context.replace(/"/g, "'").substring(0, 4000)}". 
+    const context = fullText && fullText.length > 200 ? fullText.substring(0, MAX_CHARS_AI) : title;
+    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${context.replace(/"/g, "'")}"
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
@@ -125,7 +137,7 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
       "newTitle": "Sachliche Überschrift",
       "scoop": "Kernaussage in einem Satz.",
       "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
-    }`
+    }`;
     
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
     
@@ -202,7 +214,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log(`🚀 Start News-Bot (Retention: ${MAX_DAYS} Tage, Limit: ${MAX_ITEMS})...`);
+    console.log(`🚀 Start News-Bot v5.1 (No Abort)...`);
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -221,15 +233,10 @@ async function run() {
             console.log(`\n📡 ${source.name} (Ziel: ${source.count})...`);
             const feed = await parser.parseURL(source.url);
             let added = 0;
-            let errorSkips = 0;
+            // KEIN errorSkips COUNTER MEHR!
 
             for (const item of feed.items) {
                 if (added >= source.count) break;
-                if (errorSkips >= 8) { 
-                    logEvent(source.name, 'error', 'Too many errors, aborted.');
-                    console.log(`   🛑 Zu viele Fehler bei ${source.name}. Abbruch.`); 
-                    break; 
-                }
 
                 const exists = flatFeed.some(n => isSameArticle(n, item));
                 if (exists) { 
@@ -245,7 +252,9 @@ async function run() {
                     if (fullText.length < 500) {
                         console.log(`❌ Zu kurz (${fullText.length}). Skip.`);
                         logEvent(source.name, 'content', `${item.title} (${fullText.length} chars)`);
-                        errorSkips++; continue; 
+                        // WIR MACHEN EINFACH WEITER (CONTINUE), BRECHEN ABER NICHT DIE SOURCE AB
+                        await sleep(2000); // Kurz warten (Höflichkeit), aber weitermachen
+                        continue; 
                     } else {
                         console.log(`✅ OK (${fullText.length} Zeichen).`);
                     }
@@ -272,7 +281,6 @@ async function run() {
                     related: []
                 });
                 added++;
-                errorSkips = 0;
                 await sleep(4000); 
             }
         } catch (e) { 
@@ -290,11 +298,11 @@ async function run() {
     
     fs.writeFileSync('news.json', JSON.stringify(finalFeed, null, 2));
     
-    // --- DEBUG LOG SPEICHERN ---
+    // LOG SAVE
     let debugLog = [];
     try { if (fs.existsSync('debug.json')) debugLog = JSON.parse(fs.readFileSync('debug.json', 'utf8')); } catch (e) {}
-    debugLog.unshift(currentRunLog); // Neuester Log nach oben
-    if (debugLog.length > 20) debugLog = debugLog.slice(0, 20); // Max 20 Einträge
+    debugLog.unshift(currentRunLog); 
+    if (debugLog.length > 20) debugLog = debugLog.slice(0, 20); 
     fs.writeFileSync('debug.json', JSON.stringify(debugLog, null, 2));
 
     console.log(`✅ Fertig! ${finalFeed.length} Cluster gespeichert.`);
