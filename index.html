@@ -1319,25 +1319,34 @@ async function openDebug() {
         // --- SIDEBAR & CORE ---
         function toggleVars(id) { const el = document.getElementById('vars-' + id); el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
-function switchTab(t) { 
+
+    function switchTab(t) { 
             currentTab = t; 
             
-            // Buttons
+            // Buttons aktiv setzen
             document.getElementById('nav-feed').classList.toggle('active', t === 'feed'); 
             document.getElementById('nav-saved').classList.toggle('active', t === 'saved'); 
-            document.getElementById('nav-weather').classList.toggle('active', t === 'weather');
+            const navWeather = document.getElementById('nav-weather');
+            if(navWeather) navWeather.classList.toggle('active', t === 'weather');
             
-            // Views
+            // Views umschalten
             document.getElementById('feed').style.display = (t === 'feed' || t === 'saved') ? 'flex' : 'none';
-            document.getElementById('weather-view').style.display = t === 'weather' ? 'block' : 'none';
+            const weatherView = document.getElementById('weather-view');
+            if(weatherView) weatherView.style.display = t === 'weather' ? 'block' : 'none';
             
-            // Search Bar Logik (Im Wetter Tab brauchen wir die News-Suche nicht)
-            document.querySelector('.search-area').style.display = (t === 'feed' || t === 'saved') ? 'block' : 'none';
+            // Search Bar Logik
+            const searchArea = document.querySelector('.search-area');
+            if(searchArea) searchArea.style.display = (t === 'feed' || t === 'saved') ? 'block' : 'none';
 
-            toggleMenu(); 
+            // FIX: Menü nur schließen, wenn es offen ist (nicht öffnen, wenn es zu ist!)
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('active')) {
+                toggleMenu(); 
+            }
             
             if(t === 'feed' || t === 'saved') render();
-            if(t === 'weather') initWeather();
+            // Falls du das Wetter-Script schon drin hast:
+            if(t === 'weather' && typeof initWeather === 'function') initWeather();
         }
     
         async function triggerUpdate() {
