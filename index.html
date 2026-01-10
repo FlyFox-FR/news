@@ -490,13 +490,23 @@
                         Filtern <span id="global-filter-badge" class="filter-badge" style="display:none; margin-left:4px">0</span> ▾
                     </button>
                     <div id="menu-filter" class="header-dropdown">
+                   
+                        <!-- NEU: Modus Sektion -->
+                        <div class="dropdown-section-title" style="margin-top:0">Ansicht</div>
+                        <div id="btn-filter-readable" class="dropdown-item" onclick="toggleReadableFilter()">
+                            <span>📖 In App lesbar</span>
+                            <span id="check-readable" style="display:none">✔</span>
+                        </div>
+
                         <!-- Datum Sektion -->
-                        <div class="dropdown-section-title">Zeitraum</div>
+                        <div class="dropdown-section-title" style="margin-top:15px; border-top:1px solid #333; padding-top:10px">Zeitraum</div>
                         <div id="filter-date-list"></div>
 
                         <!-- Quellen Sektion -->
                         <div class="dropdown-section-title" style="margin-top:15px; border-top:1px solid #333; padding-top:10px">Quellen</div>
                         <div id="filter-source-list"></div>
+                    </div>
+                    
                     </div>
                 </div>
             </div>
@@ -545,6 +555,33 @@
             "Zeit": "zeit.de", "FAZ": "faz.net", "Focus": "focus.de", "N-TV": "n-tv.de", 
             "Süddeutsche": "sueddeutsche.de", "Bild": "bild.de", "ARD": "ard.de", "rbb24": "rbb24.de"
         };
+
+
+    // --- NEUER STATE ---
+        let filterReadableOnly = false; // Speichert den Magazin-Modus Status
+
+        // --- READABLE FILTER LOGIC ---
+        function toggleReadableFilter() {
+            filterReadableOnly = !filterReadableOnly;
+            localStorage.setItem('filter_readable', filterReadableOnly);
+            
+            updateReadableUI();
+            updateFilterBadges();
+            render();
+        }
+
+        function updateReadableUI() {
+            const btn = document.getElementById('btn-filter-readable');
+            const check = document.getElementById('check-readable');
+            
+            if (filterReadableOnly) {
+                btn.classList.add('active');
+                check.style.display = 'block';
+            } else {
+                btn.classList.remove('active');
+                check.style.display = 'none';
+            }
+        }
 
         // --- HELPER FUNCTIONS ---
         function getSourceLogo(sourceName) {
@@ -1106,95 +1143,103 @@ async function openDebug() {
         // --- MAIN RENDER ---
 
 
-
-    function render() {
+// --- MAIN RENDER PIPELINE ---
+        function render() {
             const container = document.getElementById('feed');
             const searchTerm = document.getElementById('search').value.trim().toLowerCase();
             container.innerHTML = '';
 
+            // 1. DATENBASIS (Feed oder Gemerkt)
+            let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
+            
+            // 2. DATUM FILTER (Gilt immer, außer Sticky Cluster im normalen Modus)
+            if(currentTab === 'feed' && selectedDateFilter) {
+                baseData = baseData.filter(item => {
+                    // Im Flat-Mode (Suche/Lesbar) gibt es keine Sticky Cluster Logik
+                    if (searchTerm || filterReadableOnly) {
+                        return getLocalDateString(item.date) === selectedDateFilter;
+                    }
+                    return getLocalDateString(item.date) === selectedDateFilter || item.id === stickyClusterId;
+                });
+            }
+
             let data = [];
 
-            // --- MODUS A: SUCHE AKTIV (FLAT MODE) ---
-            if (searchTerm.length > 0) {
-                
-                // 1. Flattening: Alles in einen Topf (Parents & Children)
+            // --- ENTSCHEIDUNG: FLAT MODE ODER CLUSTER MODE? ---
+            // Flat Mode aktiv wenn: Suche läuft ODER "Nur Lesbar" ist an
+            const isFlatMode = searchTerm.length > 0 || filterReadableOnly;
+
+            if (isFlatMode) {
+                // A) FLAT MODE (Alles in einen Topf)
                 let flatList = [];
-                allNewsData.forEach(item => {
-                    // Hauptartikel (Kopie, um Original nicht zu verändern)
-                    flatList.push({ ...item, isSearchChild: false });
-                    // Kinder (falls vorhanden)
+                baseData.forEach(item => {
+                    flatList.push({ ...item, isSearchChild: false }); // Parent
                     if (item.related && item.related.length > 0) {
                         item.related.forEach(child => {
-                            flatList.push({ ...child, isSearchChild: true });
+                            flatList.push({ ...child, isSearchChild: true }); // Child
                         });
                     }
                 });
 
-                // 2. Filtern & Bewerten & Snippets bauen
-                data = flatList.reduce((acc, item) => {
-                    let score = 0;
-                    let snippet = null;
-
-                    // Check Titel (Höchste Priorität)
-                    if (item.title.toLowerCase().includes(searchTerm)) score += 10;
+                // Pipeline für Flat Items:
+                data = flatList.filter(item => {
+                    // Filter 1: Quellen
+                    if (selectedSources.length > 0 && !selectedSources.includes(item.source)) return false;
                     
-                    // Check Intro/Bullets (Mittlere Priorität)
-                    if (item.text && item.text.toLowerCase().includes(searchTerm)) score += 5;
-                    if (item.bullets && item.bullets.some(b => b.toLowerCase().includes(searchTerm))) score += 3;
+                    // Filter 2: Nur Lesbar (Der neue Filter!)
+                    if (filterReadableOnly && (!item.content || item.content.length <= 200)) return false;
 
-                    // Check Content (Niedrigste Prio, aber wichtig für Deep Search)
-                    if (item.content && item.content.toLowerCase().includes(searchTerm)) {
-                        score += 1;
-                        // Wenn noch kein Treffer im Titel/Intro war, generieren wir das Snippet
-                        // (oder wir generieren es immer, um zu zeigen wo es steht)
-                        if (!snippet) {
-                            snippet = generateSearchSnippet(item.content, searchTerm);
+                    // Filter 3: Suche (mit Relevanz-Berechnung)
+                    if (searchTerm) {
+                        let score = 0;
+                        item.searchSnippet = null; // Reset
+
+                        if (item.title.toLowerCase().includes(searchTerm)) score += 10;
+                        if (item.text && item.text.toLowerCase().includes(searchTerm)) score += 5;
+                        if (item.bullets && item.bullets.some(b => b.toLowerCase().includes(searchTerm))) score += 3;
+                        if (item.content && item.content.toLowerCase().includes(searchTerm)) {
+                            score += 1;
+                            item.searchSnippet = generateSearchSnippet(item.content, searchTerm);
                         }
-                    }
-
-                    // Wenn Treffer -> ab in die Liste
-                    if (score > 0) {
-                        // Speichere Snippet temporär im Item für die Anzeige
-                        item.searchSnippet = snippet; 
+                        
                         item.searchScore = score;
-                        acc.push(item);
+                        return score > 0;
                     }
-                    return acc;
-                }, []);
 
-                // 3. Sortieren nach Relevanz (Score), dann Datum
-                data.sort((a, b) => {
-                    if (b.searchScore !== a.searchScore) return b.searchScore - a.searchScore;
-                    return new Date(b.date) - new Date(a.date);
+                    return true;
                 });
 
-            } 
-            // --- MODUS B: STANDARD FEED (CLUSTER MODE) ---
-            else {
-                let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
-
-                // Date Filter
-                if(currentTab === 'feed' && selectedDateFilter) {
-                    baseData = baseData.filter(item => {
-                        return getLocalDateString(item.date) === selectedDateFilter || item.id === stickyClusterId;
+                // Sortierung im Flat Mode
+                if (searchTerm) {
+                    // Bei Suche: Relevanz > Datum
+                    data.sort((a, b) => {
+                        if (b.searchScore !== a.searchScore) return b.searchScore - a.searchScore;
+                        return new Date(b.date) - new Date(a.date);
                     });
+                } else {
+                    // Sonst (z.B. nur Lesbar-Modus): Zeit
+                    data.sort((a,b) => new Date(b.date) - new Date(a.date));
                 }
 
-                // Source Filter
+            } else {
+                // B) CLUSTER MODE (Standard Ansicht)
+                // Hier filtern wir Cluster, behalten aber die Struktur bei
+                
                 if (selectedSources.length > 0) {
                     baseData.forEach(item => {
                         if (selectedSources.includes(item.source)) {
-                            // Wenn Main matcht, nimm ganzes Cluster (filtere Kinder)
+                            // Main matcht -> Zeige Cluster (aber filtere Kinder)
                             const filteredRelated = item.related?.filter(r => selectedSources.includes(r.source)) || [];
                             data.push({ ...item, related: filteredRelated });
                         } else {
-                            // Wenn nur Kinder matchen -> als einzelne Items anzeigen
+                            // Main matcht nicht -> Prüfe Kinder
                             const matchChildren = item.related?.filter(r => selectedSources.includes(r.source)) || [];
+                            // Zeige Kinder als einzelne Karten (weil Parent ausgefiltert ist)
                             matchChildren.forEach(child => data.push({ ...child, related: [] }));
                         }
                     });
-                } else { 
-                    data = baseData; 
+                } else {
+                    data = baseData;
                 }
 
                 // Sortierung
@@ -1202,12 +1247,12 @@ async function openDebug() {
                 else data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
             }
 
-            // --- RENDERING ---
+            // --- UI RENDERING ---
             document.getElementById('nav-saved').innerHTML = `<span>🔖</span> Gemerkt (${savedNews.length})`;
 
             if (data.length === 0) { 
                 container.innerHTML = `<div style="text-align:center; padding:100px 20px; color:var(--text-muted)">
-                    ${searchTerm ? 'Keine Treffer für "' + searchTerm + '"' : 'Keine Nachrichten vorhanden.'}
+                    ${searchTerm ? 'Keine Treffer.' : 'Keine Artikel für diese Filter.'}
                 </div>`; 
                 return; 
             }
@@ -1215,13 +1260,12 @@ async function openDebug() {
             data.forEach((item, index) => {
                 const savedObj = savedNews.find(s => s.news.id === item.id);
                 const relTime = getRelativeTime(item.date);
-                const isNew = (new Date() - new Date(item.date)) < 3600000;
                 const hasContent = item.content && item.content.length > 200;
                 
                 const card = document.createElement('div');
                 card.className = 'card animate-fade';
                 card.id = `card-${item.id}`;
-                card.style.animationDelay = (index * 0.05) + 's'; // Kleiner Delay
+                card.style.animationDelay = (index > 10 ? 0 : index * 0.05) + 's'; // Performance bei vielen Items
                 
                 // HTML Aufbau
                 card.innerHTML = `
@@ -1231,21 +1275,18 @@ async function openDebug() {
                     <div class="card-body">
                         <div class="meta">
                             <span style="display:flex; align-items:center; gap:8px;">
-                                ${isNew ? '<span class="new-indicator"></span>' : ''}
                                 <img src="${getSourceLogo(item.source)}" class="source-logo">
                                 ${item.source} • ${relTime}
                             </span>
                             ${currentTab === 'saved' && savedObj ? `<span class="expiry-info">${getExpiryLabel(savedObj.expiresAt)}</span>` : ''}
                         </div>
                         
-                        <!-- TITEL LINK (SICHER) -->
                         <a href="#" onclick="confirmExit('${item.link}'); return false;" class="card-title">${highlightText(item.title, searchTerm)}</a>
                         
-                        <!-- CONTENT -->
                         <div class="scoop">${highlightText(item.text, searchTerm)}</div>
                         <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
 
-                        <!-- SEARCH SNIPPET (NUR IM SUCHMODUS WENN VORHANDEN) -->
+                        <!-- SEARCH SNIPPET -->
                         ${searchTerm && item.searchSnippet ? `
                             <div class="search-snippet">
                                 <span class="snippet-label">🔍 Gefunden im Text:</span>
@@ -1262,8 +1303,8 @@ async function openDebug() {
                             ${hasContent ? `<button class="btn-reader" onclick="openReader('${item.id}')">📖 Lesen</button>` : ''}
                         </div>
                         <div class="action-right">
-                            <!-- CLUSTER BUTTON NUR WENN NICHT SUCHE UND RELATED VORHANDEN -->
-                            ${!searchTerm && selectedSources.length === 0 && item.related?.length ? `
+                            <!-- CLUSTER BUTTON: Nur anzeigen wenn NICHT Flat Mode und Related vorhanden -->
+                            ${!isFlatMode && selectedSources.length === 0 && item.related?.length ? `
                                 <button class="btn-toggle" onclick="toggleVars('${item.id}')">
                                     <span>📚 ${item.related.length}</span>
                                 </button>` : ''}
@@ -1275,10 +1316,10 @@ async function openDebug() {
                         </div>
                     </div>
 
-                    <!-- RELATED ITEMS (NUR IM NORMALEN FEED ANZEIGEN) -->
+                    <!-- RELATED ITEMS (Nur im Cluster Mode gerendert) -->
                     <div id="vars-${item.id}" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
                         <div style="font-size:0.65rem; color:#555; margin-bottom:10px; text-transform:uppercase; font-weight:800; letter-spacing:1px;">Weitere Quellen</div>
-                        ${(item.related || []).map(r => {
+                        ${(!isFlatMode && item.related || []).map(r => {
                             const isReadable = r.content && r.content.length > 200;
                             return `
                             <div class="related-item-row">
@@ -1303,6 +1344,8 @@ async function openDebug() {
                 container.appendChild(card);
             });
         }
+
+    
     
 
         window.onscroll = () => {
