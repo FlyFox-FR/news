@@ -1156,6 +1156,7 @@ async function openDebug() {
 
 // --- MAIN RENDER PIPELINE ---
 
+
     function render() {
             const container = document.getElementById('feed');
             const searchTerm = document.getElementById('search').value.trim().toLowerCase();
@@ -1175,8 +1176,6 @@ async function openDebug() {
             let data = [];
 
             // --- MODUS ENTSCHEIDUNG ---
-            // Flat Mode NUR bei aktiver Suche. 
-            // Der "Lesbar"-Modus nutzt jetzt wieder CLUSTER (wie von dir gewünscht).
             const isFlatMode = searchTerm.length > 0;
 
             if (isFlatMode) {
@@ -1188,12 +1187,9 @@ async function openDebug() {
                 });
 
                 data = flatList.filter(item => {
-                    // Filter: Quellen
                     if (selectedSources.length > 0 && !selectedSources.includes(item.source)) return false;
-                    // Filter: Lesbar
                     if (filterReadableOnly && (!item.content || item.content.length <= 200)) return false;
 
-                    // Suche Relevanz
                     let score = 0;
                     item.searchSnippet = null;
                     if (item.title.toLowerCase().includes(searchTerm)) score += 10;
@@ -1206,7 +1202,6 @@ async function openDebug() {
                     return score > 0;
                 });
 
-                // Sortieren nach Relevanz
                 data.sort((a, b) => {
                     if (b.searchScore !== a.searchScore) return b.searchScore - a.searchScore;
                     return new Date(b.date) - new Date(a.date);
@@ -1215,34 +1210,53 @@ async function openDebug() {
             } else {
                 // --- B) STANDARD & LESBAR-MODUS (CLUSTER) ---
                 
-                // 1. Filtern (Quellen & Lesbarkeit)
-                baseData.forEach(item => {
-                    // Logik für "Lesbar"-Filter im Cluster:
-                    // Zeige das Cluster, wenn Main-Item lesbar ist ODER eins der Kinder lesbar ist.
+                baseData.forEach(originalItem => {
+                    // Wir arbeiten mit einer Kopie, um Swaps durchzuführen ohne die DB zu ändern
+                    let item = { ...originalItem };
+                    
                     const isMainReadable = item.content && item.content.length > 200;
-                    const hasReadableChild = item.related && item.related.some(r => r.content && r.content.length > 200);
+                    // Suche lesbare Kinder
+                    const readableChildIndex = (item.related || []).findIndex(r => r.content && r.content.length > 200);
+                    const hasReadableChild = readableChildIndex !== -1;
 
+                    // LOGIK: "In App Lesbar" Filter
                     if (filterReadableOnly) {
-                        // Wenn Filter an: Nur rein, wenn irgendwas lesbar ist
-                        if (!isMainReadable && !hasReadableChild) return; 
+                        // 1. Wenn gar nichts lesbar ist -> Weg damit
+                        if (!isMainReadable && !hasReadableChild) return;
+
+                        // 2. Wenn Main nicht lesbar, aber Kind schon -> SWAP (Auto-Promote)
+                        if (!isMainReadable && hasReadableChild) {
+                            const newMain = item.related[readableChildIndex];
+                            const oldMain = { ...item };
+                            delete oldMain.related; // Rekursion verhindern
+
+                            // Neue Related Liste bauen: Alle alten (minus dem neuen Main) + der alte Main
+                            const newRelated = item.related.filter((_, idx) => idx !== readableChildIndex);
+                            newRelated.push(oldMain);
+
+                            // Item überschreiben
+                            item = { ...newMain, related: newRelated };
+                        }
                     }
 
-                    // Quellen Filter
+                    // LOGIK: Quellen Filter
                     if (selectedSources.length > 0) {
                         if (selectedSources.includes(item.source)) {
+                            // Main passt -> Zeige Cluster (filtere Kinder nach Quelle)
+                            item.related = item.related?.filter(r => selectedSources.includes(r.source)) || [];
                             data.push(item);
                         } else {
-                            // Wenn Main nicht passt, schauen wir ob Kinder passen (die werden dann einzeln angezeigt)
-                            // HINWEIS: Das behalten wir bei wie vorher
+                            // Main passt nicht -> Schau ob Kinder passen (als einzelne Items)
                             const matchChildren = item.related?.filter(r => selectedSources.includes(r.source)) || [];
                             matchChildren.forEach(child => data.push({ ...child, related: [] }));
                         }
                     } else {
+                        // Kein Quellenfilter -> Einfach rein damit
                         data.push(item);
                     }
                 });
 
-                // 2. Sortieren (Zeit oder Trends)
+                // Sortieren
                 if (currentSort === 'time') {
                     data.sort((a,b) => new Date(b.date) - new Date(a.date));
                 } else {
@@ -1261,18 +1275,15 @@ async function openDebug() {
             data.forEach((item, index) => {
                 const savedObj = savedNews.find(s => s.news.id === item.id);
                 const relTime = getRelativeTime(item.date);
-                // Im "Lesbar"-Modus ist der Lesen-Button beim Hauptartikel nur da, wenn er wirklich lesbar ist.
                 const hasContent = item.content && item.content.length > 200;
                 
-                // Sortierung der Related Items für das Dropdown
+                // Sortierung Dropdown: Lesbare nach oben
                 let displayRelated = [...(item.related || [])];
-                
                 if (filterReadableOnly) {
-                    // Wenn Filter an: Sortiere Lesbare nach oben!
                     displayRelated.sort((a, b) => {
                         const aRead = a.content && a.content.length > 200;
                         const bRead = b.content && b.content.length > 200;
-                        return bRead - aRead; // true (1) kommt vor false (0)
+                        return bRead - aRead;
                     });
                 }
 
@@ -1324,17 +1335,16 @@ async function openDebug() {
                         </div>
                     </div>
 
-                    <!-- RELATED ITEMS DROPDOWN -->
                     <div id="vars-${item.id}" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
                         <div style="font-size:0.65rem; color:#555; margin-bottom:10px; text-transform:uppercase; font-weight:800; letter-spacing:1px;">Weitere Quellen</div>
                         ${displayRelated.map(r => {
                             const isReadable = r.content && r.content.length > 200;
-                            // Im "Lesbar Modus" zeigen wir bei den NICHT-Lesbaren keinen Pin-Button an.
+                            // Pin nur zeigen, wenn wir nicht im reinen Lesbar-Modus sind ODER wenn das Item lesbar ist
+                            // (Eigentlich: Im Lesbar-Modus wollen wir unlesbare gar nicht pinnen können, weil sie dann oben verschwinden würden)
                             const showPin = !filterReadableOnly || isReadable;
 
                             return `
                             <div class="related-item-row">
-                                <!-- Titel ist nur klickbar (Promote), wenn Pin erlaubt ist -->
                                 <div class="related-title" ${showPin ? `onclick="promoteArticle('${item.id}', '${r.id}')" title="Nach oben"` : 'style="cursor:default; color:#aaa;"'}>
                                     ${r.title}
                                 </div>
@@ -1346,11 +1356,7 @@ async function openDebug() {
                                     </div>
                                     <div class="related-actions-group">
                                         <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link-small">Original</a>
-                                        
-                                        <!-- Pin Button nur wenn erlaubt -->
-                                        ${showPin ? `
-                                            <button class="btn-pin" onclick="promoteArticle('${item.id}', '${r.id}')" title="Anpinnen">📌</button>
-                                        ` : ''}
+                                        ${showPin ? `<button class="btn-pin" onclick="promoteArticle('${item.id}', '${r.id}')" title="Anpinnen">📌</button>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -1360,7 +1366,6 @@ async function openDebug() {
                 container.appendChild(card);
             });
         }
-    
 
         window.onscroll = () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
