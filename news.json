@@ -1,50 +1,5 @@
 [
   {
-    "id": "56dr4twri",
-    "source": "Spiegel",
-    "sourceCountry": "🇩🇪",
-    "title": "Zugriff auf Artikel nicht mehr möglich",
-    "originalTitle": "Winter: Das Leben wie das Wetter sind nicht berechenbar",
-    "link": "https://www.spiegel.de/kultur/winter-das-leben-wie-das-wetter-sind-nicht-berechenbar-a-456fd70e-183a-4340-aad1-b17fe1aba396#ref=rss",
-    "img": "https://cdn.prod.www.spiegel.de/images/4bddf807-7b8f-455d-bb7f-ced6ab86a6fa_w520_r2.08_fpx65.55_fpy50.jpg",
-    "date": "2026-01-10T15:45:00.000Z",
-    "text": "Der Artikel ist nicht mehr abrufbar, da der Link entweder abgelaufen oder die Zugriffsgrenze erreicht wurde.",
-    "bullets": [
-      "Link ist älter als 30 Tage oder Artikel wurde 10 Mal geöffnet.",
-      "Zugriff nur für Abonnenten von SPIEGEL+ möglich.",
-      "Digital-Abo kostet € 4,49 pro Woche für 52 Wochen."
-    ],
-    "tags": [
-      "Spiegel",
-      "News"
-    ],
-    "content": "Sie können den Artikel leider nicht mehr aufrufen. Der Link, der Ihnen geschickt wurde, ist entweder älter als 30 Tage oder der Artikel wurde bereits 10 Mal geöffnet.\n\nDiesen Artikel weiterlesen mit SPIEGEL+\n\nSie haben bereits ein Digital-Abo?\n\nFreier Zugriff auf alle S+-Artikel auf SPIEGEL.de und in der App\n\n€ 4,49 pro Woche für 52 Wochen\n\nFreier Zugriff auf alle S+-Artikel auf SPIEGEL.de und in der App\n\n52 Wochen rabattierte Laufzeit\n\nSie haben bereits ein Print-Abo?\n\nHier rabattiert Digital-Zugang bestellen\n\n{ this.isMonthlyProductLoading = false; }, 3000);}if (this.isAnnualProductLoading) {window.setTimeout(() => { this.isAnnualProductLoading = false; }, 3000);}}},}\" x-effect=\"if ((introductoryProduct?.isReady && introductoryProduct?.isEligible) || (introductoryProduct?.isReady && monthlyProduct?.isReady)) {isMonthlyProductLoading = false;}if (annualProduct?.isReady) {isAnnualProductLoading = false;}\">\n\nSie haben bereits ein Digital-Abo?\n\nMonatsabo Preis wird geladen...\n\nZugang zu allen Artikeln in der App und auf SPIEGEL.de\n\nWöchentliche Ausgabe des SPIEGEL als E-Paper\n\nZugang zu allen Artikeln in der App und auf SPIEGEL.de\n\nWöchentliche Ausgabe des SPIEGEL als E-Paper\n\nSPIEGEL+ wird über Ihren iTunes-Account abgewickelt und mit Kaufbestätigung bezahlt. 24 Stunden vor Ablauf verlängert sich das Abo automatisch um\n\neinen Monat zum Preis von zurzeit ¤\n\nein Jahr zum Preis von zurzeit ¤. In den Einstellungen Ihres iTunes-Accounts können Sie das Abo jederzeit kündigen. Um SPIEGEL+ außerhalb",
-    "related": [
-      {
-        "id": "1qlr7gc8y",
-        "source": "Spiegel",
-        "sourceCountry": "🇩🇪",
-        "title": "Einbruchserie in Schulen und Kitas in Stuttgart",
-        "originalTitle": "Einbruchserie in Schulen und Kitas in der Region Stuttgart",
-        "link": "https://www.spiegel.de/panorama/justiz/einbruchserie-in-schulen-und-kitas-in-der-region-stuttgart-a-26213e40-e475-4520-b910-563dbd3d50d6#ref=rss",
-        "img": "https://cdn.prod.www.spiegel.de/images/7f5ef68d-e8b5-4247-a4cf-20c3dffe86ce_w520_r2.08_fpx40_fpy50.jpg",
-        "date": "2026-01-10T15:12:00.000Z",
-        "text": "In Stuttgart und Umgebung wurden nach den Weihnachtsferien mehrere Einbrüche in Schulen und Kindergärten gemeldet. Die Polizei hat vier Verdächtige festgenommen und untersucht mögliche Zusammenhänge.",
-        "bullets": [
-          "Mehrere Einbrüche in Schulen und Kitas nach den Weihnachtsferien",
-          "Vier Verdächtige wurden von der Polizei festgenommen",
-          "Untersuchung möglicher Zusammenhänge zwischen den Fällen"
-        ],
-        "tags": [
-          "Spiegel",
-          "News"
-        ],
-        "content": "Nach den Weihnachtsferien sind in Stuttgart und Umgebung mehrere Einbrüche in Schulen und Kindergärten gemeldet worden. Die Polizei konnte vier Verdächtige festnehmen und prüft, ob die Fälle zusammenhängen."
-      }
-    ],
-    "isScraped": true
-  },
-  {
     "id": "aqsshgubd",
     "source": "rbb24",
     "sourceCountry": "🇩🇪",
