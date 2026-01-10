@@ -111,7 +111,7 @@ function loadExistingNews() {
 
 async function analyzeWithPollinations(title, fullText, sourceName) {
     const context = fullText && fullText.length > 500 ? fullText.substring(0, 5000) : title;
-    const instruction = `Du bist News-Redakteur. Analysiere: "${title} - ${safeContent}"
+    const instruction = `Du bist News-Redakteur. Analysiere: "${context.replace(/"/g, "'").substring(0, 4000)}". 
     Antworte NUR mit validem JSON.
     ANWEISUNG:
     1. Sprache: ZWINGEND DEUTSCH.
@@ -126,7 +126,6 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
       "scoop": "Kernaussage in einem Satz.",
       "bullets": ["Fakt 1", "Fakt 2", "Fakt 3"]
     }`
-    
     
     const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
     
