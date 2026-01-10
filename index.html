@@ -1960,52 +1960,44 @@ async function openDebug() {
             document.getElementById('radar-overlay').classList.remove('active');
         }
 
-        function initRadarMap() {
+       function initRadarMap() {
+            // 1. Karte initialisieren
             radarMap = L.map('radar-map', { zoomControl: false }).setView([weatherLocation.lat, weatherLocation.lon], 7);
+            
+            // 2. Zoom Controls nach oben rechts
             L.control.zoom({ position: 'topright' }).addTo(radarMap);
 
-            // Dark Matter Base Map
+            // 3. Dark Matter Base Map (Dunkelgrau)
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
             }).addTo(radarMap);
 
-            // Pulsierender Marker (Custom HTML Icon)
-            const pulseIcon = L.divIcon({
-                className: 'user-location-dot',
-                iconSize: [16, 16],
-                iconAnchor: [8, 8] // Mitte
-            });
-
-function initRadarMap() {
-            radarMap = L.map('radar-map', { zoomControl: false }).setView([weatherLocation.lat, weatherLocation.lon], 7);
-            L.control.zoom({ position: 'topright' }).addTo(radarMap);
-
-            // Dark Matter Base Map
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
-            }).addTo(radarMap);
-
-            // NEU: Roter Pin mit Spitze (SVG)
+            // 4. Der Rote Pin (SVG) mit CSS-Pulse
             const pinSvg = `
-                <div style="position:relative;">
+                <div style="position:relative; width:100%; height:100%;">
+                    <!-- Der pulsierende Ring am Boden (via CSS) -->
                     <div class="pin-pulse"></div>
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));">
+                    
+                    <!-- Das Pin Icon -->
+                    <svg width="34" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6)); position:relative; z-index:2;">
                         <path d="M12 0C7.58 0 4 3.58 4 8C4 13.5 12 24 12 24C12 24 20 13.5 20 8C20 3.58 16.42 0 12 0Z" fill="#ff3b30"/>
-                        <circle cx="12" cy="8" r="3.5" fill="#590000"/>
+                        <circle cx="12" cy="8" r="3.5" fill="#660000"/>
                     </svg>
                 </div>
             `;
 
             const radarIcon = L.divIcon({
-                className: 'custom-pin', // Dummy Klasse
+                className: '', // Keine Standard-Klasse nötig, wir haben alles im HTML
                 html: pinSvg,
-                iconSize: [34, 44],
-                iconAnchor: [17, 44] // Die Spitze ist unten mittig (bei 34px Breite ist Mitte 17)
+                iconSize: [34, 44],  // Gesamtgröße
+                iconAnchor: [17, 44] // Spitze ist unten mittig (X=17, Y=44)
             });
 
+            // 5. Marker setzen
             L.marker([weatherLocation.lat, weatherLocation.lon], { icon: radarIcon }).addTo(radarMap);
         }
-            
 
         function centerRadar() {
             if(radarMap && weatherLocation) {
