@@ -9,13 +9,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const MAX_DAYS = 4; 
 const MAX_ITEMS = 600; 
 const MAX_CHARS_SAVE = 30000; 
+// Wir begrenzen den Input für die KI leicht, um Kosten zu sparen, aber lassen genug Kontext für 4o-mini
 const MAX_CHARS_AI = process.env.OPENAI_API_KEY ? 15000 : 5500;    
 
 // --- LOGGER STATE ---
-// Neu: Provider und Token Zähler
 let currentRunLog = { 
     timestamp: new Date().toISOString(), 
-    ai_provider: process.env.OPENAI_API_KEY ? "OpenAI (GPT-4o-mini) 🚀" : "Pollinations (Free) 🐌",
+    ai_provider: process.env.OPENAI_API_KEY ? "OpenAI (GPT-4o-mini) ⭐" : "Pollinations (Free) 🐌",
     total_tokens: 0,
     sources: {} 
 };
@@ -118,30 +118,31 @@ function loadExistingNews() {
 }
 
 // --- AI ENGINE (ANALYSIS) ---
-async function analyzeWithPollinations(title, fullText, sourceName) {
+async function analyzeArticle(title, fullText, sourceName) {
     const context = fullText && fullText.length > 200 ? fullText.substring(0, MAX_CHARS_AI) : title;
+    // Wir entfernen Anführungszeichen, um JSON Fehler im Fallback zu minimieren (bei OpenAI regelt das der JSON-Mode)
     const safeTitle = title.replace(/"/g, "'");
     const safeContext = context.replace(/"/g, "'");
 
-    // PROMPT ENGINEERING (Verbesserte Grammatik)
-    const systemPrompt = `Du bist Chefredakteur einer deutschen Qualitätszeitung (wie FAZ oder Zeit).
-    Deine Aufgabe: Erstelle eine prägnante Zusammenfassung basierend auf dem Text.
-    WICHTIG:
-    1. Schreibe in perfektem, natürlichem Deutsch. 
-    2. Achte penibel auf korrekte Grammatik und Satzbau.
-    3. Sei sachlich und neutral.
-    4. Wenn Fakten fehlen, erfinde nichts.
-    5. Falls harte Fakten vorhanden sind (Orte, Namen, Zahlen), dann baue diese gerne mit in die Bullets ein.
+    // STRENGER SYSTEM PROMPT
+    const systemPrompt = `Du bist ein sehr erfahrener Nachrichten-Redakteur für eine Qualitätszeitung.
+    Deine Aufgabe: Fasse den vorliegenden Artikeltext prägnante und absolut faktengetreu zusammen.
     
+    REGELN:
+    1. Sprache: Perfektes Deutsch, grammatikalisch einwandfrei (Duden-Standard).
+    2. Stil: Sachlich, neutral, journalistisch. Keine eigene Meinung.
+    3. Inhalt: Fasse NUR zusammen, was im Text steht. Erfinde NIEMALS Fakten oder Zusammenhänge (keine Halluzinationen).
+    4. Wenn der Input-Text unverständlich ist oder abbricht, gib eine sehr kurze, generische Zusammenfassung basierend auf dem Titel.
+
     Antworte NUR mit diesem JSON Format:
     {
       "newTitle": "Ein sachlicher, kurzer Titel (max 80 Zeichen)",
-      "scoop": "Die Kernaussage in 1-2 Sätzen. Was ist passiert und warum ist es wichtig?",
+      "scoop": "Die Kernaussage in 1-2 Sätzen. Konzentriere dich auf das 'Was' und 'Wer'.",
       "bullets": ["Wichtiges Detail 1", "Wichtiges Detail 2", "Wichtiges Detail 3"]
     }`;
 
-
-    // A) OPENAI
+    // A) OPENAI (PREMIUM LANE)
+    // Wenn ein Key da ist, nutzen wir NUR diesen. Kein Fallback auf Pollinations, um Qualität zu sichern.
     if (process.env.OPENAI_API_KEY) {
         try {
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
@@ -150,7 +151,7 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
                     { role: "system", content: systemPrompt },
                     { role: "user", content: `Titel: "${safeTitle}". Inhalt: "${safeContext}"` }
                 ],
-                temperature: 0.3,
+                temperature: 0.1, // SEHR STRENG für Fakten
                 response_format: { type: "json_object" }
             }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
             
@@ -160,12 +161,21 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
             const data = JSON.parse(response.data.choices[0].message.content);
             if (!data.bullets) data.bullets = [];
             return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
-        } catch (e) { console.error("OpenAI Error:", e.message); }
+
+        } catch (e) { 
+            console.error(`❌ OpenAI Error bei "${title.substring(0,20)}...":`, e.message);
+            // WICHTIG: Wir geben NULL zurück, damit der Artikel übersprungen wird,
+            // anstatt ihn an die schlechte KI zu senden.
+            return null; 
+        }
     }
 
-    // B) POLLINATIONS (Fallback)
+    // B) POLLINATIONS (FALLBACK LANE - NUR WENN KEIN KEY GESETZT IST)
+    // Dieser Code wird nur ausgeführt, wenn du den API Key entfernst (z.B. zum Testen).
     const shortPrompt = `Du bist Redakteur. Schreibe perfektes Deutsch. JSON: {"newTitle": "...", "scoop": "...", "bullets": ["..."]}. Text: ${safeTitle} - ${safeContext}`;
-    const url = `https://text.pollinations.ai/${encodeURIComponent(shortPrompt)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
+    // Wir kürzen hier stark, damit der GET Request nicht platzt
+    const shortPromptEncoded = encodeURIComponent(shortPrompt.substring(0, 1500)); 
+    const url = `https://text.pollinations.ai/${shortPromptEncoded}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
     
     let retries = 2;
     while (retries > 0) {
@@ -182,6 +192,7 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
             return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
         } catch (error) { await sleep(2000); retries--; }
     }
+    // Wenn alles fehlschlägt, geben wir den Originaltitel zurück
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
@@ -203,20 +214,21 @@ async function clusterBatchWithAI(batchArticles, batchIndex) {
                     { role: "system", content: systemPrompt },
                     { role: "user", content: `Liste der Artikel:\n${listForAI}` }
                 ],
-                temperature: 0.1,
+                temperature: 0.1, // Streng logisch gruppieren
                 response_format: { type: "json_object" }
             }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
 
-            // TOKEN TRACKING
             if(response.data.usage) currentRunLog.total_tokens += response.data.usage.total_tokens;
 
-            // GPT-4o-mini im JSON Mode gibt oft ein Objekt zurück { "key": [...] } statt direkt Array
             const content = JSON.parse(response.data.choices[0].message.content);
-            // Wir versuchen, das Array zu finden (egal ob es direkt da ist oder in einem Key)
             let groups = Array.isArray(content) ? content : Object.values(content)[0];
             return processGroups(groups, batchArticles);
 
-        } catch (e) { console.error("OpenAI Cluster Error:", e.message); }
+        } catch (e) { 
+            console.error("OpenAI Cluster Error:", e.message);
+            // Bei Cluster-Fehler: Keine Gruppierung zurückgeben (Flat list), besser als falsche Gruppen
+            return batchArticles.map(a => { a.related = []; return a; });
+        }
     }
 
     // B) POLLINATIONS
@@ -277,7 +289,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log(`🚀 Start News-Bot v5.3 (Tracking)...`);
+    console.log(`🚀 Start News-Bot v5.4 (Strict Mode)...`);
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -323,7 +335,16 @@ async function run() {
                     fullText = (item.contentSnippet || item.content || "").substring(0, 5000);
                 }
 
-                const ai = await analyzeWithPollinations(item.title, fullText, source.name);
+                // AI ANALYSIS
+                const ai = await analyzeArticle(item.title, fullText, source.name);
+                
+                // CHECK: Wenn AI null zurückgibt (OpenAI Error), überspringen wir den Artikel!
+                if (!ai) {
+                    console.log("   ⚠️ AI Fehler. Artikel übersprungen.");
+                    logEvent(source.name, 'error', `AI Failed: ${item.title}`);
+                    continue; 
+                }
+
                 logEvent(source.name, 'added', `${item.title} (${fullText.length} chars)`);
                 
                 flatFeed.push({
