@@ -400,6 +400,26 @@
             return domain ? `https://www.google.com/s2/favicons?sz=64&domain=${domain}` : `https://cdn-icons-png.flaticon.com/512/2540/2540832.png`;
         }
 
+// --- STATS UPDATE ---
+        function updateSidebarStats() {
+            let totalArticles = 0;
+            let totalClusters = allNewsData.length;
+
+            allNewsData.forEach(item => {
+                totalArticles++; // Hauptartikel zählt
+                if (item.related) {
+                    totalArticles += item.related.length; // + alle verknüpften
+                }
+            });
+
+            // Update im DOM
+            const elArt = document.getElementById('stat-articles');
+            const elClust = document.getElementById('stat-clusters');
+            if(elArt) elArt.innerText = totalArticles;
+            if(elClust) elClust.innerText = totalClusters;
+        }
+
+    
         // Datum fix für lokale Zeitzone (Wichtig für den Filter!)
         function getLocalDateString(dateInput) {
             const d = new Date(dateInput);
@@ -593,6 +613,8 @@
             try {
                 const r = await fetch('news.json?t=' + Date.now());
                 allNewsData = await r.json();
+
+                updateSidebarStats();
                 
                 // 1. Restore Sort
                 const savedSort = localStorage.getItem('current_sort');
