@@ -39,19 +39,72 @@ function stripTags(html) { return html.replace(/<[^>]+>/g, "").trim(); }
 function cleanString(str) { return str ? str.replace(/\s+/g, ' ').trim() : ""; }
 
 // --- SCRAPER ---
-async function fetchArticleText(url) {
+// --- DOMAIN SPEZIFISCHE LOGIK ---
+function applyCustomExtractor(html, sourceName) {
+    // 1. SPIEGEL
+    if (sourceName.toLowerCase().includes("spiegel")) {
+        // Paywall Check: Spiegel+ Artikel haben oft spezifische Marker oder Klassen
+        if (html.includes('data-paywall="true"') || html.includes('spiegel-plus-logo')) {
+            console.log("   🔒 Spiegel+ Paywall erkannt. Abbruch.");
+            return null; // Signalisiert: Nicht scrapen, nutze RSS Text
+        }
+        
+        // Suche nach dem Haupttext-Container
+        // Spiegel nutzt oft <div class="rich-text" ...>
+        const match = html.match(/<div[^>]*class="[^"]*rich-text[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+        if (match) return match[1];
+    }
+
+    // 2. RBB24
+    if (sourceName.toLowerCase().includes("rbb")) {
+        // rbb nutzt oft <section class="textsection"> für den reinen Text
+        const match = html.match(/<section[^>]*class="[^"]*textsection[^"]*"[^>]*>([\s\S]*?)<\/section>/i);
+        if (match) return match[1];
+    }
+
+    // 3. TAGESSCHAU (Optional, da meist sauber, aber zur Sicherheit)
+    if (sourceName.toLowerCase().includes("tagesschau")) {
+        // <p class="text"> oder <p class="m-ten">
+        // Tagesschau ist oft tricky, weil viele kleine Container. 
+        // Generischer Fallback ist hier meist okay, aber wir könnten <article> erzwingen.
+        const match = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+        if (match) return match[1];
+    }
+
+    // FALLBACK: Wenn keine Spezialregel, gib null zurück -> Standardlogik greift
+    return null;
+}
+
+// --- SCRAPER UPDATE ---
+async function fetchArticleText(url, sourceName) { // <--- WICHTIG: sourceName als Parameter dazu!
     try {
         const { data } = await axios.get(url, { timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         let html = data;
+
+        // Cleanup generisch
         ['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe', 'noscript', 'button', 'input', 'figure', 'figcaption', 'style'].forEach(tag => {
             html = html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
         });
-        const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
-        if (!containerMatch) return ""; 
-        let contentScope = containerMatch[1];
+
+        // A) CUSTOM EXTRACTOR VERSUCHEN
+        let contentScope = applyCustomExtractor(html, sourceName);
+
+        // B) FALLBACK (Wenn Custom nichts gefunden hat oder nicht definiert ist)
+        if (!contentScope) {
+            // Spiegel Paywall Check (falls oben null zurückkam wegen Paywall)
+            if (sourceName.toLowerCase().includes("spiegel") && (html.includes('data-paywall="true"') || html.includes('spiegel-plus-logo'))) {
+                 return ""; // Leerer String = Scraper nutzt Fallback (RSS Summary)
+            }
+
+            const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+            if (!containerMatch) return ""; 
+            contentScope = containerMatch[1];
+        }
+
         let paragraphs = extractParagraphs(contentScope);
         let fullText = paragraphs.join('\n\n');
 
+        // Notfall-Extraktion für sehr kaputtes HTML
         if (fullText.length < 600) {
             let rawText = contentScope.replace(/<\/(div|p|section|h[1-6]|li)>/gi, '\n\n');
             rawText = stripTags(rawText);
@@ -321,7 +374,7 @@ async function run() {
                 let fullText = "";
                 if (source.scrape !== false) {
                     process.stdout.write(`   🔍 Prüfe: ${item.title.substring(0, 30)}... `);
-                    fullText = await fetchArticleText(item.link);
+                   fullText = await fetchArticleText(item.link, source.name);
                     
                     if (fullText.length < 500) {
                         console.log(`❌ Zu kurz (${fullText.length}). Skip.`);
