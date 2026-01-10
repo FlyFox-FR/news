@@ -9,7 +9,6 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const MAX_DAYS = 4; 
 const MAX_ITEMS = 600; 
 const MAX_CHARS_SAVE = 30000; 
-// Wir begrenzen den Input für die KI leicht, um Kosten zu sparen, aber lassen genug Kontext für 4o-mini
 const MAX_CHARS_AI = process.env.OPENAI_API_KEY ? 15000 : 5500;    
 
 // --- LOGGER STATE ---
@@ -23,7 +22,7 @@ let currentRunLog = {
 function logEvent(source, type, detail) {
     if (!currentRunLog.sources[source]) currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, error: 0, details: [] };
     const s = currentRunLog.sources[source];
-    if (type === 'added') s.added++;
+    if (type === 'added' || type === 'added_full' || type === 'added_fallback') s.added++;
     if (type === 'cache') s.skipped_cache++;
     if (type === 'content') s.skipped_content++;
     if (type === 'error') s.error++;
@@ -38,45 +37,37 @@ function decodeEntities(text) {
 function stripTags(html) { return html.replace(/<[^>]+>/g, "").trim(); }
 function cleanString(str) { return str ? str.replace(/\s+/g, ' ').trim() : ""; }
 
-// --- SCRAPER ---
-// --- DOMAIN SPEZIFISCHE LOGIK ---
+// --- CUSTOM EXTRACTOR LOGIC ---
 function applyCustomExtractor(html, sourceName) {
     // 1. SPIEGEL
     if (sourceName.toLowerCase().includes("spiegel")) {
-        // Paywall Check: Spiegel+ Artikel haben oft spezifische Marker oder Klassen
+        // Paywall Check
         if (html.includes('data-paywall="true"') || html.includes('spiegel-plus-logo')) {
-            console.log("   🔒 Spiegel+ Paywall erkannt. Abbruch.");
-            return null; // Signalisiert: Nicht scrapen, nutze RSS Text
+            // null zurückgeben signalisiert: Paywall erkannt, breche Scraping ab (nutze RSS Fallback)
+            return null; 
         }
-        
-        // Suche nach dem Haupttext-Container
-        // Spiegel nutzt oft <div class="rich-text" ...>
+        // Container
         const match = html.match(/<div[^>]*class="[^"]*rich-text[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
         if (match) return match[1];
     }
 
     // 2. RBB24
     if (sourceName.toLowerCase().includes("rbb")) {
-        // rbb nutzt oft <section class="textsection"> für den reinen Text
         const match = html.match(/<section[^>]*class="[^"]*textsection[^"]*"[^>]*>([\s\S]*?)<\/section>/i);
         if (match) return match[1];
     }
 
-    // 3. TAGESSCHAU (Optional, da meist sauber, aber zur Sicherheit)
+    // 3. TAGESSCHAU (Optional)
     if (sourceName.toLowerCase().includes("tagesschau")) {
-        // <p class="text"> oder <p class="m-ten">
-        // Tagesschau ist oft tricky, weil viele kleine Container. 
-        // Generischer Fallback ist hier meist okay, aber wir könnten <article> erzwingen.
         const match = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
         if (match) return match[1];
     }
 
-    // FALLBACK: Wenn keine Spezialregel, gib null zurück -> Standardlogik greift
     return null;
 }
 
-// --- SCRAPER UPDATE ---
-async function fetchArticleText(url, sourceName) { // <--- WICHTIG: sourceName als Parameter dazu!
+// --- SCRAPER ---
+async function fetchArticleText(url, sourceName) {
     try {
         const { data } = await axios.get(url, { timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         let html = data;
@@ -86,14 +77,14 @@ async function fetchArticleText(url, sourceName) { // <--- WICHTIG: sourceName a
             html = html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
         });
 
-        // A) CUSTOM EXTRACTOR VERSUCHEN
+        // A) CUSTOM EXTRACTOR
         let contentScope = applyCustomExtractor(html, sourceName);
 
-        // B) FALLBACK (Wenn Custom nichts gefunden hat oder nicht definiert ist)
+        // B) FALLBACK (Standard)
         if (!contentScope) {
-            // Spiegel Paywall Check (falls oben null zurückkam wegen Paywall)
+            // Spiegel Paywall Check im Fallback (falls Custom oben null gab)
             if (sourceName.toLowerCase().includes("spiegel") && (html.includes('data-paywall="true"') || html.includes('spiegel-plus-logo'))) {
-                 return ""; // Leerer String = Scraper nutzt Fallback (RSS Summary)
+                 return ""; 
             }
 
             const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
@@ -113,6 +104,12 @@ async function fetchArticleText(url, sourceName) { // <--- WICHTIG: sourceName a
         }
 
         fullText = decodeEntities(fullText);
+
+        // --- END-POLITUR (Whitespace Killer) ---
+        fullText = fullText.replace(/\n\s*\n/g, '\n\n'); // Max 1 Leerzeile
+        fullText = fullText.replace(/[ \t]+/g, ' ');      // Keine doppelten Leerzeichen
+        fullText = fullText.trim();
+
         if (fullText.length > MAX_CHARS_SAVE) fullText = fullText.substring(0, MAX_CHARS_SAVE);
         return fullText;
     } catch (e) { return ""; }
@@ -131,10 +128,20 @@ function extractParagraphs(htmlContent) {
 
 function isValidParagraph(text) {
     text = text.trim();
-    if (text.length < 50) return false; 
+    // Strenger bei sehr kurzen Texten
+    if (text.length < 30) return false; 
+
     const lower = text.toLowerCase();
-    const blacklist = ["alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", "melden sie sich an", "newsletter", "anzeige", "datenschutz", "impressum", "quelle:", "bild:", "foto:", "video:", "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang", "copyright", "©"];
+    const blacklist = ["alle rechte vorbehalten", "mehr zum thema", "lesen sie auch", "melden sie sich an", "newsletter", "anzeige", "datenschutz", "impressum", "quelle:", "bild:", "foto:", "video:", "akzeptieren", "cookie", "javascript", "werbung", "zum seitenanfang", "copyright", "©", "image\">", "e-mail"];
+    
     if (blacklist.some(bad => lower.includes(bad))) return false;
+
+    // Social Media Junk Filter (für kurze Zeilen wie "X.com")
+    if (text.length < 100) {
+        const socialJunk = ["x.com", "facebook", "whatsapp", "messenger", "instagram", "linkedin", "pinterest", "pocket"];
+        if (socialJunk.some(s => lower.includes(s))) return false;
+    }
+    
     return true;
 }
 
@@ -173,11 +180,9 @@ function loadExistingNews() {
 // --- AI ENGINE (ANALYSIS) ---
 async function analyzeArticle(title, fullText, sourceName) {
     const context = fullText && fullText.length > 200 ? fullText.substring(0, MAX_CHARS_AI) : title;
-    // Wir entfernen Anführungszeichen, um JSON Fehler im Fallback zu minimieren (bei OpenAI regelt das der JSON-Mode)
     const safeTitle = title.replace(/"/g, "'");
     const safeContext = context.replace(/"/g, "'");
 
-    // STRENGER SYSTEM PROMPT
     const systemPrompt = `Du bist ein sehr erfahrener Nachrichten-Redakteur für eine Qualitätszeitung.
     Deine Aufgabe: Fasse den vorliegenden Artikeltext prägnante und absolut faktengetreu zusammen.
     
@@ -195,7 +200,6 @@ async function analyzeArticle(title, fullText, sourceName) {
     }`;
 
     // A) OPENAI (PREMIUM LANE)
-    // Wenn ein Key da ist, nutzen wir NUR diesen. Kein Fallback auf Pollinations, um Qualität zu sichern.
     if (process.env.OPENAI_API_KEY) {
         try {
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
@@ -204,11 +208,10 @@ async function analyzeArticle(title, fullText, sourceName) {
                     { role: "system", content: systemPrompt },
                     { role: "user", content: `Titel: "${safeTitle}". Inhalt: "${safeContext}"` }
                 ],
-                temperature: 0.1, // SEHR STRENG für Fakten
+                temperature: 0.1, // Sehr streng, keine Halluzinationen
                 response_format: { type: "json_object" }
             }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
             
-            // TOKEN TRACKING
             if(response.data.usage) currentRunLog.total_tokens += response.data.usage.total_tokens;
 
             const data = JSON.parse(response.data.choices[0].message.content);
@@ -217,16 +220,13 @@ async function analyzeArticle(title, fullText, sourceName) {
 
         } catch (e) { 
             console.error(`❌ OpenAI Error bei "${title.substring(0,20)}...":`, e.message);
-            // WICHTIG: Wir geben NULL zurück, damit der Artikel übersprungen wird,
-            // anstatt ihn an die schlechte KI zu senden.
+            // SKIP bei Fehler, kein Fallback auf schlechte KI
             return null; 
         }
     }
 
-    // B) POLLINATIONS (FALLBACK LANE - NUR WENN KEIN KEY GESETZT IST)
-    // Dieser Code wird nur ausgeführt, wenn du den API Key entfernst (z.B. zum Testen).
+    // B) POLLINATIONS (Fallback - nur ohne API Key)
     const shortPrompt = `Du bist Redakteur. Schreibe perfektes Deutsch. JSON: {"newTitle": "...", "scoop": "...", "bullets": ["..."]}. Text: ${safeTitle} - ${safeContext}`;
-    // Wir kürzen hier stark, damit der GET Request nicht platzt
     const shortPromptEncoded = encodeURIComponent(shortPrompt.substring(0, 1500)); 
     const url = `https://text.pollinations.ai/${shortPromptEncoded}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
     
@@ -245,7 +245,6 @@ async function analyzeArticle(title, fullText, sourceName) {
             return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
         } catch (error) { await sleep(2000); retries--; }
     }
-    // Wenn alles fehlschlägt, geben wir den Originaltitel zurück
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
@@ -267,7 +266,7 @@ async function clusterBatchWithAI(batchArticles, batchIndex) {
                     { role: "system", content: systemPrompt },
                     { role: "user", content: `Liste der Artikel:\n${listForAI}` }
                 ],
-                temperature: 0.1, // Streng logisch gruppieren
+                temperature: 0.1,
                 response_format: { type: "json_object" }
             }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
 
@@ -279,7 +278,6 @@ async function clusterBatchWithAI(batchArticles, batchIndex) {
 
         } catch (e) { 
             console.error("OpenAI Cluster Error:", e.message);
-            // Bei Cluster-Fehler: Keine Gruppierung zurückgeben (Flat list), besser als falsche Gruppen
             return batchArticles.map(a => { a.related = []; return a; });
         }
     }
@@ -342,7 +340,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log(`🚀 Start News-Bot v5.4 (Strict Mode)...`);
+    console.log(`🚀 Start News-Bot v5.5 (Debug Talkative)...`);
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
@@ -358,48 +356,75 @@ async function run() {
 
     for (const source of sources) {
         try {
-            console.log(`\n📡 ${source.name} (Ziel: ${source.count})...`);
+            console.log(`\n📡 ${source.name} (Ziel: ${source.count} Artikel)...`);
             const feed = await parser.parseURL(source.url);
-            let added = 0;
+            let addedCount = 0;
+            let checkedCount = 0;
 
             for (const item of feed.items) {
-                if (added >= source.count) break;
+                if (addedCount >= source.count) {
+                    console.log(`   🏁 Ziel erreicht (${addedCount}/${source.count}). Gehe zur nächsten Quelle.`);
+                    break;
+                }
 
+                checkedCount++;
+                const cleanTitle = item.title.substring(0, 40) + "...";
+
+                // 1. CACHE CHECK
                 const exists = flatFeed.some(n => isSameArticle(n, item));
                 if (exists) { 
+                    console.log(`   ⏭️  [CACHE] "${cleanTitle}" schon vorhanden.`);
                     logEvent(source.name, 'cache', item.title);
                     continue; 
                 }
 
                 let fullText = "";
+                let scrapedLength = 0;
+                let usedFallback = false;
+
+                // 2. SCRAPING
                 if (source.scrape !== false) {
-                    process.stdout.write(`   🔍 Prüfe: ${item.title.substring(0, 30)}... `);
-                   fullText = await fetchArticleText(item.link, source.name);
+                    let scrapedText = await fetchArticleText(item.link, source.name);
+                    scrapedLength = scrapedText ? scrapedText.length : 0;
                     
-                    if (fullText.length < 500) {
-                        console.log(`❌ Zu kurz (${fullText.length}). Skip.`);
-                        logEvent(source.name, 'content', `${item.title} (${fullText.length} chars)`);
-                        await sleep(2000);
-                        continue; 
+                    if (scrapedLength >= 500) {
+                        // A) Scrape erfolgreich
+                        fullText = scrapedText;
+                        process.stdout.write(`   ✅ [SCRAPE] "${cleanTitle}" geladen (${scrapedLength} Zeichen). `);
                     } else {
-                        console.log(`✅ OK (${fullText.length} Zeichen).`);
+                        // B) Scrape fehlgeschlagen/zu kurz -> Fallback
+                        usedFallback = true;
+                        fullText = (item.contentSnippet || item.content || "").trim();
+                        process.stdout.write(`   ⚠️ [FALLBACK] "${cleanTitle}" Scrape zu kurz (${scrapedLength}). Nutze RSS-Text (${fullText.length} Zeichen). `);
                     }
                 } else {
-                    fullText = (item.contentSnippet || item.content || "").substring(0, 5000);
+                    // C) Scrape aus
+                    fullText = (item.contentSnippet || item.content || "").trim();
+                    process.stdout.write(`   ℹ️ [RSS-ONLY] "${cleanTitle}" config says no scrape. (${fullText.length} Zeichen). `);
                 }
 
-                // AI ANALYSIS
+                // 3. CHECK EMPTY
+                if (!fullText || fullText.length < 50) {
+                    console.log(`❌ LEER. Auch RSS gab nichts her. Skip.`);
+                    logEvent(source.name, 'error', 'Empty content');
+                    continue;
+                }
+
+                // 4. AI ANALYSE
                 const ai = await analyzeArticle(item.title, fullText, source.name);
                 
-                // CHECK: Wenn AI null zurückgibt (OpenAI Error), überspringen wir den Artikel!
                 if (!ai) {
-                    console.log("   ⚠️ AI Fehler. Artikel übersprungen.");
+                    console.log("❌ AI FEHLER. Skip.");
                     logEvent(source.name, 'error', `AI Failed: ${item.title}`);
                     continue; 
                 }
 
-                logEvent(source.name, 'added', `${item.title} (${fullText.length} chars)`);
+                // Logging
+                const logType = usedFallback ? 'added_fallback' : 'added_full';
+                logEvent(source.name, logType, `${item.title} (${fullText.length} chars)`);
                 
+                console.log("-> Hinzugefügt. 💾");
+
                 flatFeed.push({
                     id: Math.random().toString(36).substr(2, 9),
                     source: source.name,
@@ -413,13 +438,20 @@ async function run() {
                     bullets: ai.bullets,
                     tags: ai.tags,
                     content: fullText, 
-                    related: []
+                    related: [],
+                    isScraped: !usedFallback // Info für dich
                 });
-                added++;
-                await sleep(4000); 
+                
+                addedCount++;
+                await sleep(2000); 
             }
+            
+            if (addedCount === 0 && checkedCount > 0) {
+                console.log(`   ⚠️ Warnung: ${checkedCount} Artikel geprüft, aber 0 hinzugefügt (Alle Cache oder Fehler).`);
+            }
+
         } catch (e) { 
-            console.error(`   ❌ Error ${source.name}: ${e.message}`); 
+            console.error(`   ❌ CRITICAL ERROR ${source.name}: ${e.message}`); 
             logEvent(source.name, 'error', e.message);
         }
     }
