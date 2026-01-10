@@ -270,6 +270,48 @@
         .search-area { padding: 0 15px 12px 15px; }
         .search-wrapper { display: flex; width: 100%; }
         .search-box { width: 100%; } /* Searchbox hat jetzt vollen Platz */
+
+
+        /* --- TOASTS (Modern Notifications) --- */
+        #toast-container {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 10000; display: flex; flex-direction: column; gap: 10px;
+            pointer-events: none; width: 90%; max-width: 350px;
+        }
+        .toast {
+            background: rgba(30, 30, 35, 0.95); color: #fff;
+            padding: 14px 20px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem; font-weight: 500; text-align: center;
+            opacity: 0; transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toast.show { opacity: 1; transform: translateY(0) scale(1); }
+
+        /* --- CONFIRM MODAL (External Links) --- */
+        #confirm-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); 
+            z-index: 9000; display: none; align-items: center; justify-content: center; 
+            backdrop-filter: blur(5px);
+        }
+        #confirm-modal.active { display: flex; animation: fadeIn 0.2s ease; }
+        
+        .confirm-content {
+            background: #18181b; border: 1px solid #333; 
+            width: 90%; max-width: 320px; border-radius: 20px; 
+            padding: 25px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        }
+        .confirm-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .confirm-text { color: #a1a1aa; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5; }
+        
+        .confirm-actions { display: flex; gap: 10px; }
+        .btn-confirm { flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; transition: 0.2s; }
+        .btn-confirm.cancel { background: rgba(255,255,255,0.05); color: #fff; }
+        .btn-confirm.cancel:hover { background: rgba(255,255,255,0.1); }
+        .btn-confirm.ok { background: var(--accent); color: #fff; }
+        .btn-confirm.ok:hover { filter: brightness(1.1); }
     </style>
 </head>
 <body>
@@ -375,6 +417,21 @@
 
     <div class="container" id="feed"></div>
 
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal">
+        <div class="confirm-content">
+            <div class="confirm-title">App verlassen?</div>
+            <div class="confirm-text">Möchtest du den Original-Artikel im Browser öffnen?</div>
+            <div class="confirm-actions">
+                <button class="btn-confirm cancel" onclick="closeConfirm()">Abbrechen</button>
+                <button class="btn-confirm ok" onclick="proceedExternal()">Öffnen ↗</button>
+            </div>
+        </div>
+    </div>
+
 <script>
         // --- GLOBALE VARIABLEN ---
         let allNewsData = [];
@@ -400,7 +457,10 @@
             return domain ? `https://www.google.com/s2/favicons?sz=64&domain=${domain}` : `https://cdn-icons-png.flaticon.com/512/2540/2540832.png`;
         }
 
-// --- STATS UPDATE ---
+
+
+    
+       // --- STATS UPDATE ---
         function updateSidebarStats() {
             let totalArticles = 0;
             let totalClusters = allNewsData.length;
@@ -596,6 +656,52 @@
             updateSourceDropdown(); render();
         }
 
+
+    // --- TOASTS ---
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = message;
+            container.appendChild(toast);
+            
+            // Trigger Reflow für Animation
+            void toast.offsetWidth; 
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- EXTERNAL LINK CONFIRMATION ---
+        let pendingExternalUrl = null;
+
+        function confirmExit(url) {
+            pendingExternalUrl = url;
+            document.getElementById('confirm-modal').classList.add('active');
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirm-modal').classList.remove('active');
+            pendingExternalUrl = null;
+        }
+
+        function proceedExternal() {
+            if (pendingExternalUrl) {
+                window.open(pendingExternalUrl, '_blank');
+                closeConfirm();
+            }
+        }
+        
+        // Share Funktion Update (Nutzt jetzt Toast!)
+        function shareArticle(id) {
+            const url = `${window.location.origin}${window.location.pathname}?id=${id}`;
+            navigator.clipboard.writeText(url).then(() => { 
+                showToast("📋 Link kopiert!"); 
+            });
+        }
         function resetFilters() {
             selectedSources = [];
             localStorage.removeItem('selected_sources');
@@ -723,8 +829,19 @@
             let item = allNewsData.find(n => n.id === id);
             if (!item) { const saved = savedNews.find(s => s.news.id === id); if (saved) item = saved.news; }
             if(!item) return;
+
             document.getElementById('reader-title').innerText = item.title;
-            document.getElementById('reader-meta').innerText = `${item.source} • ${getRelativeTime(item.date)}`;
+            
+            // --- LESEZEIT BERECHNUNG ---
+            const textContent = item.content || item.text || "";
+            const wordCount = textContent.split(/\s+/).length;
+            const readTime = Math.ceil(wordCount / 200); // Ca. 200 Wörter pro Minute
+            
+            document.getElementById('reader-meta').innerHTML = `
+                ${item.source} • ${getRelativeTime(item.date)} • <span style="color:var(--accent)">⏱️ ${readTime} Min.</span>
+            `;
+            // ---------------------------
+
             const formattedBody = item.content ? item.content : item.text;
             document.getElementById('reader-body').innerText = formattedBody;
             const imgEl = document.getElementById('reader-img');
@@ -739,10 +856,6 @@
             const url = new URL(window.location); url.searchParams.delete('id'); window.history.replaceState({}, '', url);
         }
 
-        function shareArticle(id) {
-            const url = `${window.location.origin}${window.location.pathname}?id=${id}`;
-            navigator.clipboard.writeText(url).then(() => { alert("Link kopiert!"); });
-        }
 
         // --- DEBUG OVERLAY ---
         async function openDebug() {
@@ -835,35 +948,25 @@
         }
 
         // --- MAIN RENDER ---
-        function render() {
+function render() {
             const container = document.getElementById('feed');
             const searchTerm = document.getElementById('search').value.trim().toLowerCase();
             container.innerHTML = '';
 
             let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
             
-            // 1. Filter: Datum
             if(currentTab === 'feed' && selectedDateFilter) {
                 baseData = baseData.filter(item => getLocalDateString(item.date) === selectedDateFilter);
             }
 
-            // 2. Filter: Quellen (Main Item + Related)
             let data = [];
             if (selectedSources.length > 0) {
                 baseData.forEach(item => {
-                    if (selectedSources.includes(item.source)) {
-                        // Wenn Main Source matcht, ganzes Cluster (mit gefilterten Children)
-                        const filteredRelated = item.related?.filter(r => selectedSources.includes(r.source)) || [];
-                        data.push({ ...item, related: filteredRelated });
-                    } else {
-                        // Wenn nur Children matchen, hole sie raus als eigene Items (oder zeige Cluster wenn eins matcht? Hier: Zeige Cluster wenn mind. 1 Child matcht)
-                        const matchChildren = item.related?.filter(r => selectedSources.includes(r.source)) || [];
-                        matchChildren.forEach(child => data.push(child));
-                    }
+                    if (selectedSources.includes(item.source)) data.push({ ...item, related: [] });
+                    item.related?.forEach(rel => { if (selectedSources.includes(rel.source)) data.push(rel); });
                 });
             } else { data = baseData; }
 
-            // 3. Suche
             if (searchTerm) {
                 data = data.filter(i => 
                     i.title.toLowerCase().includes(searchTerm) || 
@@ -872,30 +975,28 @@
                 );
             }
 
-            // 4. Sortieren
-            if (currentSort === 'time') {
-                data.sort((a,b) => new Date(b.date) - new Date(a.date));
-            } else {
-                // Trend Sort (nach Anzahl Related)
-                data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
-            }
+            if (currentSort === 'time') data.sort((a,b) => new Date(b.date) - new Date(a.date));
+            else data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
 
             document.getElementById('nav-saved').innerHTML = `<span>🔖</span> Gemerkt (${savedNews.length})`;
 
             if (data.length === 0) { container.innerHTML = `<div style="text-align:center; padding:100px 20px; color:var(--text-muted)">Keine Ergebnisse gefunden.</div>`; return; }
 
-            // Render Cards
             data.forEach((item, index) => {
                 const savedObj = savedNews.find(s => s.news.id === item.id);
                 const relTime = getRelativeTime(item.date);
                 const isNew = (new Date() - new Date(item.date)) < 3600000;
                 const hasContent = item.content && item.content.length > 200;
-                
                 const card = document.createElement('div');
                 card.className = 'card animate-fade';
                 card.id = `card-${item.id}`;
                 card.style.animationDelay = (index * 0.05) + 's';
                 
+                let metaExtra = '';
+                if(currentTab === 'saved' && savedObj) { metaExtra = `<span class="expiry-info" onclick="toggleSave('${item.id}')">${getExpiryLabel(savedObj.expiresAt)}</span>`; }
+
+                // --- SICHERE LINKS ---
+                // Hier ersetzen wir direkte Links durch confirmExit()
                 card.innerHTML = `
                     <button class="btn-save ${savedObj ? 'saved' : ''}" onclick="toggleSave('${item.id}')">${savedObj ? '★' : '☆'}</button>
                     ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
@@ -906,16 +1007,18 @@
                                 <img src="${getSourceLogo(item.source)}" class="source-logo">
                                 ${item.source} • ${relTime}
                             </span>
-                            ${currentTab === 'saved' && savedObj ? `<span class="expiry-info">${getExpiryLabel(savedObj.expiresAt)}</span>` : ''}
+                            ${metaExtra}
                         </div>
-                        <a href="${item.link}" target="_blank" class="card-title">${highlightText(item.title, searchTerm)}</a>
+                        <!-- SICHERER TITEL LINK -->
+                        <a href="#" onclick="confirmExit('${item.link}'); return false;" class="card-title">${highlightText(item.title, searchTerm)}</a>
                         <div class="scoop">${highlightText(item.text, searchTerm)}</div>
                         <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
                     </div>
                     
                     <div class="actions">
                         <div class="action-left">
-                            <a href="${item.link}" target="_blank" class="btn-link">Original ↗</a>
+                            <!-- SICHERER ORIGINAL BUTTON -->
+                            <a href="#" onclick="confirmExit('${item.link}'); return false;" class="btn-link">Original ↗</a>
                         </div>
                         <div class="action-center">
                             ${hasContent ? `<button class="btn-reader" onclick="openReader('${item.id}')">📖 Lesen</button>` : ''}
@@ -942,7 +1045,8 @@
                                     <div class="meta"><span>${r.source} • ${getRelativeTime(r.date)}</span></div>
                                     <div style="font-weight:bold; font-size:0.95rem; margin-bottom:6px; color:#fff">${r.title}</div>
                                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                                        <a href="${r.link}" target="_blank" class="btn-link" style="font-size:0.75rem">Original ↗</a>
+                                        <!-- SICHERER LINK IM CLUSTER -->
+                                        <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link" style="font-size:0.75rem">Original ↗</a>
                                         ${isReadable ? `<span style="font-size:0.65rem; color:#fff; background:rgba(74, 222, 128, 0.2); border:1px solid #4ade80; padding:2px 8px; border-radius:10px; font-weight:600;">📖 In App lesbar</span>` : ''}
                                     </div>
                                 </div>
@@ -953,6 +1057,7 @@
                 container.appendChild(card);
             });
         }
+    
 
         window.onscroll = () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
