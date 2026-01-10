@@ -77,16 +77,29 @@ async function fetchArticleText(url, sourceName) {
             html = html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
         });
 
+        // --- SPIEGEL SPEZIAL-CHECK (Die Gift-Liste) ---
+        // Bevor wir irgendwas extrahieren: Wenn diese Sätze vorkommen, ist es eine Fehler- oder Abo-Seite.
+        if (sourceName.toLowerCase().includes("spiegel")) {
+            const poisonPhrases = [
+                'data-paywall="true"',
+                'spiegel-plus-logo',
+                'Zugriff auf Artikel nicht mehr möglich',
+                'Diesen Artikel weiterlesen mit SPIEGEL+',
+                'Sie haben bereits ein Digital-Abo',
+                'isMonthlyProductLoading' // Code-Schnipsel aus deinem Fehler-Text
+            ];
+            
+            if (poisonPhrases.some(p => html.includes(p))) {
+                // Sofort abbrechen -> Bot nutzt dann den RSS-Teaser als Fallback
+                return ""; 
+            }
+        }
+
         // A) CUSTOM EXTRACTOR
         let contentScope = applyCustomExtractor(html, sourceName);
 
         // B) FALLBACK (Standard)
         if (!contentScope) {
-            // Spiegel Paywall Check im Fallback (falls Custom oben null gab)
-            if (sourceName.toLowerCase().includes("spiegel") && (html.includes('data-paywall="true"') || html.includes('spiegel-plus-logo'))) {
-                 return ""; 
-            }
-
             const containerMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
             if (!containerMatch) return ""; 
             contentScope = containerMatch[1];
@@ -95,7 +108,7 @@ async function fetchArticleText(url, sourceName) {
         let paragraphs = extractParagraphs(contentScope);
         let fullText = paragraphs.join('\n\n');
 
-        // Notfall-Extraktion für sehr kaputtes HTML
+        // Notfall-Extraktion
         if (fullText.length < 600) {
             let rawText = contentScope.replace(/<\/(div|p|section|h[1-6]|li)>/gi, '\n\n');
             rawText = stripTags(rawText);
@@ -105,9 +118,9 @@ async function fetchArticleText(url, sourceName) {
 
         fullText = decodeEntities(fullText);
 
-        // --- END-POLITUR (Whitespace Killer) ---
-        fullText = fullText.replace(/\n\s*\n/g, '\n\n'); // Max 1 Leerzeile
-        fullText = fullText.replace(/[ \t]+/g, ' ');      // Keine doppelten Leerzeichen
+        // --- END-POLITUR ---
+        fullText = fullText.replace(/\n\s*\n/g, '\n\n'); 
+        fullText = fullText.replace(/[ \t]+/g, ' ');      
         fullText = fullText.trim();
 
         if (fullText.length > MAX_CHARS_SAVE) fullText = fullText.substring(0, MAX_CHARS_SAVE);
