@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nachrichten</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+
+<!-- LEAFLET MAPS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     
     <style>
         :root {
@@ -445,6 +450,7 @@
         .part-label { font-size:0.8rem; color:var(--accent); text-transform:uppercase; font-weight:700; letter-spacing:1px; margin-bottom:4px; }
         .part-info { font-size: 0.9rem; color: #aaa; display:flex; align-items:center; gap:8px; }
         .part-temp { font-size: 1.8rem; font-weight: 800; color: #fff; }
+
         
     </style>
 </head>
@@ -587,8 +593,11 @@
                     <h2 id="weather-city-name" style="font-family:'Merriweather'; margin:0; font-size:1.5rem; color:var(--text)">Lade...</h2>
                     <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">7-Tage Trend</span>
                 </div>
-                <button onclick="resetLocation()" style="background:var(--surface-variant); border:1px solid var(--border); color:var(--text-muted); padding:8px 14px; border-radius:12px; cursor:pointer; font-weight:600; font-size:0.8rem; transition:0.2s;">✏️ Ändern</button>
-            </div>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="openRadar()" style="background:var(--accent); border:none; color:#fff; padding:8px 14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:0.8rem; transition:0.2s;">🗺️ Radar</button>
+                    <button onclick="resetLocation()" style="background:var(--surface-variant); border:1px solid var(--border); color:var(--text-muted); padding:8px 14px; border-radius:12px; cursor:pointer; font-weight:600; font-size:0.8rem; transition:0.2s;">✏️</button>
+                </div>
+             </div>
             
             <div id="weather-grid" class="weather-grid">
                 <!-- Kacheln werden hier generiert -->
