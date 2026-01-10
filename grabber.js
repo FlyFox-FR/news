@@ -9,11 +9,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const MAX_DAYS = 4; 
 const MAX_ITEMS = 600; 
 const MAX_CHARS_SAVE = 30000; 
-// Limits: Pollinations mag keine zu langen URLs, OpenAI schafft locker 128k Context.
 const MAX_CHARS_AI = process.env.OPENAI_API_KEY ? 15000 : 5500;    
 
 // --- LOGGER STATE ---
-let currentRunLog = { timestamp: new Date().toISOString(), sources: {} };
+// Neu: Provider und Token Zähler
+let currentRunLog = { 
+    timestamp: new Date().toISOString(), 
+    ai_provider: process.env.OPENAI_API_KEY ? "OpenAI (GPT-4o-mini) 🚀" : "Pollinations (Free) 🐌",
+    total_tokens: 0,
+    sources: {} 
+};
+
 function logEvent(source, type, detail) {
     if (!currentRunLog.sources[source]) currentRunLog.sources[source] = { added: 0, skipped_cache: 0, skipped_content: 0, error: 0, details: [] };
     const s = currentRunLog.sources[source];
@@ -46,7 +52,6 @@ async function fetchArticleText(url) {
         let paragraphs = extractParagraphs(contentScope);
         let fullText = paragraphs.join('\n\n');
 
-        // Fallback Stage 2
         if (fullText.length < 600) {
             let rawText = contentScope.replace(/<\/(div|p|section|h[1-6]|li)>/gi, '\n\n');
             rawText = stripTags(rawText);
@@ -112,7 +117,7 @@ function loadExistingNews() {
     return [];
 }
 
-// --- HYBRID AI ENGINE (OpenAI + Pollinations) ---
+// --- AI ENGINE (ANALYSIS) ---
 async function analyzeWithPollinations(title, fullText, sourceName) {
     const context = fullText && fullText.length > 200 ? fullText.substring(0, MAX_CHARS_AI) : title;
     const safeTitle = title.replace(/"/g, "'");
@@ -122,10 +127,11 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
     const systemPrompt = `Du bist Chefredakteur einer deutschen Qualitätszeitung (wie FAZ oder Zeit).
     Deine Aufgabe: Erstelle eine prägnante Zusammenfassung basierend auf dem Text.
     WICHTIG:
-    1. Schreibe in perfektem, natürlichem Deutsch. Vermeide "Denglisch" oder wörtliche Übersetzungen.
+    1. Schreibe in perfektem, natürlichem Deutsch. 
     2. Achte penibel auf korrekte Grammatik und Satzbau.
     3. Sei sachlich und neutral.
     4. Wenn Fakten fehlen, erfinde nichts.
+    5. Falls harte Fakten vorhanden sind (Orte, Namen, Zahlen), dann baue diese gerne mit in die Bullets ein.
     
     Antworte NUR mit diesem JSON Format:
     {
@@ -134,38 +140,31 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
       "bullets": ["Wichtiges Detail 1", "Wichtiges Detail 2", "Wichtiges Detail 3"]
     }`;
 
-    // A) OPENAI ROUTE (Wenn Key vorhanden)
+
+    // A) OPENAI
     if (process.env.OPENAI_API_KEY) {
-        // console.log("   ✨ Nutze OpenAI (GPT-4o-mini)...");
         try {
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
                 model: "gpt-4o-mini",
                 messages: [
                     { role: "system", content: systemPrompt },
-                    { role: "user", content: `Analysiere diesen Text: Titel: "${safeTitle}". Inhalt: "${safeContext}"` }
+                    { role: "user", content: `Titel: "${safeTitle}". Inhalt: "${safeContext}"` }
                 ],
-                temperature: 0.3, // Geringe Kreativität für mehr Faktentreue
+                temperature: 0.3,
                 response_format: { type: "json_object" }
-            }, {
-                headers: { 
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json' 
-                }
-            });
+            }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
+            
+            // TOKEN TRACKING
+            if(response.data.usage) currentRunLog.total_tokens += response.data.usage.total_tokens;
+
             const data = JSON.parse(response.data.choices[0].message.content);
             if (!data.bullets) data.bullets = [];
             return { summary: data.scoop || title, newTitle: data.newTitle || title, bullets: data.bullets, tags: [sourceName, "News"] };
-        } catch (e) {
-            console.error("OpenAI Error:", e.response?.data || e.message);
-            // Fallback to Pollinations below if OpenAI fails? Or return default. Let's return default to be safe.
-            return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
-        }
+        } catch (e) { console.error("OpenAI Error:", e.message); }
     }
 
-    // B) POLLINATIONS ROUTE (Fallback/Kostenlos)
-    // Wir packen den Prompt in die URL, müssen ihn aber stark kürzen für Pollinations
-    const shortPrompt = `Du bist Redakteur. Schreibe perfektes Deutsch. JSON Format: {"newTitle": "...", "scoop": "...", "bullets": ["..."]}. Analysiere: ${safeTitle} - ${safeContext}`;
-    
+    // B) POLLINATIONS (Fallback)
+    const shortPrompt = `Du bist Redakteur. Schreibe perfektes Deutsch. JSON: {"newTitle": "...", "scoop": "...", "bullets": ["..."]}. Text: ${safeTitle} - ${safeContext}`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(shortPrompt)}?model=openai&seed=${Math.floor(Math.random() * 10000)}`;
     
     let retries = 2;
@@ -186,42 +185,76 @@ async function analyzeWithPollinations(title, fullText, sourceName) {
     return { summary: title, newTitle: title, bullets: [], tags: [sourceName] };
 }
 
+// --- AI ENGINE (CLUSTERING) ---
 async function clusterBatchWithAI(batchArticles, batchIndex) {
     console.log(`📦 Batch ${batchIndex + 1}: KI sortiert ${batchArticles.length} Artikel...`);
     const listForAI = batchArticles.map((a, index) => `ID ${index}: ${a.newTitle || a.title}`).join("\n");
     
-    // Einfache Cluster-Logik bleibt bei Pollinations (kostenlos & schnell genug für einfache IDs)
-    const instruction = `Gruppiere Nachrichten zum EXAKT gleichen Ereignis. Antworte NUR JSON: [[ID, ID], [ID]]. Liste:\n${listForAI}`;
-    const url = `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
-    
+    const systemPrompt = `Gruppiere Nachrichten zum EXAKT gleichen Ereignis.
+    Antworte NUR mit einem JSON Array von Arrays mit IDs: [[0, 2], [1], [3, 4]].
+    Jede ID muss genau einmal vorkommen.`;
+
+    // A) OPENAI
+    if (process.env.OPENAI_API_KEY) {
+        try {
+            const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+                model: "gpt-4o-mini",
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: `Liste der Artikel:\n${listForAI}` }
+                ],
+                temperature: 0.1,
+                response_format: { type: "json_object" }
+            }, { headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' } });
+
+            // TOKEN TRACKING
+            if(response.data.usage) currentRunLog.total_tokens += response.data.usage.total_tokens;
+
+            // GPT-4o-mini im JSON Mode gibt oft ein Objekt zurück { "key": [...] } statt direkt Array
+            const content = JSON.parse(response.data.choices[0].message.content);
+            // Wir versuchen, das Array zu finden (egal ob es direkt da ist oder in einem Key)
+            let groups = Array.isArray(content) ? content : Object.values(content)[0];
+            return processGroups(groups, batchArticles);
+
+        } catch (e) { console.error("OpenAI Cluster Error:", e.message); }
+    }
+
+    // B) POLLINATIONS
+    const url = `https://text.pollinations.ai/${encodeURIComponent(systemPrompt + " Liste:\n" + listForAI)}?model=openai&seed=${Math.floor(Math.random() * 1000)}`;
     try {
         const response = await axios.get(url, { timeout: 60000 });
         let rawText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         try { const j = JSON.parse(rawText); if (j.content) rawText = j.content; } catch (e) {}
         const arrayMatch = rawText.match(/\[\s*\[[\d\s,\[\]]*\]\s*\]/s);
         let groups = arrayMatch ? JSON.parse(arrayMatch[0]) : null;
-        if (!Array.isArray(groups)) throw new Error("Kein Array");
-        let localClusters = [];
-        let usedIndices = new Set();
-        groups.forEach(groupIndices => {
-            if (!Array.isArray(groupIndices)) return;
-            let validIndices = groupIndices.filter(i => batchArticles[i] !== undefined);
-            if (validIndices.length === 0) return;
-            let bestParentIndex = validIndices.findIndex(idx => batchArticles[idx].img) !== -1 ? validIndices.findIndex(idx => batchArticles[idx].img) : 0;
-            let parentIndex = validIndices[bestParentIndex];
-            let parent = batchArticles[parentIndex];
-            usedIndices.add(parentIndex);
-            parent.related = [];
-            validIndices.forEach((idx, i) => { if (i !== bestParentIndex && !usedIndices.has(idx)) { parent.related.push(batchArticles[idx]); usedIndices.add(idx); } });
-            localClusters.push(parent);
-        });
-        batchArticles.forEach((item, index) => { if (!usedIndices.has(index)) { item.related = []; localClusters.push(item); } });
-        return localClusters;
+        return processGroups(groups, batchArticles);
     } catch (e) { return batchArticles.map(a => { a.related = []; return a; }); }
 }
 
+function processGroups(groups, batchArticles) {
+    if (!Array.isArray(groups)) return batchArticles.map(a => { a.related = []; return a; });
+    let localClusters = [];
+    let usedIndices = new Set();
+    groups.forEach(groupIndices => {
+        if (!Array.isArray(groupIndices)) return;
+        let validIndices = groupIndices.filter(i => batchArticles[i] !== undefined);
+        if (validIndices.length === 0) return;
+        let bestParentIndex = validIndices.findIndex(idx => batchArticles[idx].img) !== -1 ? validIndices.findIndex(idx => batchArticles[idx].img) : 0;
+        let parentIndex = validIndices[bestParentIndex];
+        let parent = batchArticles[parentIndex];
+        usedIndices.add(parentIndex);
+        parent.related = [];
+        validIndices.forEach((idx, i) => { if (i !== bestParentIndex && !usedIndices.has(idx)) { parent.related.push(batchArticles[idx]); usedIndices.add(idx); } });
+        localClusters.push(parent);
+    });
+    batchArticles.forEach((item, index) => { if (!usedIndices.has(index)) { item.related = []; localClusters.push(item); } });
+    return localClusters;
+}
+
 async function runClusteringPipeline(allArticles) {
-    const BATCH_SIZE = 15;
+    const BATCH_SIZE = process.env.OPENAI_API_KEY ? 60 : 15;
+    console.log(`🧩 Clustering Batch Size: ${BATCH_SIZE}`);
+    
     let finalClusters = [];
     for (let i = 0; i < allArticles.length; i += BATCH_SIZE) {
         const batch = allArticles.slice(i, i + BATCH_SIZE);
@@ -244,7 +277,7 @@ async function runClusteringPipeline(allArticles) {
 
 // --- MAIN LOOP ---
 async function run() {
-    console.log(`🚀 Start News-Bot v5.2 (Hybrid AI + Better Prompts)...`);
+    console.log(`🚀 Start News-Bot v5.3 (Tracking)...`);
     
     let sources = [];
     try { sources = JSON.parse(fs.readFileSync('sources.json', 'utf8')); } catch(e) { sources = [{ name: "Tagesschau", url: "https://www.tagesschau.de/xml/rss2/", count: 3 }]; }
