@@ -312,42 +312,75 @@
         .btn-confirm.cancel:hover { background: rgba(255,255,255,0.1); }
         .btn-confirm.ok { background: var(--accent); color: #fff; }
         .btn-confirm.ok:hover { filter: brightness(1.1); }
-/* Related Items Styling */
+/* --- RELATED ITEMS (COMPACT LAYOUT) --- */
         .related-item-row {
-            display: flex; flex-direction: column; gap: 8px;
-            padding: 12px; margin-bottom: 10px;
+            display: flex; flex-direction: column; gap: 6px;
+            padding: 12px; margin-bottom: 8px;
             background: rgba(255,255,255,0.03); 
             border: 1px solid var(--border); border-radius: 12px;
             transition: 0.2s;
         }
         .related-item-row:hover { 
-            background: rgba(255,255,255,0.07); 
+            background: rgba(255,255,255,0.06); 
             border-color: #555;
         }
 
-        /* Der Titel ist jetzt der Trigger */
+        /* Titel: Weiß, klickbar, kein Standard-Link-Blau */
         .related-title {
-            font-weight: 700; font-size: 0.95rem; color: #fff; 
-            cursor: pointer; line-height: 1.4;
+            font-weight: 600; font-size: 0.9rem; color: #f4f4f5; 
+            cursor: pointer; line-height: 1.4; text-decoration: none;
+            display: block; /* Nimmt ganze Breite */
         }
         .related-title:hover { color: var(--accent); }
 
-        /* Button Container unten */
-        .related-actions {
+        /* Untere Zeile: Links Meta, Rechts Actions */
+        .related-footer {
             display: flex; justify-content: space-between; align-items: center;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
-        /* Der neue Fokus Button */
-        .btn-focus {
-            background: rgba(59, 130, 246, 0.15); color: var(--accent);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 4px 10px; border-radius: 8px; 
-            font-size: 0.75rem; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; gap: 5px;
+        /* Meta Infos (Quelle, Zeit, Badge) */
+        .related-meta-group {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.75rem; color: var(--text-muted);
+        }
+
+        /* Kleiner Badge */
+        .badge-readable {
+            font-size: 0.65rem; color: #4ade80; 
+            background: rgba(74, 222, 128, 0.1); 
+            padding: 1px 6px; border-radius: 6px; font-weight: 600;
+            display: flex; align-items: center; gap: 3px;
+        }
+
+        /* Rechte Seite: Buttons */
+        .related-actions-group {
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* Original Link (Dezent) */
+        .btn-link-small {
+            font-size: 0.7rem; color: #888; text-decoration: none; 
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 4px 8px; border-radius: 6px; transition: 0.2s;
+        }
+        .btn-link-small:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        /* Der Pin Button (Kompakt) */
+        .btn-pin {
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 32px; height: 32px; 
+            border-radius: 8px; /* Eckig mit Radius sieht moderner aus hier */
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.9rem;
             transition: 0.2s;
         }
-        .btn-focus:hover { background: var(--accent); color: #fff; }
+        .btn-pin:hover {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
         
     </style>
 </head>
@@ -1075,28 +1108,29 @@ function render() {
 
 
 <div id="vars-${item.id}" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
-                        <div style="font-size:0.7rem; color:#666; margin-bottom:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px;">Weitere Quellen</div>
+                        <div style="font-size:0.65rem; color:#555; margin-bottom:10px; text-transform:uppercase; font-weight:800; letter-spacing:1px;">Weitere Quellen</div>
                         ${(item.related || []).map(r => {
                             const isReadable = r.content && r.content.length > 200;
                             return `
                             <div class="related-item-row">
-                                <!-- TITEL KLICKBAR -->
+                                <!-- ZEILE 1: TITEL (Klickbar zum Pinnen) -->
                                 <div class="related-title" onclick="promoteArticle('${item.id}', '${r.id}')" title="Diesen Artikel nach oben holen">
                                     ${r.title}
                                 </div>
                                 
-                                <div class="related-actions">
-                                    <div style="display:flex; gap:10px; align-items:center;">
-                                        <div class="meta" style="margin:0;">${r.source} • ${getRelativeTime(r.date)}</div>
-                                        ${isReadable ? `<span style="font-size:0.65rem; color:#4ade80;">● Lesbar</span>` : ''}
+                                <!-- ZEILE 2: META & ACTIONS -->
+                                <div class="related-footer">
+                                    <div class="related-meta-group">
+                                        <img src="${getSourceLogo(r.source)}" style="width:14px; height:14px; border-radius:3px; opacity:0.7">
+                                        <span>${getRelativeTime(r.date)}</span>
+                                        ${isReadable ? `<span class="badge-readable">● Lesbar</span>` : ''}
                                     </div>
 
-                                    <div style="display:flex; gap:8px;">
-                                        <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link" style="font-size:0.75rem; border:1px solid #333; padding:4px 8px; border-radius:6px;">Original ↗</a>
+                                    <div class="related-actions-group">
+                                        <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link-small">Original</a>
                                         
-                                        <!-- FOKUS BUTTON -->
-                                        <button class="btn-focus" onclick="promoteArticle('${item.id}', '${r.id}')">
-                                            ✨ Fokus
+                                        <button class="btn-pin" onclick="promoteArticle('${item.id}', '${r.id}')" title="Anpinnen (Nach oben)">
+                                            📌
                                         </button>
                                     </div>
                                 </div>
