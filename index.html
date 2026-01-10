@@ -513,6 +513,7 @@
         let repoConfig = null;
         let pendingSaveId = null;
         let isZenMode = false;
+        let stickyClusterId = null; // <--- NEU: Merkt sich den zuletzt bearbeiteten Cluster
 
         // Domains für Favicons
         const sourceDomains = {
@@ -665,23 +666,18 @@
             });
         }
 
-       function setDateFilter(dayStr) {
+    function setDateFilter(dayStr) {
+            stickyClusterId = null; // <--- NEU: Reset beim Filterwechsel
+            
             selectedDateFilter = dayStr; 
             localStorage.setItem('date_filter', dayStr || '');
             
-            // Badges & Label updaten
             updateFilterBadges();
-            
-            // WICHTIG: Menü sofort schließen & Feed neu bauen
             document.getElementById('menu-filter').classList.remove('show');
-            
-            // Optionen neu rendern (damit beim nächsten Öffnen der richtige Tag fett ist)
             initDateFilterOptions(); 
-            
-            // Feed aktualisieren
             render();
         }
-
+    
         // --- FILTER LOGIC: SOURCES ---
         function updateSourceDropdown() {
             const sources = new Set();
@@ -831,7 +827,7 @@
         }
 
         // --- PROMOTE LOGIC ---
-        function promoteArticle(clusterId, relatedId) {
+     function promoteArticle(clusterId, relatedId) {
             const clusterIndex = allNewsData.findIndex(c => c.id === clusterId);
             if (clusterIndex === -1) return;
             const cluster = allNewsData[clusterIndex];
@@ -843,6 +839,11 @@
             localStorage.setItem('my_promoted_ids', JSON.stringify(promoted));
 
             performSwap(cluster, relatedIndex);
+            
+            // --- NEU: Cluster sichtbar halten ---
+            stickyClusterId = relatedId; 
+            // ------------------------------------
+
             render();
             
             setTimeout(() => {
@@ -1024,10 +1025,15 @@ function render() {
             container.innerHTML = '';
 
             let baseData = currentTab === 'feed' ? [...allNewsData] : savedNews.map(s => s.news);
-            
+
+         // 1. DATE FILTER (mit Sticky-Ausnahme)
             if(currentTab === 'feed' && selectedDateFilter) {
-                baseData = baseData.filter(item => getLocalDateString(item.date) === selectedDateFilter);
+                baseData = baseData.filter(item => {
+                    // Zeigen, wenn Datum passt ODER wenn es der gerade gepinnte Artikel ist
+                    return getLocalDateString(item.date) === selectedDateFilter || item.id === stickyClusterId;
+                });
             }
+    
 
             let data = [];
             if (selectedSources.length > 0) {
