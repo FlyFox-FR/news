@@ -232,6 +232,44 @@
             padding-bottom: 12px;
         }
         .related-content { flex-grow: 1; }
+
+        /* --- HEADER BUTTONS & DROPDOWNS (MOBILE FIX) --- */
+        .header-btn {
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px 12px; border-radius: 20px;
+            cursor: pointer; font-size: 0.75rem; font-weight: 600;
+            display: flex; align-items: center; gap: 6px; transition: 0.2s;
+        }
+        .header-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+        .header-btn:hover { background: rgba(255,255,255,0.05); }
+
+        .header-dropdown {
+            position: absolute; top: 45px; right: 0;
+            width: 260px; background: #161618; border: 1px solid var(--border);
+            border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 100; display: none; padding: 10px;
+            max-height: 70vh; overflow-y: auto; /* Scrollbar falls Liste lang */
+        }
+        .header-dropdown.show { display: block; animation: fadeInUp 0.2s ease; }
+
+        .dropdown-section-title {
+            font-size: 0.65rem; color: #666; font-weight: 800; text-transform: uppercase;
+            margin: 10px 0 5px 8px; letter-spacing: 1px;
+        }
+        .dropdown-item {
+            padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 0.85rem;
+            color: #a1a1aa; display: flex; justify-content: space-between; align-items: center;
+            transition: 0.2s;
+        }
+        .dropdown-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .dropdown-item.active { color: var(--accent); font-weight: 700; background: rgba(59, 130, 246, 0.1); }
+        
+        .filter-badge { background: var(--accent); color: white; font-size: 0.6rem; padding: 1px 5px; border-radius: 8px; font-weight: 800; }
+
+        /* Search Area Clean-Up */
+        .search-area { padding: 0 15px 12px 15px; }
+        .search-wrapper { display: flex; width: 100%; }
+        .search-box { width: 100%; } /* Searchbox hat jetzt vollen Platz */
     </style>
 </head>
 <body>
@@ -288,37 +326,49 @@
             <div style="text-align:center; font-size:0.65rem; color:var(--text-muted); margin-top:10px" id="config-status">Check...</div>
         </div>
     </div>
-
-    <header>
+    
+<header>
         <div class="header-main">
             <div class="header-left" style="display:flex; align-items:center; gap:15px;">
                 <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:1.8rem; cursor:pointer">☰</button>
                 <div class="brand">Nachrichten</div>
             </div>
+            
             <div class="header-right">
-                <button id="zen-toggle" onclick="toggleZenMode()" title="Ansicht umschalten">📖</button>
+                <button id="zen-toggle" onclick="toggleZenMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; padding:5px; margin-right:5px">📖</button>
+
+                <!-- SORTIEREN -->
                 <div style="position:relative">
-                    <button class="sort-btn" id="btn-date" onclick="toggleDateDropdown()">📅 Datum</button>
-                    <div id="date-dropdown" class="date-dropdown"></div>
+                    <button class="header-btn" id="btn-sort-main" onclick="toggleHeaderMenu('sort')">
+                        Sortieren ▾
+                    </button>
+                    <div id="menu-sort" class="header-dropdown">
+                        <div class="dropdown-item active" id="opt-time" onclick="setSort('time')">🕒 Neueste</div>
+                        <div class="dropdown-item" id="opt-trend" onclick="setSort('trend')">🔥 Trends</div>
+                    </div>
                 </div>
-                <button class="sort-btn active" id="btn-time" onclick="setSort('time')">Neueste</button>
-                <button class="sort-btn" id="btn-trend" onclick="setSort('trend')">🔥 Trends</button>
+
+                <!-- FILTERN -->
+                <div style="position:relative">
+                    <button class="header-btn" id="btn-filter-main" onclick="toggleHeaderMenu('filter')">
+                        Filtern <span id="global-filter-badge" class="filter-badge" style="display:none; margin-left:4px">0</span> ▾
+                    </button>
+                    <div id="menu-filter" class="header-dropdown">
+                        <!-- Datum Sektion -->
+                        <div class="dropdown-section-title">Zeitraum</div>
+                        <div id="filter-date-list"></div>
+
+                        <!-- Quellen Sektion -->
+                        <div class="dropdown-section-title" style="margin-top:15px; border-top:1px solid #333; padding-top:10px">Quellen</div>
+                        <div id="filter-source-list"></div>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div class="search-area">
             <div class="search-wrapper">
                 <input type="text" id="search" class="search-box" placeholder="Suchen..." oninput="render()">
-                <button class="filter-trigger-btn" id="filter-trigger" onclick="toggleFilterDropdown()">
-                    Quelle wählen
-                    <span class="filter-badge" id="filter-count" style="display:none">0</span>
-                </button>
-                <div class="filter-dropdown" id="filter-dropdown">
-                    <div style="padding:12px 15px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center">
-                        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted)">FILTER</span>
-                        <button onclick="resetFilters()" style="background:none; border:none; color:var(--accent); font-size:0.75rem; cursor:pointer; font-weight:700">ALLE</button>
-                    </div>
-                    <div class="source-options" id="source-options"></div>
-                </div>
             </div>
         </div>
     </header>
@@ -342,6 +392,161 @@
             "Süddeutsche": "sueddeutsche.de", "Bild": "bild.de", "ARD": "ard.de"
         };
 
+
+
+// --- NEW MENU LOGIC ---
+        function toggleHeaderMenu(type) {
+            const sortMenu = document.getElementById('menu-sort');
+            const filterMenu = document.getElementById('menu-filter');
+            
+            if (type === 'sort') {
+                filterMenu.classList.remove('show');
+                sortMenu.classList.toggle('show');
+            } else {
+                sortMenu.classList.remove('show');
+                filterMenu.classList.toggle('show');
+            }
+        }
+
+        // Schließt Menüs bei Klick irgendwo anders
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.header-right')) {
+                document.getElementById('menu-sort').classList.remove('show');
+                document.getElementById('menu-filter').classList.remove('show');
+            }
+        });
+
+        // --- SORT LOGIC ---
+        function setSort(s) { 
+            currentSort = s; 
+            // UI Update im Dropdown
+            document.getElementById('opt-time').classList.toggle('active', s === 'time');
+            document.getElementById('opt-trend').classList.toggle('active', s === 'trend');
+            // Menü schließen
+            document.getElementById('menu-sort').classList.remove('show');
+            render(); 
+        }
+
+        // --- DATE FILTER LOGIC (Updated Target) ---
+        function initDateFilterOptions() {
+            const days = new Set();
+            allNewsData.forEach(item => { days.add(getLocalDateString(item.date)); });
+            const sortedDays = Array.from(days).sort().reverse();
+            
+            // ZIEL IST JETZT DIE LISTE IM FILTER MENÜ
+            const container = document.getElementById('filter-date-list');
+            container.innerHTML = '';
+
+            const today = getLocalDateString(new Date());
+            const yesterdayDate = new Date(); yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+            const yesterday = getLocalDateString(yesterdayDate);
+
+            // Reset Option (Alle)
+            const resetDiv = document.createElement('div');
+            resetDiv.className = `dropdown-item ${!selectedDateFilter ? 'active' : ''}`;
+            resetDiv.innerHTML = `<span>Alle Tage</span>`;
+            resetDiv.onclick = () => setDateFilter(null);
+            container.appendChild(resetDiv);
+
+            sortedDays.forEach(day => {
+                let label = day.split('-').reverse().slice(0,2).join('.'); 
+                if(day === today) label = "Heute";
+                else if(day === yesterday) label = "Gestern";
+                else {
+                    const d = new Date(day);
+                    const daysMap = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+                    label = `${daysMap[d.getDay()]} ${label}`;
+                }
+
+                const div = document.createElement('div');
+                div.className = `dropdown-item ${selectedDateFilter === day ? 'active' : ''}`;
+                div.innerHTML = `<span>${label}</span>`;
+                div.onclick = () => setDateFilter(day);
+                container.appendChild(div);
+            });
+        }
+
+        function setDateFilter(dayStr) {
+            selectedDateFilter = dayStr; 
+            localStorage.setItem('date_filter', dayStr || '');
+            updateFilterBadges();
+            // Menü NICHT schließen, damit man ggf. noch Quellen wählen kann? 
+            // Oder schließen für besseres Feeling? Ich schließe es mal:
+            // document.getElementById('menu-filter').classList.remove('show');
+            initDateFilterOptions(); // Re-render active state
+            render();
+        }
+
+        // --- SOURCE FILTER LOGIC (Updated Target) ---
+        function updateSourceDropdown() {
+            const sources = new Set();
+            allNewsData.forEach(i => { if(i.source) sources.add(i.source); i.related?.forEach(r => sources.add(r.source)); });
+            
+            // ZIEL IST JETZT DIE LISTE IM FILTER MENÜ
+            const container = document.getElementById('filter-source-list');
+            container.innerHTML = '';
+            
+            Array.from(sources).sort().forEach(source => {
+                const isChecked = selectedSources.includes(source);
+                const item = document.createElement('div');
+                item.className = `dropdown-item ${isChecked ? 'active' : ''}`;
+                // Logo + Name + Checkmark (wenn active)
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px">
+                        <img src="${getSourceLogo(source)}" class="source-logo">
+                        <span>${source}</span>
+                    </div>
+                    ${isChecked ? '<span>✔</span>' : ''}
+                `;
+                item.onclick = (e) => { e.stopPropagation(); toggleSourceSelection(source); };
+                container.appendChild(item);
+            });
+            
+            // Reset Sources Button (optional)
+            if (selectedSources.length > 0) {
+                const reset = document.createElement('div');
+                reset.className = 'dropdown-item';
+                reset.style.marginTop = '10px';
+                reset.style.justifyContent = 'center';
+                reset.style.color = '#f87171';
+                reset.innerHTML = 'Quellen zurücksetzen';
+                reset.onclick = () => resetFilters();
+                container.appendChild(reset);
+            }
+            
+            updateFilterBadges();
+        }
+
+        function toggleSourceSelection(source) {
+            const index = selectedSources.indexOf(source);
+            if (index > -1) selectedSources.splice(index, 1); else selectedSources.push(source);
+            localStorage.setItem('selected_sources', JSON.stringify(selectedSources));
+            updateSourceDropdown(); render();
+        }
+
+        function resetFilters() {
+            selectedSources = [];
+            localStorage.removeItem('selected_sources');
+            updateSourceDropdown(); render();
+        }
+
+        function updateFilterBadges() {
+            // Zeigt Anzahl aktiver Filter im Button an
+            const count = selectedSources.length + (selectedDateFilter ? 1 : 0);
+            const badge = document.getElementById('global-filter-badge');
+            const btn = document.getElementById('btn-filter-main');
+            
+            if (count > 0) {
+                badge.innerText = count; 
+                badge.style.display = 'inline-block';
+                btn.classList.add('active');
+            } else {
+                badge.style.display = 'none';
+                btn.classList.remove('active');
+            }
+        }
+    
+
         // --- TIMEZONE HELPER ---
         // Gibt das Datum als YYYY-MM-DD basierend auf der LOKALEN Zeit des Nutzers zurück
         function getLocalDateString(dateInput) {
@@ -355,7 +560,7 @@
         function getSourceLogo(sourceName) {
             const domain = sourceDomains[sourceName];
             return domain ? `https://www.google.com/s2/favicons?sz=64&domain=${domain}` : `https://cdn-icons-png.flaticon.com/512/2540/2540832.png`;
-        }
+        }    
 
         function getRelativeTime(dateStr) {
             const now = new Date();
@@ -430,54 +635,12 @@
             } catch(e) { console.error("Ladefehler", e); }
         }
 
-        // --- DATE FILTER LOGIC (FIXED) ---
-        function initDateFilterOptions() {
-            const days = new Set();
-            allNewsData.forEach(item => { 
-                // Fix: Nutze lokale Zeit statt UTC String
-                days.add(getLocalDateString(item.date)); 
-            });
-            
-            const sortedDays = Array.from(days).sort().reverse();
-            const dropdown = document.getElementById('date-dropdown');
-            dropdown.innerHTML = '';
 
-            const today = getLocalDateString(new Date());
-            const yesterdayDate = new Date();
-            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-            const yesterday = getLocalDateString(yesterdayDate);
 
-            sortedDays.forEach(day => {
-                let label = day.split('-').reverse().slice(0,2).join('.'); 
-                if(day === today) label = "Heute";
-                else if(day === yesterday) label = "Gestern";
-                else {
-                    const d = new Date(day);
-                    const daysMap = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-                    label = `${daysMap[d.getDay()]} ${label}`;
-                }
-
-                const div = document.createElement('div');
-                div.className = `date-option ${selectedDateFilter === day ? 'active' : ''}`;
-                div.innerHTML = `<span>${label}</span>`;
-                div.onclick = () => setDateFilter(day);
-                dropdown.appendChild(div);
-            });
-            const reset = document.createElement('div');
-            reset.className = 'date-reset'; reset.innerText = 'Alle anzeigen'; reset.onclick = () => setDateFilter(null);
-            dropdown.appendChild(reset);
-        }
-
+    
         function toggleDateDropdown() { document.getElementById('date-dropdown').classList.toggle('show'); }
         
-        function setDateFilter(dayStr) {
-            selectedDateFilter = dayStr; 
-            localStorage.setItem('date_filter', dayStr || '');
-            updateDateBtnLabel(); 
-            document.getElementById('date-dropdown').classList.remove('show');
-            initDateFilterOptions(); 
-            render();
-        }
+
         
         function updateDateBtnLabel() {
             const btn = document.getElementById('btn-date');
@@ -529,33 +692,7 @@
             navigator.clipboard.writeText(url).then(() => { alert("Link kopiert!"); });
         }
 
-        function updateSourceDropdown() {
-            const sources = new Set();
-            allNewsData.forEach(i => { if(i.source) sources.add(i.source); i.related?.forEach(r => sources.add(r.source)); });
-            const container = document.getElementById('source-options');
-            container.innerHTML = '';
-            Array.from(sources).sort().forEach(source => {
-                const isChecked = selectedSources.includes(source);
-                const item = document.createElement('div');
-                item.className = 'source-item';
-                item.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><img src="${getSourceLogo(source)}" class="source-logo"><span>${source}</span>`;
-                item.onclick = (e) => { e.stopPropagation(); toggleSourceSelection(source); };
-                container.appendChild(item);
-            });
-            let total = 0;
-            allNewsData.forEach(i => total += 1 + (i.related?.length || 0));
-            document.getElementById('stat-articles').innerText = total;
-            document.getElementById('stat-clusters').innerText = allNewsData.length;
-        }
-
-        function toggleSourceSelection(source) {
-            const index = selectedSources.indexOf(source);
-            if (index > -1) selectedSources.splice(index, 1); else selectedSources.push(source);
-            localStorage.setItem('selected_sources', JSON.stringify(selectedSources));
-            updateFilterUI(); updateSourceDropdown(); render();
-        }
-
-        function resetFilters() { selectedSources = []; localStorage.removeItem('selected_sources'); updateFilterUI(); updateSourceDropdown(); render(); }
+    
         
         function updateFilterUI() {
             const count = selectedSources.length;
@@ -876,7 +1013,7 @@
     
         function toggleVars(id) { const el = document.getElementById('vars-' + id); el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
-        function setSort(s) { currentSort = s; document.getElementById('btn-time').classList.toggle('active', s === 'time'); document.getElementById('btn-trend').classList.toggle('active', s === 'trend'); render(); }
+      
         function switchTab(t) { currentTab = t; document.getElementById('nav-feed').classList.toggle('active', t === 'feed'); document.getElementById('nav-saved').classList.toggle('active', t === 'saved'); toggleMenu(); render(); }
         function copyLink(l) { navigator.clipboard.writeText(l); alert("Link kopiert!"); }
         
