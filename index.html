@@ -566,24 +566,22 @@
 
         /* --- RADAR UPGRADES --- */
         
-        /* Der neue Floating Locate Button */
-        .btn-locate-float {
-            position: absolute; 
-            bottom: 30px; /* Abstand zur Control-Leiste */
-            right: 20px; 
-            z-index: 400; /* Über der Karte, unter Controls */
-            width: 50px; height: 50px; 
+/* Neuer Style für den Button in der Leiste */
+        .btn-radar-bar {
+            width: 40px; height: 40px; 
             border-radius: 50%; 
-            background: #fff; 
-            color: #000; 
-            border: none;
-            font-size: 1.8rem; 
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; 
+            font-size: 1.4rem; 
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: transform 0.2s;
+            transition: 0.2s;
         }
-        .btn-locate-float:active { transform: scale(0.9); }
+        .btn-radar-bar:hover {
+            background: #fff; 
+            color: #000;
+        }
 
         /* Wenn Zeit in der Zukunft (Prognose) ist */
         .radar-time-future {
@@ -595,7 +593,7 @@
 </head>
 <body>
 
-    <!-- RADAR OVERLAY (2.1) -->
+  <!-- RADAR OVERLAY (2.2 - Layout Fix) -->
     <div id="radar-overlay">
         <div class="reader-header" style="background:rgba(0,0,0,0.8);">
             <span style="font-size:0.8rem; color:#fff; font-weight:700">WETTERKARTE</span>
@@ -612,9 +610,6 @@
         <div style="position:relative; flex-grow:1; width:100%;">
             <div id="radar-map"></div>
             
-            <!-- Der neue Floating Button (Google Maps Style) -->
-            <button class="btn-locate-float" onclick="centerRadar()" title="Mein Standort">⌖</button>
-
             <!-- Preloader -->
             <div id="radar-loader">
                 <div class="spinner"></div>
@@ -632,10 +627,14 @@
         <!-- CONTROLS -->
         <div class="radar-controls">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <!-- Play Button (Links) -->
                 <button id="radar-play" onclick="toggleRadarAnim()">▶</button>
+                
+                <!-- Zeit (Mitte) -->
                 <div id="radar-time" style="font-variant-numeric:tabular-nums; font-weight:bold; font-size:1.1rem; color:#fff;">--:--</div>
-                <!-- Platzhalter rechts damit Zeit mittig bleibt -->
-                <div style="width:40px;"></div> 
+                
+                <!-- Zentrieren Button (Rechts, in der Leiste) -->
+                <button onclick="centerRadar()" class="btn-radar-bar" title="Mein Standort">⌖</button> 
             </div>
             
             <input type="range" id="radar-slider" min="0" max="0" value="0" step="1" 
