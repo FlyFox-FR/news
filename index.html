@@ -1155,7 +1155,8 @@ async function openDebug() {
 
 
 // --- MAIN RENDER PIPELINE ---
-      function render() {
+
+    function render() {
             const container = document.getElementById('feed');
             const searchTerm = document.getElementById('search').value.trim().toLowerCase();
             container.innerHTML = '';
@@ -1166,133 +1167,115 @@ async function openDebug() {
             // 2. DATUM FILTER
             if(currentTab === 'feed' && selectedDateFilter) {
                 baseData = baseData.filter(item => {
-                    if (searchTerm || filterReadableOnly) {
-                        return getLocalDateString(item.date) === selectedDateFilter;
-                    }
+                    if (searchTerm) return getLocalDateString(item.date) === selectedDateFilter;
                     return getLocalDateString(item.date) === selectedDateFilter || item.id === stickyClusterId;
                 });
             }
 
             let data = [];
-            const isFlatMode = searchTerm.length > 0 || filterReadableOnly || selectedSources.length > 0; 
-            // HINWEIS: Auch bei "Sources" macht Flat Mode oft Sinn, aber aktuell behalten wir deine Logik bei:
-            // Sources -> Cluster Mode (außer es matchen nur Kinder). 
-            // Oben im Code erzwingen wir Flat Mode aktuell nur bei Suche & Readable.
-            // Falls du Sources auch immer flach willst, nimm "|| selectedSources.length > 0" dazu.
-            
-            // Wir nutzen hier deine Definition:
-            const forceFlat = searchTerm.length > 0 || filterReadableOnly;
 
-            if (forceFlat) {
-                // --- FLAT MODE (Cluster auflösen & Trend-Score vererben) ---
+            // --- MODUS ENTSCHEIDUNG ---
+            // Flat Mode NUR bei aktiver Suche. 
+            // Der "Lesbar"-Modus nutzt jetzt wieder CLUSTER (wie von dir gewünscht).
+            const isFlatMode = searchTerm.length > 0;
+
+            if (isFlatMode) {
+                // --- A) SUCH-MODUS (FLAT) ---
                 let flatList = [];
                 baseData.forEach(item => {
-                    // Berechne Trend-Score basierend auf Cluster-Größe
-                    const clusterScore = 1 + (item.related ? item.related.length : 0);
-
-                    // Parent
-                    flatList.push({ 
-                        ...item, 
-                        isSearchChild: false, 
-                        trendScore: clusterScore // <--- DAS ERBE
-                    });
-                    
-                    // Children
-                    if (item.related && item.related.length > 0) {
-                        item.related.forEach(child => {
-                            flatList.push({ 
-                                ...child, 
-                                isSearchChild: true, 
-                                trendScore: clusterScore // <--- ERBT VOM VATER
-                            });
-                        });
-                    }
+                    flatList.push({ ...item, isSearchChild: false });
+                    if (item.related) item.related.forEach(child => flatList.push({ ...child, isSearchChild: true }));
                 });
 
-                // Filtern
                 data = flatList.filter(item => {
                     // Filter: Quellen
                     if (selectedSources.length > 0 && !selectedSources.includes(item.source)) return false;
-                    
-                    // Filter: Nur Lesbar
+                    // Filter: Lesbar
                     if (filterReadableOnly && (!item.content || item.content.length <= 200)) return false;
 
-                    // Filter: Suche
-                    if (searchTerm) {
-                        let score = 0;
-                        item.searchSnippet = null; 
-                        if (item.title.toLowerCase().includes(searchTerm)) score += 10;
-                        if (item.text && item.text.toLowerCase().includes(searchTerm)) score += 5;
-                        if (item.bullets && item.bullets.some(b => b.toLowerCase().includes(searchTerm))) score += 3;
-                        if (item.content && item.content.toLowerCase().includes(searchTerm)) {
-                            score += 1;
-                            item.searchSnippet = generateSearchSnippet(item.content, searchTerm);
-                        }
-                        item.searchScore = score;
-                        return score > 0;
+                    // Suche Relevanz
+                    let score = 0;
+                    item.searchSnippet = null;
+                    if (item.title.toLowerCase().includes(searchTerm)) score += 10;
+                    if (item.text && item.text.toLowerCase().includes(searchTerm)) score += 5;
+                    if (item.content && item.content.toLowerCase().includes(searchTerm)) {
+                        score += 1;
+                        item.searchSnippet = generateSearchSnippet(item.content, searchTerm);
                     }
-                    return true;
+                    item.searchScore = score;
+                    return score > 0;
                 });
 
-                // Sortieren (Flat)
-                if (searchTerm) {
-                    data.sort((a, b) => {
-                        if (b.searchScore !== a.searchScore) return b.searchScore - a.searchScore;
-                        return new Date(b.date) - new Date(a.date);
-                    });
-                } else if (currentSort === 'trend') {
-                    // NEU: Sortiere nach vererbtem Trend-Score
-                    data.sort((a, b) => {
-                        if (b.trendScore !== a.trendScore) return b.trendScore - a.trendScore;
-                        return new Date(b.date) - new Date(a.date); // Fallback Zeit
-                    });
-                } else {
-                    // Zeit
-                    data.sort((a,b) => new Date(b.date) - new Date(a.date));
-                }
+                // Sortieren nach Relevanz
+                data.sort((a, b) => {
+                    if (b.searchScore !== a.searchScore) return b.searchScore - a.searchScore;
+                    return new Date(b.date) - new Date(a.date);
+                });
 
             } else {
-                // --- CLUSTER MODE (Standard) ---
-                if (selectedSources.length > 0) {
-                    baseData.forEach(item => {
+                // --- B) STANDARD & LESBAR-MODUS (CLUSTER) ---
+                
+                // 1. Filtern (Quellen & Lesbarkeit)
+                baseData.forEach(item => {
+                    // Logik für "Lesbar"-Filter im Cluster:
+                    // Zeige das Cluster, wenn Main-Item lesbar ist ODER eins der Kinder lesbar ist.
+                    const isMainReadable = item.content && item.content.length > 200;
+                    const hasReadableChild = item.related && item.related.some(r => r.content && r.content.length > 200);
+
+                    if (filterReadableOnly) {
+                        // Wenn Filter an: Nur rein, wenn irgendwas lesbar ist
+                        if (!isMainReadable && !hasReadableChild) return; 
+                    }
+
+                    // Quellen Filter
+                    if (selectedSources.length > 0) {
                         if (selectedSources.includes(item.source)) {
-                            const filteredRelated = item.related?.filter(r => selectedSources.includes(r.source)) || [];
-                            data.push({ ...item, related: filteredRelated });
+                            data.push(item);
                         } else {
+                            // Wenn Main nicht passt, schauen wir ob Kinder passen (die werden dann einzeln angezeigt)
+                            // HINWEIS: Das behalten wir bei wie vorher
                             const matchChildren = item.related?.filter(r => selectedSources.includes(r.source)) || [];
-                            // Kinder werden hier einzeln gepusht -> kriegen Score 1 (da related=[]), 
-                            // aber das ist okay bei Source-Filterung
                             matchChildren.forEach(child => data.push({ ...child, related: [] }));
                         }
-                    });
-                } else {
-                    data = baseData;
-                }
+                    } else {
+                        data.push(item);
+                    }
+                });
 
-                // Sortieren (Cluster)
+                // 2. Sortieren (Zeit oder Trends)
                 if (currentSort === 'time') {
                     data.sort((a,b) => new Date(b.date) - new Date(a.date));
                 } else {
-                    // Trend (Cluster Größe)
                     data.sort((a,b) => (b.related?.length || 0) - (a.related?.length || 0));
                 }
             }
 
-            // --- RENDERING ---
+            // --- UI RENDERING ---
             document.getElementById('nav-saved').innerHTML = `<span>🔖</span> Gemerkt (${savedNews.length})`;
 
             if (data.length === 0) { 
-                container.innerHTML = `<div style="text-align:center; padding:100px 20px; color:var(--text-muted)">
-                    ${searchTerm ? 'Keine Treffer.' : 'Keine Artikel für diese Filter.'}
-                </div>`; 
+                container.innerHTML = `<div style="text-align:center; padding:100px 20px; color:var(--text-muted)">Keine Ergebnisse.</div>`; 
                 return; 
             }
 
             data.forEach((item, index) => {
                 const savedObj = savedNews.find(s => s.news.id === item.id);
                 const relTime = getRelativeTime(item.date);
+                // Im "Lesbar"-Modus ist der Lesen-Button beim Hauptartikel nur da, wenn er wirklich lesbar ist.
                 const hasContent = item.content && item.content.length > 200;
                 
+                // Sortierung der Related Items für das Dropdown
+                let displayRelated = [...(item.related || [])];
+                
+                if (filterReadableOnly) {
+                    // Wenn Filter an: Sortiere Lesbare nach oben!
+                    displayRelated.sort((a, b) => {
+                        const aRead = a.content && a.content.length > 200;
+                        const bRead = b.content && b.content.length > 200;
+                        return bRead - aRead; // true (1) kommt vor false (0)
+                    });
+                }
+
                 const card = document.createElement('div');
                 card.className = 'card animate-fade';
                 card.id = `card-${item.id}`;
@@ -1317,10 +1300,7 @@ async function openDebug() {
                         <ul class="bullets">${(item.bullets || []).map(b => `<li>${highlightText(b, searchTerm)}</li>`).join('')}</ul>
 
                         ${searchTerm && item.searchSnippet ? `
-                            <div class="search-snippet">
-                                <span class="snippet-label">🔍 Gefunden im Text:</span>
-                                ${highlightText(item.searchSnippet, searchTerm)}
-                            </div>
+                            <div class="search-snippet"><span class="snippet-label">🔍 Gefunden:</span>${highlightText(item.searchSnippet, searchTerm)}</div>
                         ` : ''}
                     </div>
                     
@@ -1332,9 +1312,9 @@ async function openDebug() {
                             ${hasContent ? `<button class="btn-reader" onclick="openReader('${item.id}')">📖 Lesen</button>` : ''}
                         </div>
                         <div class="action-right">
-                            ${!forceFlat && selectedSources.length === 0 && item.related?.length ? `
+                            ${!isFlatMode && selectedSources.length === 0 && displayRelated.length > 0 ? `
                                 <button class="btn-toggle" onclick="toggleVars('${item.id}')">
-                                    <span>📚 ${item.related.length}</span>
+                                    <span>📚 ${displayRelated.length}</span>
                                 </button>` : ''}
                             
                             <button id="btn-menu-${item.id}" class="btn-menu" onclick="toggleCardMenu(event, '${item.id}')">⋮</button>
@@ -1344,13 +1324,18 @@ async function openDebug() {
                         </div>
                     </div>
 
+                    <!-- RELATED ITEMS DROPDOWN -->
                     <div id="vars-${item.id}" class="variants-container" style="display:none; padding:15px; background:#121214; border-top:1px solid var(--border)">
                         <div style="font-size:0.65rem; color:#555; margin-bottom:10px; text-transform:uppercase; font-weight:800; letter-spacing:1px;">Weitere Quellen</div>
-                        ${(!forceFlat && item.related || []).map(r => {
+                        ${displayRelated.map(r => {
                             const isReadable = r.content && r.content.length > 200;
+                            // Im "Lesbar Modus" zeigen wir bei den NICHT-Lesbaren keinen Pin-Button an.
+                            const showPin = !filterReadableOnly || isReadable;
+
                             return `
                             <div class="related-item-row">
-                                <div class="related-title" onclick="promoteArticle('${item.id}', '${r.id}')" title="Diesen Artikel nach oben holen">
+                                <!-- Titel ist nur klickbar (Promote), wenn Pin erlaubt ist -->
+                                <div class="related-title" ${showPin ? `onclick="promoteArticle('${item.id}', '${r.id}')" title="Nach oben"` : 'style="cursor:default; color:#aaa;"'}>
                                     ${r.title}
                                 </div>
                                 <div class="related-footer">
@@ -1361,7 +1346,11 @@ async function openDebug() {
                                     </div>
                                     <div class="related-actions-group">
                                         <a href="#" onclick="confirmExit('${r.link}'); return false;" class="btn-link-small">Original</a>
-                                        <button class="btn-pin" onclick="promoteArticle('${item.id}', '${r.id}')" title="Anpinnen">📌</button>
+                                        
+                                        <!-- Pin Button nur wenn erlaubt -->
+                                        ${showPin ? `
+                                            <button class="btn-pin" onclick="promoteArticle('${item.id}', '${r.id}')" title="Anpinnen">📌</button>
+                                        ` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -1371,8 +1360,6 @@ async function openDebug() {
                 container.appendChild(card);
             });
         }
-
-    
     
 
         window.onscroll = () => {
